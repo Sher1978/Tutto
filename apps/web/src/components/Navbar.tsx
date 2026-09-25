@@ -41,34 +41,37 @@ export const Navbar: React.FC = () => {
       </div>
 
       {/* 4. AI Agent Status Card */}
-      <div className="mt-4 grid grid-cols-12 gap-2 bg-slate-900/50 backdrop-blur-lg border border-white/10 rounded-2xl p-3 items-center shadow-xl">
-        {/* Left profile (col-span-7) */}
-        <div className="col-span-7 flex items-center gap-2.5">
-          <img
-            src={user?.photo_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120'}
-            alt="User avatar"
-            className="w-11 h-11 rounded-full border border-white/20 object-cover"
-          />
+      <div className="mt-3.5 bg-[#121927]/90 backdrop-blur-xl border border-white/12 rounded-3xl p-3 flex items-center justify-between shadow-2xl">
+        {/* Left profile */}
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="relative shrink-0">
+            <img
+              src={user?.photo_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120'}
+              alt="User avatar"
+              className="w-11 h-11 rounded-full border border-white/20 object-cover"
+            />
+            <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-[#00FF87] border-2 border-[#0f1724]" />
+          </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-xs font-semibold text-white truncate">
-              {user?.first_name || 'Kaitlyn L.'} | @{user?.username || 'kaitlyn.l'}
+            <span className="text-xs font-black text-white truncate font-display">
+              {user?.first_name || 'Kaitlyn L.'} <span className="text-gray-400 font-normal">| @{user?.username || 'kaitlyn.l'}</span>
             </span>
-            <span className="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5">
-              4.9 <Star className="w-3 h-3 text-amber-400 fill-amber-400" /> <span className="text-emerald-400 font-medium">Online</span>
+            <span className="text-[10px] text-gray-300 flex items-center gap-1 mt-0.5 font-semibold">
+              4.9 <Star className="w-3 h-3 text-amber-400 fill-amber-400" /> <span className="text-[#00FF87] font-bold">Online</span>
             </span>
           </div>
         </div>
 
-        {/* Right status (col-span-5) */}
-        <div className="col-span-5 bg-emerald-950/40 border border-emerald-500/20 rounded-xl p-2 text-right flex flex-col justify-center items-end">
-          <div className="flex items-center text-[9px] font-bold text-emerald-400 tracking-wider">
-            <span className="h-1.5 w-1.5 bg-emerald-400 rounded-full inline-block mr-1 animate-pulse" />
+        {/* Right AI Status Pill */}
+        <div className="bg-[#0b1422] border border-[#00FF87]/40 rounded-2xl px-2.5 py-1.5 text-right flex flex-col items-end justify-center shadow-[0_0_15px_rgba(0,255,135,0.2)] shrink-0">
+          <div className="flex items-center gap-1.5 text-[9px] font-black text-[#00FF87] tracking-wider uppercase font-display">
+            <span className="w-2 h-2 rounded-full bg-[#00FF87] animate-ping shadow-[0_0_8px_#00FF87]" />
             <span>AI SALES AGENT</span>
           </div>
-          <span className="text-[9px] font-medium text-emerald-400/80">
-            ACTIVE • Online
+          <span className="text-[9px] font-bold text-gray-300 mt-0.5">
+            <span className="text-[#00FF87]">ACTIVE</span> • Online
           </span>
-          <span className="text-[9px] font-light text-gray-400 mt-0.5">
+          <span className="text-[8px] font-medium text-gray-400">
             Response Time: &lt;1m
           </span>
         </div>

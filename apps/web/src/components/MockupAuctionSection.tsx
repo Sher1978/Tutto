@@ -171,10 +171,10 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
           </span>
         </div>
 
-        {/* Main Card + Side Peek Card Container */}
-        <div className="flex gap-2.5 items-stretch">
-          {/* Main AYANA Resort Auction Card (1:1 Mockup Spec) */}
-          <div className="flex-1 bg-[#121826]/90 backdrop-blur-xl border border-white/14 rounded-3xl p-3.5 shadow-2xl flex flex-col justify-between space-y-3">
+        {/* Main Card + Side Overlapping Card Container */}
+        <div className="relative flex items-stretch">
+          {/* Main AYANA Resort Auction Card */}
+          <div className="w-[78%] shrink-0 bg-[#121927]/95 backdrop-blur-xl border border-white/14 rounded-3xl p-3.5 shadow-2xl flex flex-col justify-between space-y-3 relative z-10">
             {/* Title Subheader inside Card */}
             <div>
               <h3
@@ -189,9 +189,9 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
             </div>
 
             {/* Middle Layout: Left Photo + Right Price/Timer Block */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               {/* Left Photo Thumbnail */}
-              <div className="w-32 h-28 rounded-2xl overflow-hidden shrink-0 border border-white/12 shadow-lg relative group">
+              <div className="w-28 h-28 rounded-2xl overflow-hidden shrink-0 border border-white/12 shadow-lg relative group">
                 <img
                   src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600"
                   alt="AYANA Resort Villa"
@@ -201,17 +201,17 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
               </div>
 
               {/* Right Details Block */}
-              <div className="flex-1 flex flex-col justify-between py-0.5">
+              <div className="flex-1 flex flex-col justify-between py-0.5 min-w-0">
                 <div>
-                  <div className="flex items-baseline justify-between text-xs text-gray-400">
-                    <span>Current Low Bid:</span>
-                    <span className="text-base font-black text-[#00FF87] font-display glow-price">
+                  <div className="flex items-baseline justify-between text-[11px] text-gray-400">
+                    <span className="truncate">Current Low Bid:</span>
+                    <span className="text-sm font-black text-[#00FF87] font-display glow-price ml-1">
                       $345
                     </span>
                   </div>
-                  <div className="flex items-baseline justify-between text-[11px] text-gray-400 mt-0.5">
+                  <div className="flex items-baseline justify-between text-[10px] text-gray-400 mt-0.5">
                     <span>Original Price:</span>
-                    <span className="line-through text-gray-500 font-medium">$980</span>
+                    <span className="line-through text-gray-400 font-bold ml-1">$980</span>
                   </div>
                   <div className="text-[10px] text-gray-300 font-semibold mt-1 flex items-center gap-1">
                     <Users className="w-3 h-3 text-[#00F2FE]" />
@@ -221,7 +221,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
 
                 {/* Giant Glowing Timer */}
                 <div className="mt-1">
-                  <span className="text-2xl font-black text-[#00FF87] font-mono glow-timer leading-none tracking-wider block">
+                  <span className="text-2xl sm:text-3xl font-black text-[#00FF87] font-mono glow-timer leading-none tracking-wider block">
                     {timer1}
                   </span>
                 </div>
@@ -231,37 +231,40 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
             {/* Full Width Bright Gradient Action Button */}
             <button
               onClick={() => onOpenBidModal(mainRequest)}
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#00F2FE] to-[#00FF87] text-[#060911] font-display font-black text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-[0_6px_28px_rgba(0,242,254,0.45)] hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer"
+              className="w-full py-2.5 rounded-2xl bg-gradient-to-r from-[#00F2FE] to-[#00FF87] text-[#060911] font-display font-black text-[11px] sm:text-xs tracking-widest uppercase flex items-center justify-center gap-1.5 shadow-[0_6px_28px_rgba(0,242,254,0.45)] hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer"
             >
-              <Zap className="w-4 h-4 fill-black" />
+              <Zap className="w-3.5 h-3.5 fill-black" />
               <span>VIEW OFFER / BID NOW</span>
             </button>
           </div>
 
-          {/* Right Side Peek Card (Kata Rocks Phuket) */}
+          {/* Right Side Overlapping Peek Card (Kata Rocks Phuket) */}
           <div
             onClick={() => onOpenBidModal(phuketRequest)}
-            className="w-28 rounded-3xl overflow-hidden border border-white/14 bg-[#121826]/90 backdrop-blur-xl p-2 flex flex-col justify-between shrink-0 shadow-xl cursor-pointer group hover:border-[#00F2FE]/50 transition-all"
+            className="w-[30%] -ml-6 shrink-0 z-20 rounded-3xl overflow-hidden border border-white/20 bg-[#121927]/95 backdrop-blur-2xl p-2.5 flex flex-col justify-between shadow-[0_15px_35px_rgba(0,0,0,0.8)] cursor-pointer group hover:border-[#00F2FE]/60 transition-all"
           >
             <div className="space-y-1.5">
-              <div className="w-full h-20 rounded-xl overflow-hidden border border-white/10 relative">
+              <div className="w-full h-24 rounded-2xl overflow-hidden border border-white/12 relative shadow-md">
                 <img
                   src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400"
                   alt="Kata Rocks Villa"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               </div>
-              <div className="text-[9px] font-extrabold text-white leading-tight line-clamp-2">
-                Phuket: Kata Rocks Villa
+              <div className="text-[9.5px] font-black text-white leading-tight">
+                <span className="text-[#00F2FE] block font-bold">Phuket:</span>
+                <span className="truncate block">Kata Rocks Villa</span>
               </div>
             </div>
 
-            <div className="bg-black/60 rounded-xl p-1.5 border border-white/10 space-y-0.5">
-              <div className="text-[8px] text-amber-400 font-mono font-bold">
-                TIMER {timer2}
+            <div className="bg-black/60 rounded-xl p-1.5 border border-white/10 space-y-0.5 mt-1">
+              <div className="text-[8px] text-gray-300 font-mono font-bold">
+                TIMER <span className="text-white">{timer2}</span>
               </div>
-              <div className="text-[9px] text-[#00FF87] font-bold font-display">
-                Current: $410
+              <div className="text-[9px] text-gray-300 font-bold flex items-baseline justify-between">
+                <span>Current Bid:</span>
+                <span className="text-[#00FF87] font-black text-[10px]">$410</span>
               </div>
             </div>
           </div>
