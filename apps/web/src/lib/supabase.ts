@@ -1,15 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://ykllqxzftdyuimiydaom.supabase.co'
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrbGxxeHpmdGR5dWltaXlkYW9tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzNTcyNjksImV4cCI6MjEwNTkzMzI2OX0.XU4GbuhVvrdCai6_oJSUGsEDNZPG3pPb1UxWsf7qUvA'
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export const isSupabaseConfigured = (): boolean => {
-  return Boolean(
-    import.meta.env.VITE_SUPABASE_URL && 
-    import.meta.env.VITE_SUPABASE_URL !== 'https://placeholder-ref.supabase.co' &&
-    import.meta.env.VITE_SUPABASE_ANON_KEY &&
-    import.meta.env.VITE_SUPABASE_ANON_KEY !== 'your-anon-key-here'
-  )
+  return Boolean(supabaseUrl && supabaseAnonKey)
 }
