@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
+@import "tailwindcss";
+
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', 'Inter', system-ui, sans-serif;
+  
+  /* Brand Theme Colors */
+  --bg-dark: #0B0F19;
+  --bg-card: rgba(18, 24, 38, 0.75);
+  --bg-card-hover: rgba(28, 36, 56, 0.85);
+  --primary-accent: #00F0FF;
+  --primary-glow: rgba(0, 240, 255, 0.25);
+  --secondary-accent: #7000FF;
+  --secondary-glow: rgba(112, 0, 255, 0.25);
+  --gold-accent: #FFB800;
+  --gold-glow: rgba(255, 184, 0, 0.3);
+  --danger-accent: #FF3B30;
+  --success-accent: #34C759;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-dark);
+  color: #F3F4F6;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Glassmorphism UI Utilities */
+.glass-panel {
+  background: rgba(18, 24, 38, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.glass-button-primary {
+  background: linear-gradient(135deg, #00F0FF 0%, #0088FF 100%);
+  color: #0B0F19;
+  font-weight: 700;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 240, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.glass-button-primary:active {
+  transform: scale(0.97);
+}
+
+.glass-button-secondary {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.glass-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Dynamic pulse and badge styles */
+.badge-live {
+  background: rgba(255, 59, 48, 0.15);
+  border: 1px solid rgba(255, 59, 48, 0.4);
+  color: #FF453A;
+  box-shadow: 0 0 10px rgba(255, 59, 48, 0.2);
+}
+
+.badge-ai {
+  background: linear-gradient(135deg, rgba(112, 0, 255, 0.2), rgba(0, 240, 255, 0.2));
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #00F0FF;
+}
+
+.badge-pro {
+  background: rgba(255, 184, 0, 0.15);
+  border: 1px solid rgba(255, 184, 0, 0.5);
+  color: #FFB800;
+}
+
+/* Custom Safe Area Insets for Mobile / iOS Notch / Telegram Header */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(11, 15, 25, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.4);
+}
