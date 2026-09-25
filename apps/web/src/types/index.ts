@@ -15,6 +15,18 @@ export interface Category {
   titleEn: string
   iconName: string
   description?: string
+  defaultCoverUrl?: string
+}
+
+export interface ServiceTemplate {
+  id: string
+  categoryL1Id: string
+  title: string
+  description: string
+  defaultBudget: number | null
+  currency: string
+  coverImageUrl: string
+  isCustomUserTemplate?: boolean
 }
 
 export interface RequestItem {
@@ -29,7 +41,7 @@ export interface RequestItem {
   categoryL1Name: string
   title: string
   description: string
-  budget: number | null // null = "Waiting for offers"
+  budget: number | null
   currency: string
   mediaUrls: string[]
   isFeatured: boolean

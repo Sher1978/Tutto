@@ -1,4 +1,4 @@
-import { HubLocation, Category, RequestItem, BusinessCard } from '../types'
+import { HubLocation, Category, RequestItem, BusinessCard, ServiceTemplate } from '../types'
 
 export const HUBS: HubLocation[] = [
   {
@@ -31,23 +31,23 @@ export const HUBS: HubLocation[] = [
   },
 ]
 
-export const CATEGORIES: (Category & { defaultCoverUrl: string })[] = [
+export const CATEGORIES: Category[] = [
   {
     id: 'cat-transport',
     slug: 'transport',
-    titleRu: 'Аренда авто и байков',
+    titleRu: 'Аренда байков & авто',
     titleEn: 'Bike & Car Rental',
     iconName: 'Bike',
-    description: 'NMAX, PCX, Forza, автомобили без залога паспорта',
+    description: 'NMAX, PCX, Forza, авто без залога паспорта',
     defaultCoverUrl: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'cat-realestate',
     slug: 'realestate',
-    titleRu: 'Недвижимость & Виллы',
+    titleRu: 'Виллы & Апартаменты',
     titleEn: 'Real Estate & Villas',
     iconName: 'Home',
-    description: 'Виллы с бассейном, апартаменты, помесячно и посуточно',
+    description: 'Виллы с бассейном, апартаменты',
     defaultCoverUrl: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600&auto=format&fit=crop&q=80',
   },
   {
@@ -56,16 +56,16 @@ export const CATEGORIES: (Category & { defaultCoverUrl: string })[] = [
     titleRu: 'Экскурсии & Яхты',
     titleEn: 'Tours & Yachts',
     iconName: 'Compass',
-    description: 'Пхи-Пхи, Симиланы, чартер яхт, визаран',
+    description: 'Симиланы, Пхи-Пхи, морские чартеры',
     defaultCoverUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'cat-beauty',
     slug: 'beauty',
-    titleRu: 'Красота, СПА & Массаж',
+    titleRu: 'СПА & Массаж',
     titleEn: 'Beauty, Spa & Massage',
     iconName: 'Sparkles',
-    description: 'Массаж с выездом, маникюр, барбер',
+    description: 'Традиционный массаж с выездом в отель',
     defaultCoverUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&auto=format&fit=crop&q=80',
   },
   {
@@ -74,17 +74,98 @@ export const CATEGORIES: (Category & { defaultCoverUrl: string })[] = [
     titleRu: 'Бытовые услуги & Няни',
     titleEn: 'Home Services & Nannies',
     iconName: 'ShieldCheck',
-    description: 'Клининг, няни для детей, ремонт, фотографы',
+    description: 'Клининг, няни для детей, фотографы',
     defaultCoverUrl: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'cat-exchange',
     slug: 'exchange',
-    titleRu: 'Обмен валют & Доставка',
+    titleRu: 'Обмен валют & Наличные',
     titleEn: 'Currency & Express',
     iconName: 'Repeat',
-    description: 'Наличный бат/рупия, доставят в отель',
+    description: 'Доставка наличных батов/рупий в отель',
     defaultCoverUrl: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=600&auto=format&fit=crop&q=80',
+  },
+]
+
+export const SERVICE_TEMPLATES: ServiceTemplate[] = [
+  // RENTALS
+  {
+    id: 'tmpl-nmax',
+    categoryL1Id: 'cat-transport',
+    title: 'Yamaha NMAX 155cc / Honda PCX 160 (1-14 дней)',
+    description: 'Свежие скутеры (2023-2024 года) с бесплатной доставкой в отель, 2 чистоплотными шлемами и страховкой без залога паспорта.',
+    defaultBudget: 220,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'tmpl-car',
+    categoryL1Id: 'cat-transport',
+    title: 'Компактный авто (Honda City / Toyota Yaris)',
+    description: 'Автомобиль с кондиционером, полной страховкой и доставкой к отелю. Оплата без оригиналов документов в залог.',
+    defaultBudget: 380,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600&auto=format&fit=crop&q=80',
+  },
+  // TOURS
+  {
+    id: 'tmpl-yacht',
+    categoryL1Id: 'cat-tours',
+    title: 'Индивидуальный чартер сноркелинг-бота на Симиланы',
+    description: 'Комфортный катер с капитаном и русскоязычным гидом на весь день. Включен обед, фрукты, снаряжение для сноркелинга.',
+    defaultBudget: 850,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'tmpl-phiphi',
+    categoryL1Id: 'cat-tours',
+    title: 'Однодневный авторский тур: острова Пхи-Пхи & Майя Бэй',
+    description: 'Морское путешествие на зари к заливу Майя Бэй, острову Бамбу и смотровым площадкам без толп туристов.',
+    defaultBudget: 140,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&auto=format&fit=crop&q=80',
+  },
+  // EXCHANGE
+  {
+    id: 'tmpl-cash-baht',
+    categoryL1Id: 'cat-exchange',
+    title: 'Экспресс-доставка наличных батов/рупий в отель',
+    description: 'Курьер привезет наличную валюту прямо на ресепшен вашего отеля. Оплата Рублями по СБП или USDT без комиссии.',
+    defaultBudget: null,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=600&auto=format&fit=crop&q=80',
+  },
+  // REAL ESTATE
+  {
+    id: 'tmpl-villa',
+    categoryL1Id: 'cat-realestate',
+    title: 'Приватная 2-спальная вилла с бассейном',
+    description: 'Вилла с приватным бассейном, кухней, быстрым Wi-Fi от 100 Мбит в тихом районе (Чангу / Раваи / Банг Тао).',
+    defaultBudget: 1800,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600&auto=format&fit=crop&q=80',
+  },
+  // SPA
+  {
+    id: 'tmpl-massage',
+    categoryL1Id: 'cat-beauty',
+    title: 'Традиционный Тайский / Балийский массаж на виллу',
+    description: 'Сертифицированный мастер со своим массажным столом и арома-маслами приедет прямо к вам в отель или на виллу.',
+    defaultBudget: 35,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&auto=format&fit=crop&q=80',
+  },
+  // SERVICES
+  {
+    id: 'tmpl-nanny',
+    categoryL1Id: 'cat-services',
+    title: 'Няня для ребенка (на вечер или день)',
+    description: 'Проверенная няня со знанием русского/английского языка и педагогическим опытом для присмотра за ребенком.',
+    defaultBudget: 12,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80',
   },
 ]
 
@@ -98,12 +179,12 @@ export const MOCK_REQUESTS: RequestItem[] = [
     hub: 'phuket',
     district: 'Rawai',
     categoryL1Id: 'cat-transport',
-    categoryL1Name: 'Аренда авто и байков',
+    categoryL1Name: 'Аренда байков & авто',
     title: 'Нужен Yamaha NMAX 155cc на 14 дней в Раваи',
     description: 'Ищу свежий байк (2023-2024 года), обязательно с 2 шлемами. Доставка к отелю Rawai Palm Beach Resort. Бюджет фиксированный.',
     budget: 220,
     currency: 'USD',
-    mediaUrls: [], // Автоматически подтянет красивый баннер категории cat-transport!
+    mediaUrls: [],
     isFeatured: true,
     status: 'open',
     createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
@@ -120,40 +201,18 @@ export const MOCK_REQUESTS: RequestItem[] = [
     hub: 'bali',
     district: 'Canggu',
     categoryL1Id: 'cat-realestate',
-    categoryL1Name: 'Недвижимость & Виллы',
+    categoryL1Name: 'Виллы & Апартаменты',
     title: 'Ищем 2-спальную виллу в Чангу с 1 октября на 1 месяц',
     description: 'Тихий район, хороший Wi-Fi для работы (от 100 Мбит), приватный бассейн. Рассматриваем варианты до $2200.',
     budget: null,
     currency: 'USD',
-    mediaUrls: [], // Автоматически подтянет красивый баннер категории cat-realestate!
+    mediaUrls: [],
     isFeatured: false,
     status: 'open',
     createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
     expiresAt: new Date(Date.now() + 75 * 60 * 1000).toISOString(),
     auctionEndsAt: new Date(Date.now() + 75 * 60 * 1000).toISOString(),
     bidsCount: 5,
-  },
-  {
-    id: 'req-103',
-    clientId: 'usr-3',
-    clientName: 'Максим К.',
-    clientAvatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
-    clientRating: 5.0,
-    hub: 'phuket',
-    district: 'Patong',
-    categoryL1Id: 'cat-tours',
-    categoryL1Name: 'Экскурсии & Яхты',
-    title: 'Индивидуальный чартер сноркелинг-бота на Симиланы для компании 6 человек',
-    description: 'Нужна комфортная лодка с капитаном и гидом на целый день. Включите обед и фрукты.',
-    budget: 850,
-    currency: 'USD',
-    mediaUrls: ['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&auto=format&fit=crop&q=80'],
-    isFeatured: false,
-    status: 'open',
-    createdAt: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
-    expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
-    auctionEndsAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
-    bidsCount: 2,
   },
 ]
 

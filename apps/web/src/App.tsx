@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from 'react'
 import { Navbar } from './components/Navbar'
 import { RequestCard } from './components/RequestCard'
+import { TemplateCard } from './components/TemplateCard'
 import { CreateRequestModal } from './components/CreateRequestModal'
 import { BidModal } from './components/BidModal'
 import { BusinessProfileView } from './components/BusinessProfileView'
 import { DealChatModal } from './components/DealChatModal'
 import { BottomNav, TabId } from './components/BottomNav'
-import { HUBS, CATEGORIES, MOCK_REQUESTS } from './data/mockData'
-import { HubId, RequestItem, BidItem } from './types'
-import { initTelegramApp, triggerHapticFeedback } from './lib/telegram'
-import { Search, Sparkles, Filter, CheckCircle2 } from 'lucide-react'
+import { HUBS, CATEGORIES, SERVICE_TEMPLATES, MOCK_REQUESTS } from './data/mockData'
+import { HubId, RequestItem, BidItem, ServiceTemplate } from './types'
+import { initTelegramApp, triggerHapticFeedback, triggerNotificationFeedback } from './lib/telegram'
+import { Search, Sparkles, Filter, CheckCircle2, Bookmark, PlusCircle, ArrowRight } from 'lucide-react'
 
 export function App() {
   const [currentHub, setCurrentHub] = useState<HubId>('phuket')
-  const [activeTab, setActiveTab] = useState<TabId>('feed')
+  const [activeTab, setActiveTab] = useState<TabId>('home')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   const [requests, setRequests] = useState<RequestItem[]>(MOCK_REQUESTS)
+  const [userTemplates, setUserTemplates] = useState<ServiceTemplate[]>([])
+  
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [selectedRequestForBid, setSelectedRequestForBid] = useState<RequestItem | null>(null)
 
@@ -34,6 +37,54 @@ export function App() {
   const handleSelectHub = (hub: HubId) => {
     setCurrentHub(hub)
     triggerHapticFeedback('light')
+  }
+
+  // 1-Click Launch Template directly into Live Auction!
+  const handleLaunchTemplate = (tmpl: ServiceTemplate) => {
+    const activeHubObj = HUBS.find((h) => h.id === currentHub) || HUBS[0]
+    const activeCatObj = CATEGORIES.find((c) => c.id === tmpl.categoryL1Id) || CATEGORIES[0]
+
+    const createdItem: RequestItem = {
+      id: `req-${Date.now()}`,
+      clientId: 'usr-current',
+      clientName: 'Kaitlyn L.',
+      clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+      clientRating: 5.0,
+      hub: currentHub,
+      district: activeHubObj.districts[0] || 'Rawai',
+      categoryL1Id: tmpl.categoryL1Id,
+      categoryL1Name: activeCatObj.titleRu,
+      title: tmpl.title,
+      description: tmpl.description,
+      budget: tmpl.defaultBudget,
+      currency: 'USD',
+      mediaUrls: [tmpl.coverImageUrl],
+      isFeatured: false,
+      status: 'open',
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
+      auctionEndsAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
+      bidsCount: 0,
+    }
+
+    setRequests([createdItem, ...requests])
+    triggerNotificationFeedback('success')
+    setNotificationMsg(`🎉 Заявка по шаблону «${tmpl.title}» запущена в ${activeHubObj.nameRu}!`)
+    setTimeout(() => setNotificationMsg(null), 4000)
+    
+    // Automatically switch to My Requests tab to see live bids!
+    setActiveTab('my-requests')
+  }
+
+  // Save template to user's personal custom templates
+  const handleSaveUserTemplate = (tmpl: ServiceTemplate) => {
+    if (userTemplates.some((t) => t.id === tmpl.id)) {
+      setNotificationMsg('📌 Этот шаблон уже сохранен в вашем Избранном!')
+    } else {
+      setUserTemplates([...userTemplates, { ...tmpl, isCustomUserTemplate: true }])
+      setNotificationMsg('⭐️ Сохранено в ваши персональные шаблоны!')
+    }
+    setTimeout(() => setNotificationMsg(null), 3000)
   }
 
   const handleCreateRequest = (newReq: Partial<RequestItem>) => {
@@ -61,8 +112,9 @@ export function App() {
     }
 
     setRequests([createdItem, ...requests])
-    setNotificationMsg('🎉 Заявка опубликована в аукцион TuttoMinutto!')
+    setNotificationMsg('🎉 Произвольная заявка опубликована!')
     setTimeout(() => setNotificationMsg(null), 4000)
+    setActiveTab('my-requests')
   }
 
   const handleSubmitBid = (requestId: string, price: number, comment: string) => {
@@ -96,19 +148,22 @@ export function App() {
     setTimeout(() => setNotificationMsg(null), 4000)
   }
 
-  const filteredRequests = requests.filter((r) => {
-    const matchesHub = r.hub === currentHub
-    const matchesCategory = selectedCategory ? r.categoryL1Id === selectedCategory : true
+  // Filter templates by selected category
+  const filteredTemplates = SERVICE_TEMPLATES.filter((tmpl) => {
+    const matchesCategory = selectedCategory ? tmpl.categoryL1Id === selectedCategory : true
     const matchesSearch = searchQuery
-      ? r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        r.description.toLowerCase().includes(searchQuery.toLowerCase())
+      ? tmpl.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tmpl.description.toLowerCase().includes(searchQuery.toLowerCase())
       : true
-    return matchesHub && matchesCategory && matchesSearch
+    return matchesCategory && matchesSearch
   })
+
+  // Filter my requests
+  const myRequests = requests.filter((r) => r.clientId === 'usr-current' || r.hub === currentHub)
 
   return (
     <div className="min-h-screen text-white flex flex-col font-sans pb-24">
-      {/* Top Navbar Header (Centered Giant Glowing Logo & Status Pill) */}
+      {/* Top Navbar Header */}
       <Navbar />
 
       {/* Notification Toast */}
@@ -121,25 +176,29 @@ export function App() {
 
       {/* Main Container */}
       <main className="max-w-4xl w-full mx-auto px-4 py-3 flex-1 space-y-6">
-        {activeTab === 'feed' && (
+        {/* TAB 1: HOME CATALOG & 1-CLICK TEMPLATES */}
+        {activeTab === 'home' && (
           <>
             {/* Search Input */}
             <div className="relative">
               <Search className="w-4 h-4 text-gray-400 absolute left-4 top-3.5" />
               <input
                 type="text"
-                placeholder="Search services, hubs, districts..."
+                placeholder="Поиск по готовым шаблонам и услугам..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-[#121826]/90 border border-white/12 rounded-2xl pl-11 pr-4 py-3 text-xs text-white placeholder-gray-500 focus:border-[#00F2FE] focus:shadow-[0_0_20px_rgba(0,242,254,0.25)] outline-none transition-all"
               />
             </div>
 
-            {/* Section 1: ASIAN HUBS Tab Bar (Match Mockup 1:1) */}
+            {/* Section 1: ASIAN HUBS Destination Selector */}
             <div className="space-y-2.5">
-              <h2 className="text-xs uppercase tracking-widest font-black text-gray-300 font-display">
-                ASIAN HUBS
-              </h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xs uppercase tracking-widest font-black text-gray-300 font-display">
+                  ЛОКАЦИЯ НАЗНАЧЕНИЯ ЗАКАЗА
+                </h2>
+                <span className="text-[10px] text-cyan-400 font-medium">Выберите, где нужна услуга</span>
+              </div>
               <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
                 {HUBS.map((hub) => (
                   <button
@@ -157,52 +216,57 @@ export function App() {
               </div>
             </div>
 
-            {/* Section 2: CATEGORY SQUARES (Match Mockup 1:1) */}
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id === selectedCategory ? null : cat.id)}
-                  className={`category-square-btn p-3 flex flex-col items-center justify-center text-center group ${
-                    selectedCategory === cat.id ? 'border-[#00F2FE] shadow-[0_0_20px_rgba(0,242,254,0.4)]' : ''
-                  }`}
-                >
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#00F2FE]/20 to-[#00FF87]/20 flex items-center justify-center text-xl mb-1.5 border border-white/10 group-hover:scale-110 transition-transform">
-                    {cat.slug === 'transport' && '🏍️'}
-                    {cat.slug === 'realestate' && '🌴'}
-                    {cat.slug === 'tours' && '⛵'}
-                    {cat.slug === 'beauty' && '💆'}
-                    {cat.slug === 'services' && '🛡️'}
-                    {cat.slug === 'exchange' && '💱'}
-                  </div>
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-gray-200 line-clamp-1">
-                    {cat.slug.toUpperCase()}
-                  </span>
-                </button>
-              ))}
+            {/* Section 2: CATEGORY SQUARES */}
+            <div className="space-y-2">
+              <h2 className="text-xs uppercase tracking-widest font-black text-gray-300 font-display">
+                РУБРИКАТОР УСЛУГ
+              </h2>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
+                {CATEGORIES.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id === selectedCategory ? null : cat.id)}
+                    className={`category-square-btn p-3 flex flex-col items-center justify-center text-center group ${
+                      selectedCategory === cat.id ? 'border-[#00F2FE] shadow-[0_0_20px_rgba(0,242,254,0.4)]' : ''
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#00F2FE]/20 to-[#00FF87]/20 flex items-center justify-center text-xl mb-1.5 border border-white/10 group-hover:scale-110 transition-transform">
+                      {cat.slug === 'transport' && '🏍️'}
+                      {cat.slug === 'realestate' && '🌴'}
+                      {cat.slug === 'tours' && '⛵'}
+                      {cat.slug === 'beauty' && '💆'}
+                      {cat.slug === 'services' && '🛡️'}
+                      {cat.slug === 'exchange' && '💱'}
+                    </div>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-gray-200 line-clamp-1">
+                      {cat.slug.toUpperCase()}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* Section 3: LIVE REVERSE AUCTIONS (Match Mockup 1:1) */}
+            {/* Section 3: 1-CLICK SERVICE TEMPLATES GRID */}
             <div className="space-y-4 pt-2">
               <div className="flex items-center justify-between">
                 <h2 className="text-sm uppercase tracking-widest font-black text-white font-display flex items-center gap-2">
-                  <span>LIVE REVERSE AUCTIONS</span>
+                  <span>КАТАЛОГ ШАБЛОНОВ УСЛУГ</span>
                   <span className="w-2 h-2 rounded-full bg-[#00FF87] animate-ping" />
                 </h2>
                 <span className="text-xs text-[#00FF87] font-bold flex items-center gap-1 glow-green">
-                  <Sparkles className="w-3.5 h-3.5" /> Realtime Feed
+                  <Sparkles className="w-3.5 h-3.5" /> 1-Click Launch
                 </span>
               </div>
 
-              {/* Auction Feed Grid */}
-              {filteredRequests.length > 0 ? (
+              {filteredTemplates.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {filteredRequests.map((req) => (
-                    <RequestCard
-                      key={req.id}
-                      request={req}
-                      onOpenDetails={() => setSelectedRequestForBid(req)}
-                      onQuickBid={() => setSelectedRequestForBid(req)}
+                  {filteredTemplates.map((tmpl) => (
+                    <TemplateCard
+                      key={tmpl.id}
+                      template={tmpl}
+                      onLaunchTemplate={handleLaunchTemplate}
+                      onSaveTemplate={handleSaveUserTemplate}
+                      isSaved={userTemplates.some((t) => t.id === tmpl.id)}
                     />
                   ))}
                 </div>
@@ -211,15 +275,12 @@ export function App() {
                   <div className="w-12 h-12 rounded-2xl bg-white/5 mx-auto flex items-center justify-center text-gray-400 mb-3">
                     <Filter className="w-6 h-6" />
                   </div>
-                  <h3 className="font-bold text-white text-base">No active auctions in this hub</h3>
-                  <p className="text-xs text-gray-400 mt-1 max-w-xs mx-auto">
-                    Be the first to create a reverse auction request!
-                  </p>
+                  <h3 className="font-bold text-white text-base">Нет шаблонов в выбранной категории</h3>
                   <button
                     onClick={() => setIsCreateOpen(true)}
                     className="mt-4 mockup-btn-primary px-5 py-2.5 text-xs"
                   >
-                    + CREATE AUCTION
+                    + СОЗДАТЬ СВОЙ ЗАКАЗ
                   </button>
                 </div>
               )}
@@ -227,50 +288,95 @@ export function App() {
           </>
         )}
 
-        {activeTab === 'business' && <BusinessProfileView />}
-
-        {activeTab === 'my-bids' && (
+        {/* TAB 2: MY REQUESTS & LIVE BIDS */}
+        {activeTab === 'my-requests' && (
           <div className="space-y-4">
-            <div className="mockup-card p-6 border-white/15 flex items-center justify-between">
-              <div>
-                <h3 className="font-display font-extrabold text-lg text-white">My Deals & Realtime Chats</h3>
-                <p className="text-xs text-gray-400 mt-1">Direct in-app communication without leaving the platform</p>
-              </div>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm uppercase tracking-widest font-black text-white font-display flex items-center gap-2">
+                <span>МОИ АКТИВНЫЕ ЗАЯВКИ</span>
+                <span className="w-2 h-2 rounded-full bg-[#00F2FE] animate-ping" />
+              </h2>
               <button
-                onClick={() => {
-                  setActiveDealRequest(requests[0])
-                  setActiveDealBid({
-                    id: 'bid-demo',
-                    requestId: requests[0].id,
-                    providerId: 'biz-1',
-                    providerName: 'Phuket Ride Express',
-                    providerAvatar: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=100',
-                    providerRating: 4.98,
-                    isPro: true,
-                    isAiAgent: true,
-                    proposedPrice: 180,
-                    currency: 'USD',
-                    comment: 'Байк готов к доставке!',
-                    status: 'accepted',
-                    createdAt: new Date().toISOString(),
-                  })
-                }}
-                className="mockup-btn-primary px-4 py-2.5 text-xs"
+                onClick={() => setIsCreateOpen(true)}
+                className="mockup-btn-primary px-3.5 py-1.5 text-xs flex items-center gap-1"
               >
-                💬 OPEN DEMO CHAT
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>+ Новая заявка</span>
               </button>
             </div>
+
+            {myRequests.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {myRequests.map((req) => (
+                  <RequestCard
+                    key={req.id}
+                    request={req}
+                    onOpenDetails={() => setSelectedRequestForBid(req)}
+                    onQuickBid={() => setSelectedRequestForBid(req)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="mockup-card p-8 text-center border-dashed border-white/15 my-6">
+                <h3 className="font-bold text-white text-base">У вас пока нет активных заявок</h3>
+                <p className="text-xs text-gray-400 mt-1 max-w-xs mx-auto mb-4">
+                  Выберите любой шаблон на Главной или создайте свой заказ!
+                </p>
+                <button
+                  onClick={() => setActiveTab('home')}
+                  className="mockup-btn-primary px-5 py-2.5 text-xs"
+                >
+                  Перейти в каталог шаблонов
+                </button>
+              </div>
+            )}
           </div>
         )}
 
-        {activeTab === 'profile' && (
-          <div className="mockup-card p-6 text-center border-white/15 my-6">
-            <h3 className="font-display font-extrabold text-lg text-white">User Profile</h3>
-            <p className="text-xs text-gray-400 mt-1">
-              Rating: ⭐ 5.0 | Completed Deals: 12
-            </p>
+        {/* TAB 3: FAVORITES & CUSTOM SAVED TEMPLATES */}
+        {activeTab === 'favorites' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm uppercase tracking-widest font-black text-white font-display flex items-center gap-2">
+                <Bookmark className="w-4 h-4 text-amber-400" />
+                <span>ИЗБРАННОЕ И МОИ ШАБЛОНЫ ({userTemplates.length})</span>
+              </h2>
+            </div>
+
+            {userTemplates.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {userTemplates.map((tmpl) => (
+                  <TemplateCard
+                    key={tmpl.id}
+                    template={tmpl}
+                    onLaunchTemplate={handleLaunchTemplate}
+                    onSaveTemplate={handleSaveUserTemplate}
+                    isSaved={true}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="mockup-card p-8 text-center border-white/15 my-6">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-400/30 mx-auto flex items-center justify-center text-amber-400 mb-3">
+                  <Bookmark className="w-6 h-6" />
+                </div>
+                <h3 className="font-extrabold text-white text-base">Нет сохраненных шаблонов</h3>
+                <p className="text-xs text-gray-300 mt-1 max-w-xs mx-auto mb-4">
+                  Нажмите иконку 📌 на любой карточке в каталоге или сохраните свою выполненную заявку!
+                </p>
+                <button
+                  onClick={() => setActiveTab('home')}
+                  className="mockup-btn-primary px-5 py-2.5 text-xs"
+                >
+                  Выбрать шаблоны в каталоге
+                </button>
+              </div>
+            )}
           </div>
         )}
+
+        {/* TAB 4: PROFILE & PARTNER PROGRAM */}
+        {activeTab === 'profile' && <BusinessProfileView />}
       </main>
 
       {/* Modals */}
@@ -298,12 +404,12 @@ export function App() {
           setActiveDealBid(null)
         }}
         onCompleteDeal={() => {
-          setNotificationMsg('🎉 Deal confirmed! Review window opened.')
+          setNotificationMsg('🎉 Услуга подтверждена! Открыто окно отзыва.')
           setTimeout(() => setNotificationMsg(null), 4000)
         }}
       />
 
-      {/* Bottom Navigation */}
+      {/* Client-Centric Bottom Navigation */}
       <BottomNav
         activeTab={activeTab}
         onSelectTab={setActiveTab}
