@@ -1,14 +1,14 @@
 import os
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path="../../.env")
 
 app = FastAPI(
-    title="NeedTnow AI Sales Agent Engine",
-    description="Автономный ИИ-менеджер для генерации откликов на аукционы в течение 3-5 секунд",
+    title="TuttoMinutto AI Sales Agent Engine",
+    description="Автономный ИИ-менеджер для генерации откликов на аукционы за 1 минуту",
     version="1.0.0",
 )
 
@@ -33,8 +33,9 @@ class BidResponse(BaseModel):
 @app.get("/")
 def health_check():
     return {
-        "service": "NeedTnow AI Sales Agent",
+        "service": "TuttoMinutto AI Sales Agent",
         "status": "online",
+        "slogan": "Здесь выбираешь ты!",
         "openai_configured": bool(os.getenv("OPENAI_API_KEY")),
     }
 
@@ -43,9 +44,6 @@ async def generate_ai_bid(payload: RequestPayload):
     """
     Принимает параметры заявки клиента и генерирует персонализированный отклик от имени бизнеса.
     """
-    openai_key = os.getenv("OPENAI_API_KEY")
-    
-    # Резервная генерация отклика для демонстрации и разработки
     suggested_price = payload.budget if payload.budget and payload.budget > 0 else 180.0
     
     ai_comment = (

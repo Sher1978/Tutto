@@ -1,5 +1,5 @@
 -- ============================================================
--- NEEDTNOW — SUPABASE DATABASE SCHEMA v1.2
+-- TUTTOMINUTTO — SUPABASE DATABASE SCHEMA v1.3 (with Deals & Internal Chat)
 -- ============================================================
 
 -- 0. РАСШИРЕНИЯ
@@ -14,11 +14,14 @@ CREATE TYPE bid_type        AS ENUM ('manual', 'ai_agent');
 CREATE TYPE sub_plan        AS ENUM ('free', 'pro_manual', 'ai_business');
 CREATE TYPE payout_status   AS ENUM ('pending', 'processing', 'paid', 'failed');
 CREATE TYPE review_status   AS ENUM ('pending', 'published', 'hidden', 'flagged');
+CREATE TYPE deal_status     AS ENUM ('in_progress', 'completed', 'disputed', 'cancelled');
+CREATE TYPE message_type    AS ENUM ('text', 'image', 'video', 'location', 'link', 'file', 'system');
+CREATE TYPE sender_role     AS ENUM ('client', 'provider', 'system', 'admin', 'support');
 
 -- 2. ПРОФИЛИ ПОЛЬЗОВАТЕЛЕЙ
 CREATE TABLE profiles (
     id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    telegram_id     BIGINT UNIQUE NOT NULL,
+    telegram_id     BIGINT UNIQUE,
     username        VARCHAR(64),
     first_name      VARCHAR(128) NOT NULL,
     last_name       VARCHAR(128),
@@ -77,6 +80,7 @@ CREATE TABLE categories_l1 (
     title_ru    VARCHAR(128) NOT NULL,
     title_en    VARCHAR(128) NOT NULL,
     icon_name   VARCHAR(64) NOT NULL,
+    default_cover_url TEXT,
     sort_order  INT DEFAULT 0,
     is_active   BOOLEAN DEFAULT TRUE
 );
@@ -98,6 +102,7 @@ CREATE TABLE categories_l3 (
     slug        VARCHAR(128) UNIQUE NOT NULL,
     title_ru    VARCHAR(128) NOT NULL,
     title_en    VARCHAR(128) NOT NULL,
+    cover_image_url TEXT,
     hint_ru     TEXT,
     hint_en     TEXT,
     price_min   NUMERIC(10,2),
@@ -152,7 +157,39 @@ CREATE TABLE bids (
     UNIQUE(request_id, provider_id)
 );
 
--- 7. ОТЗЫВЫ
+-- 7. СДЕЛКИ (DEALS & IN-APP CHATS)
+CREATE TABLE deals (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    request_id      UUID REFERENCES requests(id) ON DELETE CASCADE NOT NULL,
+    bid_id          UUID REFERENCES bids(id) ON DELETE CASCADE UNIQUE NOT NULL,
+    client_id       UUID REFERENCES profiles(id) NOT NULL,
+    provider_id     UUID REFERENCES profiles(id) NOT NULL,
+
+    status          deal_status DEFAULT 'in_progress',
+    agreed_price    NUMERIC(10,2) NOT NULL,
+    currency        VARCHAR(8) DEFAULT 'USD',
+
+    started_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    completed_at    TIMESTAMP WITH TIME ZONE,
+    auto_close_at   TIMESTAMP WITH TIME ZONE DEFAULT NOW() + INTERVAL '7 days',
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
+);
+
+-- 8. СООБЩЕНИЯ ВНУТРЕННЕГО ЧАТА (CHAT MESSAGES)
+CREATE TABLE chat_messages (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    deal_id         UUID REFERENCES deals(id) ON DELETE CASCADE NOT NULL,
+    sender_id       UUID REFERENCES profiles(id),
+    sender_role     sender_role NOT NULL,
+    type            message_type DEFAULT 'text',
+
+    content         TEXT,
+    media_url       TEXT,
+    is_read         BOOLEAN DEFAULT FALSE,
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
+);
+
+-- 9. ОТЗЫВЫ
 CREATE TABLE reviews (
     id                          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     request_id                  UUID REFERENCES requests(id) ON DELETE CASCADE NOT NULL,
@@ -163,116 +200,22 @@ CREATE TABLE reviews (
     rating                      SMALLINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
     comment                     TEXT,
     tags                        TEXT[] DEFAULT '{}',
-
     provider_reply              TEXT,
-    replied_at                  TIMESTAMP WITH TIME ZONE,
 
     status                      review_status DEFAULT 'pending',
-    moderation_note             TEXT,
-    ai_score                    NUMERIC(4,2),
-
-    review_window_expires_at    TIMESTAMP WITH TIME ZONE NOT NULL,
-    ip_hash                     VARCHAR(64),
-    device_fp                   VARCHAR(64),
-
-    created_at                  TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
-
-    UNIQUE(bid_id),
-    UNIQUE(request_id, reviewer_id),
-    CHECK(reviewer_id != provider_id)
+    created_at                  TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
 );
 
-CREATE TABLE review_slots (
-    bid_id          UUID PRIMARY KEY REFERENCES bids(id),
-    request_id      UUID NOT NULL,
-    reviewer_id     UUID NOT NULL,
-    provider_id     UUID NOT NULL,
-    expires_at      TIMESTAMP WITH TIME ZONE NOT NULL,
-    review_id       UUID REFERENCES reviews(id),
-    notified_24h    BOOLEAN DEFAULT FALSE
-);
+-- 10. ИНДЕКСЫ & RLS
+CREATE INDEX idx_deals_client   ON deals(client_id, status);
+CREATE INDEX idx_deals_provider ON deals(provider_id, status);
+CREATE INDEX idx_chat_messages_deal ON chat_messages(deal_id, created_at ASC);
 
--- 8. ПАРТНЁРСКАЯ ПРОГРАММА И ВЫПЛАТЫ
-CREATE TABLE partner_earnings (
-    id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    partner_id          UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
-    referred_user_id    UUID REFERENCES profiles(id) NOT NULL,
-    payment_event_id    TEXT NOT NULL,
-    plan                sub_plan NOT NULL,
-    payment_amount      NUMERIC(10,2) NOT NULL,
-    commission_pct      NUMERIC(5,2) DEFAULT 20.00,
-    commission_amount   NUMERIC(10,2) NOT NULL,
-    currency            VARCHAR(8) DEFAULT 'USD',
-    created_at          TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
-);
+ALTER TABLE deals          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE chat_messages  ENABLE ROW LEVEL SECURITY;
 
-CREATE TABLE partner_payouts (
-    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    partner_id      UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
-    amount          NUMERIC(10,2) NOT NULL,
-    currency        VARCHAR(8) DEFAULT 'USD',
-    status          payout_status DEFAULT 'pending',
-    payout_method   VARCHAR(64),
-    payout_address  TEXT,
-    admin_note      TEXT,
-    requested_at    TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
-    paid_at         TIMESTAMP WITH TIME ZONE
-);
+CREATE POLICY "deals_select_participant" ON deals FOR SELECT
+    USING (auth.uid() = client_id OR auth.uid() = provider_id);
 
--- 9. ПЛАТЕЖИ LOG
-CREATE TABLE payments (
-    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id         UUID REFERENCES profiles(id) NOT NULL,
-    plan            sub_plan NOT NULL,
-    amount          NUMERIC(10,2) NOT NULL,
-    currency        VARCHAR(8) DEFAULT 'USD',
-    provider        VARCHAR(32),
-    external_id     TEXT UNIQUE,
-    status          VARCHAR(16) DEFAULT 'completed',
-    created_at      TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
-);
-
--- 10. ИНДЕКСЫ
-CREATE INDEX idx_requests_hub_status     ON requests(hub, status);
-CREATE INDEX idx_requests_category_l1    ON requests(category_l1_id);
-CREATE INDEX idx_requests_category_l3    ON requests(category_l3_id);
-CREATE INDEX idx_requests_featured       ON requests(is_featured) WHERE is_featured = TRUE;
-CREATE INDEX idx_requests_auction_ends   ON requests(auction_ends_at) WHERE status = 'open';
-CREATE INDEX idx_bids_request_id         ON bids(request_id);
-CREATE INDEX idx_business_ai_enabled     ON business_profiles(ai_enabled) WHERE ai_enabled = TRUE;
-CREATE INDEX idx_profiles_referral_code  ON profiles(referral_code);
-CREATE INDEX idx_partner_earnings_partner ON partner_earnings(partner_id);
-CREATE INDEX idx_reviews_provider        ON reviews(provider_id, status);
-CREATE INDEX idx_reviews_request         ON requests(id);
-
--- 11. ROW LEVEL SECURITY (RLS)
-ALTER TABLE profiles             ENABLE ROW LEVEL SECURITY;
-ALTER TABLE requests             ENABLE ROW LEVEL SECURITY;
-ALTER TABLE bids                 ENABLE ROW LEVEL SECURITY;
-ALTER TABLE business_profiles    ENABLE ROW LEVEL SECURITY;
-ALTER TABLE partner_earnings     ENABLE ROW LEVEL SECURITY;
-ALTER TABLE partner_payouts      ENABLE ROW LEVEL SECURITY;
-ALTER TABLE reviews              ENABLE ROW LEVEL SECURITY;
-ALTER TABLE review_slots         ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "profiles_select_all"  ON profiles FOR SELECT USING (true);
-CREATE POLICY "profiles_update_own"  ON profiles FOR UPDATE USING (auth.uid() = id);
-
-CREATE POLICY "requests_select_all"  ON requests FOR SELECT USING (true);
-CREATE POLICY "requests_insert_own"  ON requests FOR INSERT WITH CHECK (auth.uid() = client_id);
-CREATE POLICY "requests_update_own"  ON requests FOR UPDATE USING (auth.uid() = client_id);
-
-CREATE POLICY "bids_select_all"      ON bids FOR SELECT USING (true);
-CREATE POLICY "bids_insert_own"      ON bids FOR INSERT WITH CHECK (auth.uid() = provider_id);
-CREATE POLICY "bids_update_own"      ON bids FOR UPDATE USING (auth.uid() = provider_id);
-
-CREATE POLICY "biz_select_all"       ON business_profiles FOR SELECT USING (true);
-CREATE POLICY "biz_insert_own"       ON business_profiles FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "biz_update_own"       ON business_profiles FOR UPDATE USING (auth.uid() = user_id);
-
-CREATE POLICY "earnings_select_own"  ON partner_earnings FOR SELECT USING (auth.uid() = partner_id);
-CREATE POLICY "payouts_select_own"   ON partner_payouts FOR SELECT USING (auth.uid() = partner_id);
-CREATE POLICY "payouts_insert_own"   ON partner_payouts FOR INSERT WITH CHECK (auth.uid() = partner_id);
-
-CREATE POLICY "reviews_select_published" ON reviews FOR SELECT USING (status = 'published');
-CREATE POLICY "review_slots_select_own" ON review_slots FOR SELECT USING (auth.uid() = reviewer_id);
+CREATE POLICY "chat_select_participant" ON chat_messages FOR SELECT
+    USING (EXISTS (SELECT 1 FROM deals d WHERE d.id = deal_id AND (d.client_id = auth.uid() OR d.provider_id = auth.uid())));

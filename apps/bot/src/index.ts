@@ -10,14 +10,15 @@ const bot = new Bot(botToken)
 
 // Command /start
 bot.command('start', async (ctx) => {
-  const startParam = ctx.match // referral code if present
+  const startParam = ctx.match
   const userName = ctx.from?.first_name || 'Пользователь'
 
-  let welcomeText = `👋 *Добро пожаловать в NeedTnow, ${userName}!*\n\n`
-  welcomeText += `NeedTnow — это локальный *обратный аукцион услуг* в курортных хабах ЮВА (Пхукет, Бали, Бангкок, Вьетнам).\n\n`
+  let welcomeText = `👋 *Добро пожаловать в TuttoMinutto, ${userName}!*\n`
+  welcomeText += `_«Здесь выбираешь ты!»_\n\n`
+  welcomeText += `*TuttoMinutto* — это локальный обратный аукцион услуг в курортных хабах ЮВА (Пхукет, Бали, Бангкок, Вьетнам).\n\n`
   welcomeText += `💡 *Как это работает:*\n`
   welcomeText += `1. Вы создаете запрос и указываете свою цену (или «Жду предложений»).\n`
-  welcomeText += `2. Проверенные исполнители и *AI Sales Agent* делают встречные офферы.\n`
+  welcomeText += `2. Проверенные исполнители и *AI Sales Agent* делают встречные офферы за 1 минуту.\n`
   welcomeText += `3. Вы выбираете лучший отклик и связываетесь напрямую в чате Telegram.\n\n`
 
   if (startParam) {
@@ -25,7 +26,7 @@ bot.command('start', async (ctx) => {
   }
 
   const keyboard = new InlineKeyboard()
-    .webApp('🚀 Открыть NeedTnow App', appUrl)
+    .webApp('🚀 Открыть TuttoMinutto App', appUrl)
     .row()
     .url('💬 Поддержка & Вопросы', 'https://t.me/tuttominutto_bot')
 
@@ -38,9 +39,10 @@ bot.command('start', async (ctx) => {
 // Command /help
 bot.command('help', async (ctx) => {
   await ctx.reply(
-    `ℹ️ *Справка NeedTnow*\n\n` +
+    `ℹ️ *Справка TuttoMinutto*\n\n` +
+    `_Здесь выбираешь ты!_\n\n` +
     `• /start — Перезапустить бота и открыть Mini App\n` +
-    `• Нажмите кнопку «Открыть NeedTnow App» для просмотра аукционов\n` +
+    `• Нажмите кнопку «Открыть TuttoMinutto App» для просмотра аукционов\n` +
     `• Вся связь между клиентом и исполнителем происходит напрямую.\n\n` +
     `Юзернейм бота: @tuttominutto_bot`,
     { parse_mode: 'Markdown' }
@@ -49,6 +51,6 @@ bot.command('help', async (ctx) => {
 
 bot.start({
   onStart: (botInfo) => {
-    console.log(`🤖 Telegram Bot @${botInfo.username} запущен и готов к работе!`)
+    console.log(`🤖 Telegram Bot @${botInfo.username} (TuttoMinutto) запущен!`)
   },
 })

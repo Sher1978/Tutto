@@ -31,7 +31,7 @@ export const HUBS: HubLocation[] = [
   },
 ]
 
-export const CATEGORIES: Category[] = [
+export const CATEGORIES: (Category & { defaultCoverUrl: string })[] = [
   {
     id: 'cat-transport',
     slug: 'transport',
@@ -39,6 +39,7 @@ export const CATEGORIES: Category[] = [
     titleEn: 'Bike & Car Rental',
     iconName: 'Bike',
     description: 'NMAX, PCX, Forza, автомобили без залога паспорта',
+    defaultCoverUrl: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'cat-realestate',
@@ -47,6 +48,7 @@ export const CATEGORIES: Category[] = [
     titleEn: 'Real Estate & Villas',
     iconName: 'Home',
     description: 'Виллы с бассейном, апартаменты, помесячно и посуточно',
+    defaultCoverUrl: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'cat-tours',
@@ -55,6 +57,7 @@ export const CATEGORIES: Category[] = [
     titleEn: 'Tours & Yachts',
     iconName: 'Compass',
     description: 'Пхи-Пхи, Симиланы, чартер яхт, визаран',
+    defaultCoverUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'cat-beauty',
@@ -63,6 +66,7 @@ export const CATEGORIES: Category[] = [
     titleEn: 'Beauty, Spa & Massage',
     iconName: 'Sparkles',
     description: 'Массаж с выездом, маникюр, барбер',
+    defaultCoverUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'cat-services',
@@ -71,6 +75,7 @@ export const CATEGORIES: Category[] = [
     titleEn: 'Home Services & Nannies',
     iconName: 'ShieldCheck',
     description: 'Клининг, няни для детей, ремонт, фотографы',
+    defaultCoverUrl: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'cat-exchange',
@@ -79,6 +84,7 @@ export const CATEGORIES: Category[] = [
     titleEn: 'Currency & Express',
     iconName: 'Repeat',
     description: 'Наличный бат/рупия, доставят в отель',
+    defaultCoverUrl: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=600&auto=format&fit=crop&q=80',
   },
 ]
 
@@ -97,10 +103,10 @@ export const MOCK_REQUESTS: RequestItem[] = [
     description: 'Ищу свежий байк (2023-2024 года), обязательно с 2 шлемами. Доставка к отелю Rawai Palm Beach Resort. Бюджет фиксированный.',
     budget: 220,
     currency: 'USD',
-    mediaUrls: ['https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&auto=format&fit=crop&q=80'],
+    mediaUrls: [], // Автоматически подтянет красивый баннер категории cat-transport!
     isFeatured: true,
     status: 'open',
-    createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(), // 15 mins ago
+    createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
     expiresAt: new Date(Date.now() + 105 * 60 * 1000).toISOString(),
     auctionEndsAt: new Date(Date.now() + 105 * 60 * 1000).toISOString(),
     bidsCount: 3,
@@ -119,7 +125,7 @@ export const MOCK_REQUESTS: RequestItem[] = [
     description: 'Тихий район, хороший Wi-Fi для работы (от 100 Мбит), приватный бассейн. Рассматриваем варианты до $2200.',
     budget: null,
     currency: 'USD',
-    mediaUrls: ['https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600&auto=format&fit=crop&q=80'],
+    mediaUrls: [], // Автоматически подтянет красивый баннер категории cat-realestate!
     isFeatured: false,
     status: 'open',
     createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),

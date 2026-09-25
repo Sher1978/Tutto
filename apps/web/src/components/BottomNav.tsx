@@ -31,7 +31,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({
         <button
           onClick={() => handleTabClick('feed')}
           className={`flex flex-col items-center gap-1 transition-all ${
-            activeTab === 'feed' ? 'text-cyan-400 scale-105 font-bold' : 'text-gray-400 hover:text-gray-200'
+            activeTab === 'feed'
+              ? 'text-[#00F2FE] scale-105 font-bold glow-cyan'
+              : 'text-gray-400 hover:text-gray-200'
           }`}
         >
           <Home className="w-5 h-5" />
@@ -42,29 +44,33 @@ export const BottomNav: React.FC<BottomNavProps> = ({
         <button
           onClick={() => handleTabClick('my-bids')}
           className={`flex flex-col items-center gap-1 transition-all ${
-            activeTab === 'my-bids' ? 'text-cyan-400 scale-105 font-bold' : 'text-gray-400 hover:text-gray-200'
+            activeTab === 'my-bids'
+              ? 'text-[#00F2FE] scale-105 font-bold glow-cyan'
+              : 'text-gray-400 hover:text-gray-200'
           }`}
         >
           <MessageSquare className="w-5 h-5" />
           <span className="text-[10px]">Отклики</span>
         </button>
 
-        {/* Create Request (+ Center Button) */}
+        {/* Create Request (+ Center Button with Brand Gradient) */}
         <button
           onClick={() => handleTabClick('create')}
           className="flex flex-col items-center gap-1 -mt-4 transition-transform active:scale-95"
         >
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/30 text-black border-2 border-slate-950">
-            <PlusCircle className="w-6 h-6 stroke-[2.5]" />
+          <div className="w-13 h-13 rounded-2xl bg-gradient-to-tr from-[#00F2FE] to-[#00FF87] flex items-center justify-center shadow-[0_0_20px_rgba(0,242,254,0.4)] text-black border-2 border-[#0D1117]">
+            <PlusCircle className="w-7 h-7 stroke-[2.5]" />
           </div>
-          <span className="text-[10px] text-cyan-400 font-bold">Заказ</span>
+          <span className="text-[10px] text-[#00FF87] font-extrabold glow-green">Заказ</span>
         </button>
 
         {/* Business & AI Tab */}
         <button
           onClick={() => handleTabClick('business')}
           className={`flex flex-col items-center gap-1 transition-all ${
-            activeTab === 'business' ? 'text-purple-400 scale-105 font-bold' : 'text-gray-400 hover:text-gray-200'
+            activeTab === 'business'
+              ? 'text-[#00FF87] scale-105 font-bold glow-green'
+              : 'text-gray-400 hover:text-gray-200'
           }`}
         >
           <Briefcase className="w-5 h-5" />
@@ -75,7 +81,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({
         <button
           onClick={() => handleTabClick('profile')}
           className={`flex flex-col items-center gap-1 transition-all ${
-            activeTab === 'profile' ? 'text-cyan-400 scale-105 font-bold' : 'text-gray-400 hover:text-gray-200'
+            activeTab === 'profile'
+              ? 'text-[#00F2FE] scale-105 font-bold glow-cyan'
+              : 'text-gray-400 hover:text-gray-200'
           }`}
         >
           <User className="w-5 h-5" />
