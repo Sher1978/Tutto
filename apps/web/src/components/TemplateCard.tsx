@@ -1,5 +1,4 @@
 import React from 'react'
-import { Zap, Bookmark, Sparkles } from 'lucide-react'
 import { ServiceTemplate } from '../types'
 import { triggerHapticFeedback } from '../lib/telegram'
 
@@ -10,89 +9,112 @@ interface TemplateCardProps {
   isSaved?: boolean
 }
 
+// Short Russian display names for each template ID
+const SHORT_NAMES: Record<string, string> = {
+  'tmpl-nmax': 'БАЙК\nВ АРЕНДУ',
+  'tmpl-car': 'АВТО\nВ АРЕНДУ',
+  'tmpl-yacht': 'ЯХТА\nНА ДЕНЬ',
+  'tmpl-phiphi': 'ТУР\nНА ОСТРОВА',
+  'tmpl-cash-baht': 'ОБМЕН\nВАЛЮТЫ',
+  'tmpl-villa': 'СНЯТЬ\nВИЛЛУ',
+  'tmpl-massage': 'МАССАЖ\nНА ВИЛЛУ',
+}
+
+// Accent color per category
+const CATEGORY_COLORS: Record<string, { glow: string; border: string; from: string; to: string }> = {
+  'cat-transport':  { glow: '0,242,254',    border: 'rgba(0,242,254,0.5)',    from: '#003a4d', to: '#001a26' },
+  'cat-tours':      { glow: '255,196,0',    border: 'rgba(255,196,0,0.5)',    from: '#3a2e00', to: '#1a1400' },
+  'cat-exchange':   { glow: '168,85,247',   border: 'rgba(168,85,247,0.5)',   from: '#2d0a4e', to: '#12032b' },
+  'cat-realestate': { glow: '0,255,135',    border: 'rgba(0,255,135,0.5)',    from: '#003323', to: '#001510' },
+  'cat-beauty':     { glow: '255,100,180',  border: 'rgba(255,100,180,0.5)',  from: '#3a0028', to: '#1a0012' },
+  'cat-services':   { glow: '255,140,0',    border: 'rgba(255,140,0,0.5)',    from: '#3a1a00', to: '#1a0c00' },
+}
+
 export const TemplateCard: React.FC<TemplateCardProps> = ({
   template,
   onLaunchTemplate,
-  onSaveTemplate,
-  isSaved = false,
 }) => {
-  const handleLaunch = () => {
+  const colors = CATEGORY_COLORS[template.categoryL1Id] || CATEGORY_COLORS['cat-realestate']
+  const displayName = SHORT_NAMES[template.id] || template.title.toUpperCase()
+
+  const handleTap = () => {
     triggerHapticFeedback('heavy')
     onLaunchTemplate(template)
   }
 
-  const handleSave = () => {
-    triggerHapticFeedback('light')
-    onSaveTemplate(template)
-  }
-
   return (
-    <div className="mockup-card p-4.5 flex flex-col justify-between relative overflow-hidden group">
-      <div>
-        {/* Cover Photo Banner */}
-        <div className="mb-3.5 rounded-2xl overflow-hidden h-40 w-full relative border border-white/12 shadow-xl">
-          <img
-            src={template.coverImageUrl}
-            alt={template.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#060911] via-[#060911]/30 to-transparent" />
+    <button
+      onClick={handleTap}
+      className="relative flex flex-col items-center justify-between w-full rounded-3xl overflow-hidden cursor-pointer group active:scale-[0.95] transition-all duration-200"
+      style={{
+        minHeight: '135px',
+        background: 'rgba(255, 255, 255, 0.08)',
+        backdropFilter: 'blur(30px)',
+        WebkitBackdropFilter: 'blur(30px)',
+        border: '1px solid rgba(255, 255, 255, 0.22)',
+        boxShadow: [
+          `0 12px 40px rgba(0, 0, 0, 0.4)`,
+          `inset 0 1.5px 1px rgba(255, 255, 255, 0.35)`,
+          `0 0 30px rgba(${colors.glow}, 0.2)`,
+        ].join(', '),
+      }}
+    >
+      {/* Soft gradient accent tint */}
+      <div
+        className="absolute inset-0 opacity-40 group-hover:opacity-70 transition-opacity duration-300 pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at 50% 20%, rgba(${colors.glow}, 0.25) 0%, transparent 70%)`,
+        }}
+      />
 
-          {/* Badge indicator */}
-          <div className="absolute top-2.5 left-2.5">
-            <span className="px-2.5 py-1 rounded-xl bg-black/75 backdrop-blur-md text-[10px] text-[#00FF87] font-extrabold border border-[#00FF87]/30 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-[#00FF87]" />
-              {template.isCustomUserTemplate ? '⭐ Мой шаблон' : '⚡ Готовый шаблон'}
-            </span>
-          </div>
+      {/* Pulsing ring animation to signal "tap me" */}
+      <span
+        className="absolute inset-0 rounded-3xl pointer-events-none"
+        style={{
+          boxShadow: `0 0 0 0 rgba(${colors.glow}, 0.4)`,
+          animation: 'ping 2.8s cubic-bezier(0, 0, 0.2, 1) infinite',
+        }}
+      />
 
-          {/* Budget Tag */}
-          <div className="absolute bottom-2.5 right-2.5">
-            {template.defaultBudget !== null ? (
-              <span className="px-3 py-1 rounded-xl bg-black/80 backdrop-blur-md text-sm font-black glow-price font-display border border-[#00F2FE]/40">
-                ~${template.defaultBudget} USD
-              </span>
-            ) : (
-              <span className="px-3 py-1 rounded-xl bg-purple-500/30 backdrop-blur-md text-xs font-bold text-purple-200 border border-purple-400/40">
-                Гибкая цена
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Title */}
-        <h3 className="font-display font-extrabold text-base text-white leading-snug mb-1.5 line-clamp-2">
-          {template.title}
-        </h3>
-
-        {/* Description */}
-        <p className="text-xs text-gray-300 line-clamp-3 mb-4 leading-relaxed font-normal">
-          {template.description}
-        </p>
+      {/* Top: service name */}
+      <div className="relative z-10 flex-1 flex items-center justify-center px-3 pt-4 pb-2 w-full">
+        <span
+          className="font-display font-black text-white text-center leading-tight whitespace-pre-line tracking-wide uppercase"
+          style={{
+            fontSize: '15px',
+            textShadow: `0 0 16px rgba(${colors.glow}, 0.9), 0 2px 8px rgba(0,0,0,0.9)`,
+          }}
+        >
+          {displayName}
+        </span>
       </div>
 
-      {/* Action Buttons Row */}
-      <div className="flex items-center gap-2 pt-2 border-t border-white/10">
-        <button
-          onClick={handleLaunch}
-          className="mockup-btn-primary flex-1 py-3 text-xs flex items-center justify-center gap-1.5"
-        >
-          <Zap className="w-4 h-4 fill-black" />
-          <span>ЗАЯВКА В 1 КЛИК</span>
-        </button>
+      {/* Glassy Divider */}
+      <div
+        className="w-full h-px mx-0"
+        style={{ background: `rgba(255, 255, 255, 0.15)` }}
+      />
 
-        <button
-          onClick={handleSave}
-          title="Сохранить в мои шаблоны"
-          className={`p-3 rounded-xl border transition-all ${
-            isSaved
-              ? 'bg-amber-500/20 border-amber-400 text-amber-300 shadow-[0_0_12px_rgba(255,179,2,0.3)]'
-              : 'bg-[#161B22] border-white/10 text-gray-400 hover:text-white hover:bg-white/10'
-          }`}
+      {/* Bottom: giant semi-transparent "+" */}
+      <div className="relative z-10 w-full flex items-center justify-center py-2.5 bg-white/[0.03]">
+        <span
+          className="font-black leading-none select-none group-hover:scale-125 transition-transform duration-200"
+          style={{
+            fontSize: '44px',
+            color: `rgba(${colors.glow}, 0.75)`,
+            textShadow: `0 0 28px rgba(${colors.glow}, 0.9)`,
+            lineHeight: 1,
+          }}
         >
-          <Bookmark className="w-4 h-4 fill-current" />
-        </button>
+          +
+        </span>
       </div>
-    </div>
+
+      {/* Hover state sheen */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-3xl pointer-events-none"
+        style={{ background: `rgba(255, 255, 255, 0.05)` }}
+      />
+    </button>
   )
 }

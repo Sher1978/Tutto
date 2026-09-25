@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Sparkles, Users, Zap } from 'lucide-react'
+import { Sparkles, Zap, Users } from 'lucide-react'
 import { RequestItem } from '../types'
 
 interface MockupAuctionSectionProps {
@@ -8,8 +8,55 @@ interface MockupAuctionSectionProps {
   activeCategory: string | null
   onSelectCategory: (cat: string | null) => void
   onOpenBidModal: (request: RequestItem) => void
+  onOpenQuickRequest: (request: RequestItem) => void
   requests: RequestItem[]
 }
+
+// Category tiles data with photo backgrounds — matching the mockup
+const CATEGORY_TILES = [
+  {
+    id: 'cat-realestate',
+    label: 'ЖИЛЬЁ',
+    icon: '🏡',
+    img: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=200&q=80',
+    color: 'from-blue-900/80 to-blue-700/60',
+  },
+  {
+    id: 'cat-transport',
+    label: 'ТРАНСПОРТ',
+    icon: '🛵',
+    img: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=200&q=80',
+    color: 'from-cyan-900/80 to-cyan-700/60',
+  },
+  {
+    id: 'cat-beauty',
+    label: 'КРАСОТА',
+    icon: '💅',
+    img: 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=200&q=80',
+    color: 'from-rose-900/80 to-pink-700/60',
+  },
+  {
+    id: 'cat-services',
+    label: 'УСЛУГИ',
+    icon: '🔧',
+    img: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=200&q=80',
+    color: 'from-purple-900/80 to-pink-700/60',
+  },
+  {
+    id: 'cat-tours',
+    label: 'ТУРЫ',
+    icon: '🚤',
+    img: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=200&q=80',
+    color: 'from-amber-900/80 to-amber-700/60',
+  },
+  {
+    id: 'cat-exchange',
+    label: 'ОБМЕН',
+    icon: '💱',
+    img: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=200&q=80',
+    color: 'from-emerald-900/80 to-teal-700/60',
+  },
+]
 
 export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
   onSelectHub,
@@ -17,54 +64,9 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
   activeCategory,
   onSelectCategory,
   onOpenBidModal,
+  onOpenQuickRequest,
   requests,
 }) => {
-  const [timer1, setTimer1] = useState('00:04:18')
-  const [timer2, setTimer2] = useState('00:09:55')
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date()
-      const s1 = (18 - (now.getSeconds() % 18)).toString().padStart(2, '0')
-      const s2 = (55 - (now.getSeconds() % 55)).toString().padStart(2, '0')
-      setTimer1(`00:04:${s1}`)
-      setTimer2(`00:09:${s2}`)
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const mainRequest = requests[0] || {
-    id: 'req-ayana',
-    title: 'AYANA Resort - Ocean View Suite',
-    hub: 'bali',
-    district: 'Jimbaran',
-    budget: 345,
-    bidsCount: 12,
-  }
-
-  const phuketRequest: RequestItem = {
-    id: 'req-phuket',
-    clientId: 'usr-kata',
-    clientName: 'Alex P.',
-    clientAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-    clientRating: 4.8,
-    hub: 'phuket' as any,
-    district: 'Kata Beach',
-    categoryL1Id: 'cat-realestate',
-    categoryL1Name: 'Resorts & Villas',
-    title: 'Kata Rocks Sunset Villa',
-    description: 'Cliffside ocean view luxury villa with infinity pool.',
-    budget: 410,
-    currency: 'USD',
-    mediaUrls: ['https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600'],
-    isFeatured: true,
-    status: 'open',
-    createdAt: new Date().toISOString(),
-    expiresAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
-    auctionEndsAt: new Date(Date.now() + 9 * 60 * 1000 + 55 * 1000).toISOString(),
-    bidsCount: 8,
-  }
-
   const hubsList = [
     { id: 'bali', label: '🌴 BALI' },
     { id: 'phuket', label: 'PHUKET' },
@@ -73,63 +75,36 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
     { id: 'tokyo', label: 'TOKYO' },
   ]
 
-  const categoryTiles = [
-    {
-      id: 'resorts',
-      label: 'RESORTS',
-      icon: '🌴',
-      styleClass:
-        'bg-gradient-to-br from-[#054838]/85 to-[#0c201a]/95 border border-[#00FF87]/50 shadow-[0_8px_24px_rgba(0,255,135,0.25)]',
-    },
-    {
-      id: 'tours',
-      label: 'TOURS',
-      icon: '✈️',
-      styleClass:
-        'bg-gradient-to-br from-[#043d54]/85 to-[#0a1b28]/95 border border-[#00F2FE]/50 shadow-[0_8px_24px_rgba(0,242,254,0.25)]',
-    },
-    {
-      id: 'experiences',
-      label: 'EXPERIENCES',
-      icon: '🥂',
-      styleClass:
-        'bg-gradient-to-br from-[#4d3805]/85 to-[#201a0a]/95 border border-amber-400/50 shadow-[0_8px_24px_rgba(255,179,2,0.25)]',
-    },
-    {
-      id: 'yachts',
-      label: 'YACHTS',
-      icon: '⛵',
-      styleClass:
-        'bg-gradient-to-br from-[#0b2b40]/85 to-[#08131d]/95 border border-[#00F2FE]/40 shadow-[0_8px_24px_rgba(0,242,254,0.2)]',
-    },
-    {
-      id: 'stay',
-      label: 'STAY!',
-      icon: '🏎️',
-      styleClass:
-        'bg-gradient-to-br from-[#4d1010]/85 to-[#200a0a]/95 border border-rose-500/50 shadow-[0_8px_24px_rgba(255,42,109,0.25)]',
-    },
-  ]
-
   return (
     <div className="w-full space-y-4">
-      {/* 1. ASIAN HUBS (1:1 Mockup Selector) */}
+      {/* 1. ASIAN HUBS */}
       <div className="space-y-2">
-        <h2 className="text-xs uppercase tracking-widest font-black text-gray-300 font-display">
-          ASIAN HUBS
+        <h2
+          className="text-[11px] uppercase tracking-widest font-bold text-gray-300"
+          style={{ fontFamily: "'Roboto', sans-serif" }}
+        >
+          CHOOSE WHAT YOU NEED
         </h2>
-        <div className="flex items-center justify-between overflow-x-auto pb-1 no-scrollbar gap-2">
+        <div className="flex items-center overflow-x-auto pb-1 no-scrollbar gap-4">
           {hubsList.map((h) => {
             const isActive = activeHub.toLowerCase() === h.id
             return (
               <button
                 key={h.id}
                 onClick={() => onSelectHub(h.id)}
-                className={`text-xs font-black uppercase tracking-wider transition-all py-1 shrink-0 cursor-pointer ${
+                className={`shrink-0 py-0.5 cursor-pointer transition-all inline-block origin-bottom ${
                   isActive
-                    ? 'text-[#00FF87] border-b-2 border-[#00FF87] drop-shadow-[0_0_10px_rgba(0,255,135,0.6)]'
+                    ? 'text-[#00FF87] border-b-2 border-[#00FF87] drop-shadow-[0_0_12px_rgba(0,255,135,0.7)]'
                     : 'text-gray-400 hover:text-white'
                 }`}
+                style={{
+                  fontFamily: "'Barlow Condensed', 'Oswald', sans-serif",
+                  fontWeight: 300,
+                  fontSize: '15px',
+                  letterSpacing: '-0.03em',
+                  textTransform: 'uppercase',
+                  transform: 'scaleY(1.12)',
+                }}
               >
                 {h.label}
               </button>
@@ -138,140 +113,160 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
         </div>
       </div>
 
-      {/* 2. 3D GLOSSY CATEGORY TILES (1:1 Mockup 5-Column Grid) */}
-      <div className="grid grid-cols-5 gap-2">
-        {categoryTiles.map((cat) => {
-          const isActive = activeCategory === cat.id || (cat.id === 'resorts' && !activeCategory)
+      {/* 2. FROSTED GLASS CATEGORY TILES WITH TELEGRAM EMOJIS */}
+      <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 -mx-0.5 px-0.5">
+        {CATEGORY_TILES.map((cat, idx) => {
+          const isActive = activeCategory === cat.id || (!activeCategory && idx === 0)
+          const emojiIcon =
+            cat.id === 'cat-beauty' ? '💆' :
+            cat.id === 'cat-realestate' ? '🏡' :
+            cat.id === 'cat-transport' ? '🛵' :
+            cat.id === 'cat-tours' ? '🚤' :
+            cat.id === 'cat-exchange' ? '💱' : '🔧'
+
           return (
             <button
               key={cat.id}
               onClick={() => onSelectCategory(isActive ? null : cat.id)}
-              className={`p-2.5 rounded-2xl flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
-                cat.styleClass
-              } ${isActive ? 'scale-105 shadow-[0_0_25px_rgba(0,242,254,0.5)] ring-1 ring-white/30' : 'opacity-85 hover:opacity-100'}`}
+              className={`relative min-w-[56px] h-[60px] shrink-0 rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all duration-200 group ${
+                isActive
+                  ? 'scale-[1.05]'
+                  : 'opacity-85 hover:opacity-100 hover:scale-[1.02]'
+              }`}
+              style={{
+                background: isActive
+                  ? 'rgba(0, 255, 135, 0.12)'
+                  : 'rgba(255, 255, 255, 0.07)',
+                backdropFilter: 'blur(24px)',
+                WebkitBackdropFilter: 'blur(24px)',
+                border: isActive
+                  ? '1px solid rgba(0, 255, 135, 0.6)'
+                  : '1px solid rgba(255, 255, 255, 0.16)',
+                boxShadow: isActive
+                  ? '0 0 16px rgba(0, 255, 135, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                  : '0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12)',
+              }}
             >
-              <span className="text-2xl mb-1 drop-shadow-md">{cat.icon}</span>
-              <span className="text-[8.5px] font-black uppercase tracking-wider text-white font-display">
-                {cat.label}
-              </span>
+              {/* Active neon highlight glow */}
+              {isActive && (
+                <div className="absolute inset-0 rounded-2xl bg-[#00FF87]/10" />
+              )}
+              {/* Icon & Label (Telegram Emojis + Roboto label) */}
+              <div className="relative z-10 flex flex-col items-center justify-center p-0.5 text-center">
+                <span
+                  className="leading-none mb-1 filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] group-hover:scale-115 transition-transform"
+                  style={{ fontSize: '22px' }}
+                >
+                  {emojiIcon}
+                </span>
+                <span
+                  className={`text-[7px] font-bold uppercase tracking-wider leading-none text-center ${
+                    isActive ? 'text-[#00FF87]' : 'text-gray-200'
+                  }`}
+                  style={{ fontFamily: "'Roboto', sans-serif" }}
+                >
+                  {cat.label}
+                </span>
+              </div>
             </button>
           )
         })}
       </div>
 
-      {/* 3. LIVE REVERSE AUCTIONS (1:1 Mockup Layout) */}
-      <div className="space-y-2.5 pt-1">
+      {/* 3. LIVE REVERSE AUCTIONS */}
+      <div className="space-y-2 pt-1">
         <div className="flex items-center justify-between">
-          <h2 className="text-xs uppercase tracking-widest font-black text-white font-display flex items-center gap-1.5">
-            <span>LIVE REVERSE AUCTIONS</span>
+          <h2
+            className="text-xs uppercase tracking-wider font-bold text-white flex items-center gap-1.5"
+            style={{ fontFamily: "'Roboto', sans-serif" }}
+          >
+            <span>CREATE YOUR REQUEST</span>
             <span className="w-2 h-2 rounded-full bg-[#00FF87] animate-ping" />
           </h2>
-          <span className="text-[10px] text-[#00FF87] font-bold flex items-center gap-1 drop-shadow-[0_0_8px_rgba(0,255,135,0.6)]">
+          <span className="text-[10px] text-[#00FF87] font-bold flex items-center gap-1 drop-shadow-[0_0_8px_rgba(0,255,135,0.6)]" style={{ fontFamily: "'Roboto', sans-serif" }}>
             <Sparkles className="w-3 h-3" /> Live Feed
           </span>
         </div>
 
-        {/* Main Card + Side Overlapping Card Container */}
-        <div className="relative flex items-stretch">
-          {/* Main AYANA Resort Auction Card */}
-          <div className="w-[78%] shrink-0 bg-[#121927]/95 backdrop-blur-xl border border-white/14 rounded-3xl p-3.5 shadow-2xl flex flex-col justify-between space-y-3 relative z-10">
-            {/* Title Subheader inside Card */}
-            <div>
-              <h3
-                onClick={() => onOpenBidModal(mainRequest)}
-                className="font-display font-black text-sm text-white hover:text-[#00F2FE] transition-colors cursor-pointer leading-tight"
+        {/* Horizontal slider of service creation cards — TALLER (235px) + LESS BLURRED (blur-3px) */}
+        <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 pt-1 -mx-4 px-4 pr-10">
+          {requests.map((req) => {
+            const coverImage =
+              req.mediaUrls?.[0] ||
+              'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600'
+
+            return (
+              <div
+                key={req.id}
+                onClick={() => onOpenQuickRequest(req)}
+                className="w-[82vw] max-w-[310px] min-h-[235px] h-[235px] shrink-0 snap-center rounded-3xl p-4 flex flex-col justify-between relative overflow-hidden z-10 transition-all duration-300 hover:scale-[1.02] cursor-pointer group border border-white/25 shadow-[0_20px_45px_rgba(0,0,0,0.6)]"
+                style={{
+                  background: 'rgba(10, 16, 26, 0.4)',
+                  backdropFilter: 'blur(16px)',
+                  WebkitBackdropFilter: 'blur(16px)',
+                }}
               >
-                <span className="text-[#00FF87]">BALI:</span> AYANA Resort - Ocean View Suite
-              </h3>
-              <p className="text-[10px] text-gray-400 font-semibold mt-0.5">
-                5★ Resort, Jimbaran
-              </p>
-            </div>
-
-            {/* Middle Layout: Left Photo + Right Price/Timer Block */}
-            <div className="flex items-center gap-2.5">
-              {/* Left Photo Thumbnail */}
-              <div className="w-28 h-28 rounded-2xl overflow-hidden shrink-0 border border-white/12 shadow-lg relative group">
+                {/* Photo background under glass — LESS BLURRED (blur-3px) and MORE VISIBLE (opacity-55) */}
                 <img
-                  src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600"
-                  alt="AYANA Resort Villa"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  src={coverImage}
+                  alt={req.title}
+                  className="absolute inset-0 w-full h-full object-cover filter blur-[3px] scale-105 opacity-55 group-hover:scale-115 transition-transform duration-500 pointer-events-none"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-              </div>
 
-              {/* Right Details Block */}
-              <div className="flex-1 flex flex-col justify-between py-0.5 min-w-0">
-                <div>
-                  <div className="flex items-baseline justify-between text-[11px] text-gray-400">
-                    <span className="truncate">Current Low Bid:</span>
-                    <span className="text-sm font-black text-[#00FF87] font-display glow-price ml-1">
-                      $345
-                    </span>
-                  </div>
-                  <div className="flex items-baseline justify-between text-[10px] text-gray-400 mt-0.5">
-                    <span>Original Price:</span>
-                    <span className="line-through text-gray-400 font-bold ml-1">$980</span>
-                  </div>
-                  <div className="text-[10px] text-gray-300 font-semibold mt-1 flex items-center gap-1">
-                    <Users className="w-3 h-3 text-[#00F2FE]" />
-                    <span>12 Bidders</span>
-                  </div>
+                {/* Dark overlay gradient for contrast */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/80 pointer-events-none" />
+
+                {/* Top: Service Title */}
+                <div className="relative z-10">
+                  <h3 className="font-display font-black text-sm text-white leading-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
+                    <span className="text-[#00FF87] tracking-wider uppercase font-bold">{activeHub.toUpperCase()}:</span> {req.title}
+                  </h3>
+                  <p
+                    className="text-[10px] text-gray-300 font-medium mt-1 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)] flex items-center gap-1"
+                    style={{ fontFamily: "'Roboto', sans-serif" }}
+                  >
+                    <span>
+                      📍 {
+                        activeHub.toLowerCase() === 'phuket' ? 'Patong' :
+                        activeHub.toLowerCase() === 'bangkok' ? 'Thonglor' :
+                        activeHub.toLowerCase() === 'seoul' ? 'Gangnam' :
+                        activeHub.toLowerCase() === 'tokyo' ? 'Shibuya' : req.district
+                      }
+                    </span> • <span className="text-[#00FF87]">{req.categoryL1Name}</span>
+                  </p>
                 </div>
 
-                {/* Giant Glowing Timer */}
-                <div className="mt-1">
-                  <span className="text-2xl sm:text-3xl font-black text-[#00FF87] font-mono glow-timer leading-none tracking-wider block">
-                    {timer1}
+                {/* Middle: Giant Semi-Transparent Pulsing Plus */}
+                <div className="relative z-10 flex items-center justify-center my-2">
+                  <span
+                    className="font-black leading-none select-none text-[#00FF87]/80 group-hover:scale-125 group-hover:text-[#00FF87] transition-all duration-300 drop-shadow-[0_0_25px_rgba(0,255,135,0.9)]"
+                    style={{ fontSize: '56px', lineHeight: 1 }}
+                  >
+                    +
                   </span>
                 </div>
-              </div>
-            </div>
 
-            {/* Full Width Bright Gradient Action Button */}
-            <button
-              onClick={() => onOpenBidModal(mainRequest)}
-              className="w-full py-2.5 rounded-2xl bg-gradient-to-r from-[#00F2FE] to-[#00FF87] text-[#060911] font-display font-black text-[11px] sm:text-xs tracking-widest uppercase flex items-center justify-center gap-1.5 shadow-[0_6px_28px_rgba(0,242,254,0.45)] hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer"
-            >
-              <Zap className="w-3.5 h-3.5 fill-black" />
-              <span>VIEW OFFER / BID NOW</span>
-            </button>
-          </div>
-
-          {/* Right Side Overlapping Peek Card (Kata Rocks Phuket) */}
-          <div
-            onClick={() => onOpenBidModal(phuketRequest)}
-            className="w-[30%] -ml-6 shrink-0 z-20 rounded-3xl overflow-hidden border border-white/20 bg-[#121927]/95 backdrop-blur-2xl p-2.5 flex flex-col justify-between shadow-[0_15px_35px_rgba(0,0,0,0.8)] cursor-pointer group hover:border-[#00F2FE]/60 transition-all"
-          >
-            <div className="space-y-1.5">
-              <div className="w-full h-24 rounded-2xl overflow-hidden border border-white/12 relative shadow-md">
-                <img
-                  src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400"
-                  alt="Kata Rocks Villa"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                {/* Bottom: Quick Request Button (Roboto font) */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onOpenQuickRequest(req)
+                  }}
+                  className="relative z-10 w-full py-3 rounded-xl bg-gradient-to-r from-[#00C2A8] via-[#00FF87] to-[#00F2FE] text-[#03100A] text-xs font-bold tracking-wider uppercase flex items-center justify-center gap-1.5 cursor-pointer transition-all hover:brightness-110 active:scale-[0.98]"
+                  style={{
+                    fontFamily: "'Roboto', sans-serif",
+                    boxShadow: '0 4px 24px rgba(0,255,135,0.6)',
+                  }}
+                >
+                  <Zap className="w-4 h-4 fill-[#03100A]" />
+                  <span>БЫСТРАЯ ЗАЯВКА</span>
+                </button>
               </div>
-              <div className="text-[9.5px] font-black text-white leading-tight">
-                <span className="text-[#00F2FE] block font-bold">Phuket:</span>
-                <span className="truncate block">Kata Rocks Villa</span>
-              </div>
-            </div>
-
-            <div className="bg-black/60 rounded-xl p-1.5 border border-white/10 space-y-0.5 mt-1">
-              <div className="text-[8px] text-gray-300 font-mono font-bold">
-                TIMER <span className="text-white">{timer2}</span>
-              </div>
-              <div className="text-[9px] text-gray-300 font-bold flex items-baseline justify-between">
-                <span>Current Bid:</span>
-                <span className="text-[#00FF87] font-black text-[10px]">$410</span>
-              </div>
-            </div>
-          </div>
+            )
+          })}
         </div>
       </div>
     </div>
   )
 }
-
 

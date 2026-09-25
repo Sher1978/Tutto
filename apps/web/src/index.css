@@ -1,9 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=Barlow:wght@500;600;700;800;900&family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap');
 @import "tailwindcss";
 
 :root {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Outfit', 'Inter', system-ui, sans-serif;
+  --font-display: 'Barlow', 'Inter', system-ui, sans-serif;
+  --font-condensed: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   /* Official TuttoMinutto Mockup Palette */
@@ -15,7 +16,11 @@
 
 body {
   font-family: var(--font-sans);
-  background: linear-gradient(180deg, #0a111a 0%, #101926 50%, #05090f 100%);
+  background-color: #000000;
+  background-image: 
+    radial-gradient(circle at top left, rgba(0, 102, 255, 0.08) 0%, transparent 600px),
+    radial-gradient(circle at top right, rgba(0, 255, 135, 0.07) 0%, transparent 600px),
+    linear-gradient(180deg, rgba(10, 17, 26, 0.4) 0%, #000000 100%);
   background-attachment: fixed;
   color: #FFFFFF;
   min-height: 100vh;
@@ -65,20 +70,25 @@ body {
   text-shadow: 0 0 20px rgba(0, 255, 135, 0.8);
 }
 
-/* Mockup Main Auction Card */
-.mockup-card-main {
-  background: linear-gradient(165deg, rgba(22, 29, 45, 0.92) 0%, rgba(11, 16, 26, 0.98) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+/* Unified Matte Glass Cards (Mockup, Template, Profile) */
+.mockup-card-main, .mockup-card, .glass-card {
+  background: rgba(22, 30, 44, 0.35);
+  backdrop-filter: blur(48px);
+  -webkit-backdrop-filter: blur(48px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 26px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.mockup-card-main:hover {
-  border-color: rgba(0, 242, 254, 0.5);
-  box-shadow: 0 0 35px rgba(0, 242, 254, 0.3);
+.mockup-card-main:hover, .mockup-card:hover, .glass-card:hover {
+  border-color: rgba(0, 242, 254, 0.4);
+  background: rgba(22, 30, 44, 0.45);
+  box-shadow: 
+    0 12px 35px rgba(0, 242, 254, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* Safe Areas */

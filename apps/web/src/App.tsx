@@ -4,6 +4,7 @@ import { MockupAuctionSection } from './components/MockupAuctionSection'
 import { RequestCard } from './components/RequestCard'
 import { TemplateCard } from './components/TemplateCard'
 import { CreateRequestModal } from './components/CreateRequestModal'
+import { QuickRequestModal } from './components/QuickRequestModal'
 import { BidModal } from './components/BidModal'
 import { BusinessProfileView } from './components/BusinessProfileView'
 import { DealChatModal } from './components/DealChatModal'
@@ -20,18 +21,62 @@ export function App() {
 
   const [requests, setRequests] = useState<RequestItem[]>([
     {
-      id: 'req-ayana',
+      id: 'req-bike',
+      clientId: 'usr-kaitlyn',
+      clientName: 'Kaitlyn L.',
+      clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+      clientRating: 5.0,
+      hub: 'bali',
+      district: 'Доставка в отель',
+      categoryL1Id: 'cat-transport',
+      categoryL1Name: 'Транспорт',
+      title: 'НУЖЕН БАЙК',
+      description: 'Аренда скутера 155cc с бесплатной доставкой в отель.',
+      budget: 15,
+      currency: 'USD',
+      mediaUrls: ['https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600'],
+      isFeatured: true,
+      status: 'open',
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
+      auctionEndsAt: new Date(Date.now() + 4 * 60 * 1000 + 18 * 1000).toISOString(),
+      bidsCount: 8,
+    },
+    {
+      id: 'req-car',
       clientId: 'usr-kaitlyn',
       clientName: 'Kaitlyn L.',
       clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
       clientRating: 4.9,
       hub: 'bali',
-      district: 'Jimbaran',
+      district: 'Аренда с доставкой',
+      categoryL1Id: 'cat-transport',
+      categoryL1Name: 'Транспорт',
+      title: 'НУЖНО АВТО',
+      description: 'Компактный авто без залога оригиналов документов.',
+      budget: 35,
+      currency: 'USD',
+      mediaUrls: ['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600'],
+      isFeatured: true,
+      status: 'open',
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
+      auctionEndsAt: new Date(Date.now() + 4 * 60 * 1000 + 18 * 1000).toISOString(),
+      bidsCount: 5,
+    },
+    {
+      id: 'req-villa-short',
+      clientId: 'usr-kaitlyn',
+      clientName: 'Kaitlyn L.',
+      clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+      clientRating: 4.95,
+      hub: 'bali',
+      district: 'Вилла / Отель',
       categoryL1Id: 'cat-realestate',
-      categoryL1Name: 'Resorts & Villas',
-      title: 'AYANA Resort - Ocean View Suite',
-      description: 'Luxury 5★ Resort Villa, private pool, ocean sunset view, breakfast included.',
-      budget: 345,
+      categoryL1Name: 'Жильё',
+      title: 'АРЕНДА ПОСУТОЧНО',
+      description: 'Посуточная аренда виллы с бассейноим.',
+      budget: 250,
       currency: 'USD',
       mediaUrls: ['https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600'],
       isFeatured: true,
@@ -41,10 +86,54 @@ export function App() {
       auctionEndsAt: new Date(Date.now() + 4 * 60 * 1000 + 18 * 1000).toISOString(),
       bidsCount: 12,
     },
-    ...MOCK_REQUESTS,
+    {
+      id: 'req-villa-long',
+      clientId: 'usr-kaitlyn',
+      clientName: 'Kaitlyn L.',
+      clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+      clientRating: 4.9,
+      hub: 'bali',
+      district: 'Апартаменты / Вилла',
+      categoryL1Id: 'cat-realestate',
+      categoryL1Name: 'Жильё',
+      title: 'АРЕНДА ДОЛГОСРОК',
+      description: 'Долгосрочная аренда апартаментов или виллы.',
+      budget: 1800,
+      currency: 'USD',
+      mediaUrls: ['https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600'],
+      isFeatured: true,
+      status: 'open',
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
+      auctionEndsAt: new Date(Date.now() + 4 * 60 * 1000 + 18 * 1000).toISOString(),
+      bidsCount: 6,
+    },
+    {
+      id: 'req-exchange',
+      clientId: 'usr-kaitlyn',
+      clientName: 'Kaitlyn L.',
+      clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+      clientRating: 5.0,
+      hub: 'bali',
+      district: 'Доставка наличных',
+      categoryL1Id: 'cat-exchange',
+      categoryL1Name: 'Обмен',
+      title: 'ОБМЕН ВАЛЮТЫ',
+      description: 'Экспресс-доставка наличной валюты в отель.',
+      budget: 0,
+      currency: 'USD',
+      mediaUrls: ['https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=600'],
+      isFeatured: true,
+      status: 'open',
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
+      auctionEndsAt: new Date(Date.now() + 4 * 60 * 1000 + 18 * 1000).toISOString(),
+      bidsCount: 10,
+    },
   ])
 
   const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [selectedQuickRequestItem, setSelectedQuickRequestItem] = useState<RequestItem | null>(null)
   const [selectedRequestForBid, setSelectedRequestForBid] = useState<RequestItem | null>(null)
   
   // In-App Deal Chat State
@@ -60,35 +149,6 @@ export function App() {
   const handleSelectHub = (hub: string) => {
     setActiveHub(hub)
     triggerHapticFeedback('light')
-  }
-
-  const handleCreateRequestFromTemplate = (template: ServiceTemplate) => {
-    const createdItem: RequestItem = {
-      id: `req-tpl-${Date.now()}`,
-      clientId: 'usr-current',
-      clientName: 'Kaitlyn L.',
-      clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-      clientRating: 5.0,
-      hub: activeHub as any,
-      district: 'Central Hub',
-      categoryL1Id: template.categoryL1Id,
-      categoryL1Name: 'Services',
-      title: template.title,
-      description: template.description,
-      budget: template.defaultBudget ?? 345,
-      currency: 'USD',
-      mediaUrls: [template.coverImageUrl],
-      isFeatured: false,
-      status: 'open',
-      createdAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
-      auctionEndsAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
-      bidsCount: 1,
-    }
-
-    setRequests([createdItem, ...requests])
-    setNotificationMsg(`⚡ Заявка "${template.title}" создана в 1-клик!`)
-    setTimeout(() => setNotificationMsg(null), 4000)
   }
 
   const handleCreateRequest = (newReq: Partial<RequestItem>) => {
@@ -151,12 +211,10 @@ export function App() {
     setTimeout(() => setNotificationMsg(null), 4000)
   }
 
-  const [showTemplatesCatalog, setShowTemplatesCatalog] = useState(false)
-
   return (
-    <div className="min-h-screen bg-[#05090f] text-white flex flex-col items-center justify-center font-sans sm:py-6 selection:bg-[#00F2FE] selection:text-black">
+    <div className="min-h-screen bg-transparent text-white flex flex-col items-center justify-center font-sans sm:py-6 selection:bg-[#00F2FE] selection:text-black">
       {/* Smartphone Shell Container for Pixel-Perfect Mockup Presentation */}
-      <div className="w-full max-w-[390px] min-h-screen sm:min-h-[840px] bg-gradient-to-b from-[#0a111a] via-[#101926] to-[#05090f] sm:rounded-[44px] sm:border-[8px] sm:border-[#1c2433] sm:shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col relative overflow-hidden">
+      <div className="w-full max-w-[390px] min-h-screen sm:min-h-[840px] bg-transparent sm:rounded-[44px] sm:border-[8px] sm:border-[#1c2433] sm:shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col relative overflow-hidden">
         {/* А. System Status Bar & Header (1:1 Mockup Spec) */}
         <Navbar />
 
@@ -171,73 +229,15 @@ export function App() {
         {/* Main Content Area */}
         <main className="w-full px-4 py-2 flex-1 space-y-4">
           {activeTab === 'home' && (
-            <>
-              {/* В & Г. Asian Hubs & Live Reverse Auctions (1:1 Mockup Spec) */}
-              <MockupAuctionSection
-                activeHub={activeHub}
-                onSelectHub={handleSelectHub}
-                activeCategory={activeCategory}
-                onSelectCategory={setActiveCategory}
-                onOpenBidModal={(req) => setSelectedRequestForBid(req)}
-                requests={requests}
-              />
-
-              {/* Optional Collapsible 1-Click Templates & Extra Requests */}
-              <div className="pt-2 text-center">
-                <button
-                  onClick={() => setShowTemplatesCatalog(!showTemplatesCatalog)}
-                  className="text-[10px] font-extrabold text-cyan-400/80 hover:text-cyan-400 py-1.5 px-3.5 rounded-full bg-cyan-950/30 border border-cyan-500/20 transition-all cursor-pointer inline-flex items-center gap-1.5"
-                >
-                  <Zap className="w-3 h-3 text-cyan-400" />
-                  <span>{showTemplatesCatalog ? '▲ Скрыть шаблоны' : '⚡ 1-Click Шаблоны услуг (Развернуть)'}</span>
-                </button>
-              </div>
-
-              {showTemplatesCatalog && (
-                <div className="space-y-3 pt-3 border-t border-white/5 animate-fadeIn">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-[11px] font-bold text-gray-400 tracking-widest uppercase flex items-center gap-1.5">
-                      <span>КАТАЛОГ ШАБЛОНОВ (1-CLICK LAUNCH)</span>
-                    </h3>
-                    <button
-                      onClick={() => setIsCreateOpen(true)}
-                      className="text-[10px] font-bold text-cyan-400 hover:underline cursor-pointer"
-                    >
-                      + Своя заявка
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2.5">
-                    {SERVICE_TEMPLATES.map((tpl) => (
-                      <TemplateCard
-                        key={tpl.id}
-                        template={tpl}
-                        onLaunchTemplate={handleCreateRequestFromTemplate}
-                        onSaveTemplate={() => {
-                          setNotificationMsg(`📌 Шаблон "${tpl.title}" сохранен!`)
-                          setTimeout(() => setNotificationMsg(null), 3000)
-                        }}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Additional Live Feed Cards */}
-                  <div className="space-y-3 pt-2">
-                    <h3 className="text-[11px] font-bold text-gray-400 tracking-widest uppercase">
-                      ВСЕ АКТИВНЫЕ ЗАЯВКИ ПОКУПАТЕЛЕЙ
-                    </h3>
-                    {requests.slice(1).map((req) => (
-                      <RequestCard
-                        key={req.id}
-                        request={req}
-                        onOpenDetails={() => setSelectedRequestForBid(req)}
-                        onQuickBid={() => setSelectedRequestForBid(req)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </>
+            <MockupAuctionSection
+              activeHub={activeHub}
+              onSelectHub={handleSelectHub}
+              activeCategory={activeCategory}
+              onSelectCategory={setActiveCategory}
+              onOpenBidModal={(req) => setSelectedRequestForBid(req)}
+              onOpenQuickRequest={(req) => setSelectedQuickRequestItem(req)}
+              requests={requests}
+            />
           )}
 
           {activeTab === 'explore' && (
@@ -269,6 +269,15 @@ export function App() {
           isOpen={isCreateOpen}
           onClose={() => setIsCreateOpen(false)}
           currentHub={activeHub as any}
+          onCreateRequest={handleCreateRequest}
+        />
+
+        <QuickRequestModal
+          isOpen={Boolean(selectedQuickRequestItem)}
+          onClose={() => setSelectedQuickRequestItem(null)}
+          initialHub={selectedQuickRequestItem?.hub || activeHub}
+          initialServiceTitle={selectedQuickRequestItem?.title || ''}
+          initialDistrict={selectedQuickRequestItem?.district || 'Jimbaran'}
           onCreateRequest={handleCreateRequest}
         />
 

@@ -1,36 +1,17 @@
 import React from 'react'
-import { Send, MoreHorizontal, Wifi, Battery, Signal, Star } from 'lucide-react'
+import { Star } from 'lucide-react'
 import { getTelegramUser } from '../lib/telegram'
 
 export const Navbar: React.FC = () => {
   const user = getTelegramUser()
 
   return (
-    <header className="w-full pt-2 pb-2 px-4 safe-area-top flex flex-col">
-      {/* 1. System Status Bar (Time & System Icons) */}
-      <div className="w-full flex justify-between items-center text-xs font-medium text-white/90 px-1 py-1">
-        <span className="pl-1 text-white/90 font-medium">Time</span>
-        <div className="flex items-center gap-1.5 text-white/80 pr-1">
-          <Signal className="w-3.5 h-3.5" />
-          <Wifi className="w-3.5 h-3.5" />
-          <Battery className="w-4 h-4" />
-        </div>
-      </div>
-
-      {/* 2. Navigation Controls (Paper Plane 45° left & 3 Dots right) */}
-      <div className="flex justify-between items-center mt-2 px-1">
-        <button className="text-white hover:opacity-80 transition-opacity">
-          <Send className="w-5 h-5 transform rotate-45 fill-white text-white" />
-        </button>
-        <button className="text-white/70 hover:text-white transition-colors">
-          <div className="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center bg-white/5">
-            <MoreHorizontal className="w-4 h-4 text-white" />
-          </div>
-        </button>
-      </div>
-
-      {/* 3. Main Branding Block */}
-      <div className="mt-3 text-center">
+    <header
+      className="w-full pb-2 px-4 safe-area-top flex flex-col"
+      style={{ paddingTop: '100px' }}
+    >
+      {/* 1. Main Branding Block — pushed 100px down from the top edge */}
+      <div className="text-center">
         <h1 className="font-display font-black text-3xl sm:text-4xl tracking-wider flex items-center justify-center gap-2">
           <span className="glow-tutto text-[#00F2FE]">TUTTO</span>
           <span className="glow-minutto text-[#00FF87]">MINUTTO</span>
@@ -40,8 +21,17 @@ export const Navbar: React.FC = () => {
         </p>
       </div>
 
-      {/* 4. AI Agent Status Card */}
-      <div className="mt-3.5 bg-[#121927]/90 backdrop-blur-xl border border-white/12 rounded-3xl p-3 flex items-center justify-between shadow-2xl">
+      {/* 4. AI Agent Status Card — Matte Glass */}
+      <div
+        className="mt-3.5 rounded-3xl p-3 flex items-center justify-between"
+        style={{
+          background: 'rgba(18, 25, 39, 0.38)',
+          backdropFilter: 'blur(48px)',
+          WebkitBackdropFilter: 'blur(48px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1)',
+        }}
+      >
         {/* Left profile */}
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="relative shrink-0">
@@ -62,13 +52,27 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Right AI Status Pill */}
-        <div className="bg-[#0b1422] border border-[#00FF87]/40 rounded-2xl px-2.5 py-1.5 text-right flex flex-col items-end justify-center shadow-[0_0_15px_rgba(0,255,135,0.2)] shrink-0">
+        {/* Right AI Status Pill — neon glow matching mockup */}
+        <div
+          className="rounded-2xl px-2.5 py-1.5 text-right flex flex-col items-end justify-center shrink-0"
+          style={{
+            background: 'rgba(0, 255, 135, 0.08)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            border: '1px solid rgba(0, 255, 135, 0.6)',
+            boxShadow: [
+              '0 0 8px rgba(0, 255, 135, 0.8)',
+              '0 0 20px rgba(0, 255, 135, 0.5)',
+              '0 0 40px rgba(0, 255, 135, 0.25)',
+              'inset 0 0 12px rgba(0, 255, 135, 0.1)',
+            ].join(', '),
+          }}
+        >
           <div className="flex items-center gap-1.5 text-[9px] font-black text-[#00FF87] tracking-wider uppercase font-display">
             <span className="w-2 h-2 rounded-full bg-[#00FF87] animate-ping shadow-[0_0_8px_#00FF87]" />
             <span>AI SALES AGENT</span>
           </div>
-          <span className="text-[9px] font-bold text-gray-300 mt-0.5">
+          <span className="text-[9px] font-bold text-gray-200 mt-0.5">
             <span className="text-[#00FF87]">ACTIVE</span> • Online
           </span>
           <span className="text-[8px] font-medium text-gray-400">

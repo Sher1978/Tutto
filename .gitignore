@@ -1,1 +1,29 @@
-.vercel
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Vercel & Build outputs
+.vercel/
+dist/
+build/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Temporary / Scratch files
+get_input.js
+output.txt
+output_utf8.txt
+
+# OS metadata
+.DS_Store
+Thumbs.db

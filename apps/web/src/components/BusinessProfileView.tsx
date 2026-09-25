@@ -25,7 +25,7 @@ export const BusinessProfileView: React.FC = () => {
   return (
     <div className="space-y-5 pb-20 animate-fadeIn text-xs">
       {/* AI Sales Agent Status Card */}
-      <div className="glass-card p-5 relative overflow-hidden border-purple-500/30 bg-gradient-to-r from-purple-900/20 via-slate-900 to-cyan-900/20">
+      <div className="glass-card p-5 relative overflow-hidden border-purple-500/30">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-500 to-cyan-400 p-0.5 shadow-lg shadow-purple-500/30">
@@ -126,7 +126,7 @@ export const BusinessProfileView: React.FC = () => {
       </div>
 
       {/* Partner Referral Link Card */}
-      <div className="glass-card p-4 border-amber-400/30 bg-gradient-to-r from-amber-500/10 to-transparent">
+      <div className="glass-card p-4 border-amber-400/30">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-amber-400" />
