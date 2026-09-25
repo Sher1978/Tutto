@@ -30,11 +30,12 @@ export const Navbar: React.FC = () => {
       </div>
 
       {/* 3. Main Branding Block */}
-      <div className="mt-4 text-center">
-        <h1 className="text-3xl font-black tracking-widest text-cyan-400 uppercase font-sans drop-shadow-[0_0_20px_rgba(0,242,254,0.6)]">
-          TUTTO MINUTTO
+      <div className="mt-3 text-center">
+        <h1 className="font-display font-black text-3xl sm:text-4xl tracking-wider flex items-center justify-center gap-2">
+          <span className="glow-tutto text-[#00F2FE]">TUTTO</span>
+          <span className="glow-minutto text-[#00FF87]">MINUTTO</span>
         </h1>
-        <p className="text-xs font-light text-white/70 tracking-wide mt-0.5">
+        <p className="text-xs font-semibold text-gray-300 tracking-wide mt-0.5">
           Here, you choose!
         </p>
       </div>

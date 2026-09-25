@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Palmtree, Plane, Wine, Anchor, AlertCircle, Users } from 'lucide-react'
+import { Sparkles, Users, Zap } from 'lucide-react'
 import { RequestItem } from '../types'
 
 interface MockupAuctionSectionProps {
@@ -65,73 +65,93 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
     bidsCount: 8,
   }
 
-  const hubs = [
-    { id: 'bali', label: 'BALI', hasIcon: true },
-    { id: 'phuket', label: 'PHUKET', hasIcon: false },
-    { id: 'bangkok', label: 'BANGKOK', hasIcon: false },
-    { id: 'seoul', label: 'SEOUL', hasIcon: false },
-    { id: 'tokyo', label: 'TOKYO', hasIcon: false },
+  const hubsList = [
+    { id: 'bali', label: '🌴 BALI' },
+    { id: 'phuket', label: 'PHUKET' },
+    { id: 'bangkok', label: 'BANGKOK' },
+    { id: 'seoul', label: 'SEOUL' },
+    { id: 'tokyo', label: 'TOKYO' },
   ]
 
-  const categories = [
-    { id: 'resorts', label: 'RESORTS', icon: Palmtree },
-    { id: 'tours', label: 'TOURS', icon: Plane },
-    { id: 'experiences', label: 'EXPERIENCES', icon: Wine },
-    { id: 'yachts', label: 'YACHTS', icon: Anchor },
-    { id: 'stay', label: 'STAY!', icon: AlertCircle },
+  const categoryTiles = [
+    {
+      id: 'resorts',
+      label: 'RESORTS',
+      icon: '🌴',
+      styleClass:
+        'bg-gradient-to-br from-[#054838]/85 to-[#0c201a]/95 border border-[#00FF87]/50 shadow-[0_8px_24px_rgba(0,255,135,0.25)]',
+    },
+    {
+      id: 'tours',
+      label: 'TOURS',
+      icon: '✈️',
+      styleClass:
+        'bg-gradient-to-br from-[#043d54]/85 to-[#0a1b28]/95 border border-[#00F2FE]/50 shadow-[0_8px_24px_rgba(0,242,254,0.25)]',
+    },
+    {
+      id: 'experiences',
+      label: 'EXPERIENCES',
+      icon: '🥂',
+      styleClass:
+        'bg-gradient-to-br from-[#4d3805]/85 to-[#201a0a]/95 border border-amber-400/50 shadow-[0_8px_24px_rgba(255,179,2,0.25)]',
+    },
+    {
+      id: 'yachts',
+      label: 'YACHTS',
+      icon: '⛵',
+      styleClass:
+        'bg-gradient-to-br from-[#0b2b40]/85 to-[#08131d]/95 border border-[#00F2FE]/40 shadow-[0_8px_24px_rgba(0,242,254,0.2)]',
+    },
+    {
+      id: 'stay',
+      label: 'STAY!',
+      icon: '🏎️',
+      styleClass:
+        'bg-gradient-to-br from-[#4d1010]/85 to-[#200a0a]/95 border border-rose-500/50 shadow-[0_8px_24px_rgba(255,42,109,0.25)]',
+    },
   ]
 
   return (
-    <div className="w-full">
-      {/* 1. СЕКЦИЯ ХАБОВ (ASIAN HUBS) */}
-      <h2 className="mt-4 text-[11px] font-bold text-gray-400 tracking-widest uppercase">
-        ASIAN HUBS
-      </h2>
-
-      {/* City Selector (Clean Flex Gap layout without distracting lines) */}
-      <div className="flex justify-between items-center mt-2 text-xs font-bold tracking-wider uppercase">
-        {hubs.map((h) => {
-          const isActive = activeHub.toLowerCase() === h.id
-          return (
-            <button
-              key={h.id}
-              onClick={() => onSelectHub(h.id)}
-              className={`transition-colors flex items-center gap-1 cursor-pointer ${
-                isActive ? 'text-cyan-400' : 'text-gray-500 hover:text-white'
-              }`}
-            >
-              {isActive && h.hasIcon && <Palmtree className="w-3.5 h-3.5 text-emerald-400" />}
-              <span>{h.label}</span>
-            </button>
-          )
-        })}
+    <div className="w-full space-y-4">
+      {/* 1. ASIAN HUBS (1:1 Mockup Selector) */}
+      <div className="space-y-2">
+        <h2 className="text-xs uppercase tracking-widest font-black text-gray-300 font-display">
+          ASIAN HUBS
+        </h2>
+        <div className="flex items-center justify-between overflow-x-auto pb-1 no-scrollbar gap-2">
+          {hubsList.map((h) => {
+            const isActive = activeHub.toLowerCase() === h.id
+            return (
+              <button
+                key={h.id}
+                onClick={() => onSelectHub(h.id)}
+                className={`text-xs font-black uppercase tracking-wider transition-all py-1 shrink-0 cursor-pointer ${
+                  isActive
+                    ? 'text-[#00FF87] border-b-2 border-[#00FF87] drop-shadow-[0_0_10px_rgba(0,255,135,0.6)]'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {h.label}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
-      {/* Category Horizontal Slider with w-14 h-14 containers */}
-      <div className="flex gap-3 mt-3 overflow-x-auto no-scrollbar py-1">
-        {categories.map((cat) => {
-          const IconComp = cat.icon
+      {/* 2. 3D GLOSSY CATEGORY TILES (1:1 Mockup 5-Column Grid) */}
+      <div className="grid grid-cols-5 gap-2">
+        {categoryTiles.map((cat) => {
           const isActive = activeCategory === cat.id || (cat.id === 'resorts' && !activeCategory)
           return (
             <button
               key={cat.id}
               onClick={() => onSelectCategory(isActive ? null : cat.id)}
-              className="flex flex-col items-center gap-1 shrink-0 cursor-pointer group"
+              className={`p-2.5 rounded-2xl flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
+                cat.styleClass
+              } ${isActive ? 'scale-105 shadow-[0_0_25px_rgba(0,242,254,0.5)] ring-1 ring-white/30' : 'opacity-85 hover:opacity-100'}`}
             >
-              <div
-                className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
-                  isActive
-                    ? 'border-2 border-cyan-400 bg-gradient-to-br from-cyan-900/80 via-cyan-900/50 to-cyan-500/30 text-cyan-400 shadow-[0_0_20px_rgba(0,242,254,0.5)] scale-105'
-                    : 'bg-slate-900/80 border border-white/10 text-white/80 hover:border-white/30'
-                }`}
-              >
-                <IconComp className="w-6 h-6" />
-              </div>
-              <span
-                className={`text-[9.5px] uppercase tracking-tight ${
-                  isActive ? 'font-extrabold text-cyan-400' : 'font-bold text-gray-400'
-                }`}
-              >
+              <span className="text-2xl mb-1 drop-shadow-md">{cat.icon}</span>
+              <span className="text-[8.5px] font-black uppercase tracking-wider text-white font-display">
                 {cat.label}
               </span>
             </button>
@@ -139,111 +159,109 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
         })}
       </div>
 
-      {/* 2. СЕКЦИЯ АУКЦИОНОВ (LIVE REVERSE AUCTIONS) */}
-      <h2 className="mt-5 text-[11px] font-bold text-cyan-400 tracking-widest uppercase flex items-center justify-between">
-        <span>LIVE REVERSE AUCTIONS</span>
-        <span className="flex items-center gap-1 text-emerald-400 text-[9px] font-semibold">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" /> LIVE
-        </span>
-      </h2>
-
-      {/* The Grid System (Height 255px perfectly matched for left and right columns) */}
-      <div className="grid grid-cols-12 gap-3 mt-2.5 h-[255px]">
-        {/* Левый главный баннер (Bali) - col-span-8 */}
-        <div className="col-span-8 relative rounded-2xl overflow-hidden border border-white/10 h-full group shadow-2xl flex flex-col justify-between">
-          {/* Background image */}
-          <img
-            src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800"
-            alt="AYANA Resort"
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-          />
-
-          {/* Shadow Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />
-
-          {/* Top Banner Content (Badge left, Prices stacked right) */}
-          <div className="relative z-10 p-2.5 flex justify-between items-start w-full">
-            {/* Top Left Badge */}
-            <div className="max-w-[55%]">
-              <div className="text-[10px] font-bold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-md border border-white/10 inline-block leading-tight shadow-md">
-                BALI: AYANA Resort - Ocean View Suite
-              </div>
-              <div className="text-[8px] text-gray-300 mt-0.5 pl-0.5">
-                5★ Resort, Jimbaran
-              </div>
-            </div>
-
-            {/* Top Right Price Stack (Vertical) */}
-            <div className="text-right space-y-1">
-              <div className="bg-emerald-950/80 backdrop-blur-md border border-emerald-500/30 px-2 py-0.5 rounded-md text-[10px] font-black text-emerald-400 shadow-md inline-block">
-                Current Low Bid: $345
-              </div>
-              <div className="bg-black/50 backdrop-blur-md px-2 py-0.5 rounded-md text-[10px] font-medium text-gray-400 line-through text-right block w-fit ml-auto">
-                Original Price: $980
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Banner Content (Bidders + Timer + Integrated Rounded-B Button) */}
-          <div className="relative z-10 w-full flex flex-col items-center">
-            {/* Bidders count */}
-            <div className="w-full px-2.5 text-left text-[9px] text-gray-300 flex items-center gap-1 mb-0.5">
-              <Users className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="font-semibold">12 Bidders</span>
-            </div>
-
-            {/* Large Glowing Timer */}
-            <div className="text-3xl sm:text-4xl font-mono font-black text-emerald-400 tracking-wider text-center my-0.5 drop-shadow-[0_0_12px_rgba(52,211,153,0.6)]">
-              {timer1}
-            </div>
-
-            {/* View Offer / Bid Now Button (Perfect bottom integration rounded-b-2xl rounded-t-none) */}
-            <button
-              onClick={() => onOpenBidModal(mainRequest)}
-              className="w-full h-10 bg-cyan-400 hover:bg-cyan-300 text-black font-black text-xs tracking-widest uppercase flex items-center justify-center transition-colors rounded-b-2xl rounded-t-none shadow-[0_4px_20px_rgba(0,242,254,0.4)] cursor-pointer mt-1"
-            >
-              VIEW OFFER / BID NOW
-            </button>
-          </div>
+      {/* 3. LIVE REVERSE AUCTIONS (1:1 Mockup Layout) */}
+      <div className="space-y-2.5 pt-1">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xs uppercase tracking-widest font-black text-white font-display flex items-center gap-1.5">
+            <span>LIVE REVERSE AUCTIONS</span>
+            <span className="w-2 h-2 rounded-full bg-[#00FF87] animate-ping" />
+          </h2>
+          <span className="text-[10px] text-[#00FF87] font-bold flex items-center gap-1 drop-shadow-[0_0_8px_rgba(0,255,135,0.6)]">
+            <Sparkles className="w-3 h-3" /> Live Feed
+          </span>
         </div>
 
-        {/* Правая колонка мини-карточек - col-span-4 */}
-        <div className="col-span-4 flex flex-col justify-between h-full gap-2">
-          {/* Верхняя мини-карточка (Бали отель с бассейном) */}
-          <div className="h-[calc(50%-4px)] rounded-xl overflow-hidden border border-white/10 relative shadow-md group">
-            <img
-              src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=500"
-              alt="Bali Luxury Pool Villa"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-1.5 flex items-end">
-              <span className="text-[8px] font-bold text-white leading-tight">Bali: Royal Pool Villa</span>
+        {/* Main Card + Side Peek Card Container */}
+        <div className="flex gap-2.5 items-stretch">
+          {/* Main AYANA Resort Auction Card (1:1 Mockup Spec) */}
+          <div className="flex-1 bg-[#121826]/90 backdrop-blur-xl border border-white/14 rounded-3xl p-3.5 shadow-2xl flex flex-col justify-between space-y-3">
+            {/* Title Subheader inside Card */}
+            <div>
+              <h3
+                onClick={() => onOpenBidModal(mainRequest)}
+                className="font-display font-black text-sm text-white hover:text-[#00F2FE] transition-colors cursor-pointer leading-tight"
+              >
+                <span className="text-[#00FF87]">BALI:</span> AYANA Resort - Ocean View Suite
+              </h3>
+              <p className="text-[10px] text-gray-400 font-semibold mt-0.5">
+                5★ Resort, Jimbaran
+              </p>
             </div>
+
+            {/* Middle Layout: Left Photo + Right Price/Timer Block */}
+            <div className="flex items-center gap-3">
+              {/* Left Photo Thumbnail */}
+              <div className="w-32 h-28 rounded-2xl overflow-hidden shrink-0 border border-white/12 shadow-lg relative group">
+                <img
+                  src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600"
+                  alt="AYANA Resort Villa"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              </div>
+
+              {/* Right Details Block */}
+              <div className="flex-1 flex flex-col justify-between py-0.5">
+                <div>
+                  <div className="flex items-baseline justify-between text-xs text-gray-400">
+                    <span>Current Low Bid:</span>
+                    <span className="text-base font-black text-[#00FF87] font-display glow-price">
+                      $345
+                    </span>
+                  </div>
+                  <div className="flex items-baseline justify-between text-[11px] text-gray-400 mt-0.5">
+                    <span>Original Price:</span>
+                    <span className="line-through text-gray-500 font-medium">$980</span>
+                  </div>
+                  <div className="text-[10px] text-gray-300 font-semibold mt-1 flex items-center gap-1">
+                    <Users className="w-3 h-3 text-[#00F2FE]" />
+                    <span>12 Bidders</span>
+                  </div>
+                </div>
+
+                {/* Giant Glowing Timer */}
+                <div className="mt-1">
+                  <span className="text-2xl font-black text-[#00FF87] font-mono glow-timer leading-none tracking-wider block">
+                    {timer1}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Full Width Bright Gradient Action Button */}
+            <button
+              onClick={() => onOpenBidModal(mainRequest)}
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#00F2FE] to-[#00FF87] text-[#060911] font-display font-black text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-[0_6px_28px_rgba(0,242,254,0.45)] hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer"
+            >
+              <Zap className="w-4 h-4 fill-black" />
+              <span>VIEW OFFER / BID NOW</span>
+            </button>
           </div>
 
-          {/* Нижняя мини-карточка (Phuket Kata Rocks - Упакованная единая плашка) */}
+          {/* Right Side Peek Card (Kata Rocks Phuket) */}
           <div
             onClick={() => onOpenBidModal(phuketRequest)}
-            className="h-[calc(50%-4px)] relative rounded-xl overflow-hidden border border-white/10 shadow-md group cursor-pointer"
+            className="w-28 rounded-3xl overflow-hidden border border-white/14 bg-[#121826]/90 backdrop-blur-xl p-2 flex flex-col justify-between shrink-0 shadow-xl cursor-pointer group hover:border-[#00F2FE]/50 transition-all"
           >
-            <img
-              src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=500"
-              alt="Kata Rocks Villa"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-1">
-              {/* Compact Unified Information Overlay */}
-              <div className="bg-black/75 backdrop-blur-md p-1.5 rounded-lg border border-white/10">
-                <div className="text-[9px] font-extrabold text-white leading-tight truncate">
-                  Phuket: Kata Rocks Villa
-                </div>
-                <div className="flex items-center justify-between text-[8px] font-mono text-gray-300 mt-0.5">
-                  <span className="text-amber-400 font-bold">TIMER</span>
-                  <span className="font-bold text-white">{timer2}</span>
-                </div>
-                <div className="text-[9px] font-bold text-emerald-400 mt-0.5">
-                  Current Bid: $410
-                </div>
+            <div className="space-y-1.5">
+              <div className="w-full h-20 rounded-xl overflow-hidden border border-white/10 relative">
+                <img
+                  src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400"
+                  alt="Kata Rocks Villa"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="text-[9px] font-extrabold text-white leading-tight line-clamp-2">
+                Phuket: Kata Rocks Villa
+              </div>
+            </div>
+
+            <div className="bg-black/60 rounded-xl p-1.5 border border-white/10 space-y-0.5">
+              <div className="text-[8px] text-amber-400 font-mono font-bold">
+                TIMER {timer2}
+              </div>
+              <div className="text-[9px] text-[#00FF87] font-bold font-display">
+                Current: $410
               </div>
             </div>
           </div>
@@ -252,4 +270,5 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
     </div>
   )
 }
+
 
