@@ -156,7 +156,7 @@ export function App() {
   return (
     <div className="min-h-screen bg-[#05090f] text-white flex flex-col items-center justify-center font-sans sm:py-6 selection:bg-[#00F2FE] selection:text-black">
       {/* Smartphone Shell Container for Pixel-Perfect Mockup Presentation */}
-      <div className="w-full max-w-[400px] min-h-screen sm:min-h-[840px] bg-gradient-to-b from-[#0a111a] via-[#101926] to-[#05090f] sm:rounded-[44px] sm:border-[8px] sm:border-[#1c2433] sm:shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col relative overflow-hidden">
+      <div className="w-full max-w-[390px] min-h-screen sm:min-h-[840px] bg-gradient-to-b from-[#0a111a] via-[#101926] to-[#05090f] sm:rounded-[44px] sm:border-[8px] sm:border-[#1c2433] sm:shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col relative overflow-hidden">
         {/* А. System Status Bar & Header (1:1 Mockup Spec) */}
         <Navbar />
 

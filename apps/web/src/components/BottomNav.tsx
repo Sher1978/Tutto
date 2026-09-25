@@ -19,8 +19,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   }
 
   return (
-    <nav className="fixed sm:absolute bottom-0 left-0 right-0 bg-[#05090f]/95 backdrop-blur-lg border-t border-white/10 px-4 py-2 z-50">
-      <div className="max-w-[420px] mx-auto flex justify-between items-center">
+    <nav className="fixed sm:absolute bottom-0 left-0 right-0 bg-[#05090f]/95 backdrop-blur-xl border-t border-white/10 px-3 py-2 z-50">
+      <div className="max-w-[390px] mx-auto flex justify-between items-center">
         {/* 1. HOME */}
         <button
           onClick={() => handleTabClick('home')}
