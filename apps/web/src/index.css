@@ -9,7 +9,6 @@
   /* Official TuttoMinutto Mockup Palette */
   --bg-primary: #060911;
   --bg-card: rgba(18, 24, 38, 0.85);
-  --bg-card-hover: rgba(26, 34, 52, 0.95);
   --cyan: #00F2FE;
   --green: #00FF87;
   --gradient-brand: linear-gradient(135deg, #00F2FE 0%, #00FF87 100%);
@@ -19,9 +18,9 @@ body {
   font-family: var(--font-sans);
   background-color: var(--bg-primary);
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.18) 0%, transparent 60%),
-    radial-gradient(circle at 80% 30%, rgba(0, 255, 135, 0.12) 0%, transparent 50%),
-    radial-gradient(circle at 10% 70%, rgba(112, 0, 255, 0.15) 0%, transparent 50%);
+    radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.22) 0%, transparent 60%),
+    radial-gradient(circle at 85% 25%, rgba(0, 255, 135, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 15% 75%, rgba(112, 0, 255, 0.18) 0%, transparent 50%);
   background-attachment: fixed;
   color: #FFFFFF;
   min-height: 100vh;
@@ -32,110 +31,130 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Neon Glow Typography */
+/* Neon Glow Typography 1:1 Mockup */
 .glow-tutto {
   color: #00F2FE;
   text-shadow: 
-    0 0 10px rgba(0, 242, 254, 0.9),
-    0 0 25px rgba(0, 242, 254, 0.6),
-    0 0 50px rgba(0, 242, 254, 0.3);
+    0 0 12px rgba(0, 242, 254, 0.95),
+    0 0 30px rgba(0, 242, 254, 0.7),
+    0 0 60px rgba(0, 242, 254, 0.4);
 }
 
 .glow-minutto {
   color: #00FF87;
   text-shadow: 
-    0 0 10px rgba(0, 255, 135, 0.9),
-    0 0 25px rgba(0, 255, 135, 0.6),
-    0 0 50px rgba(0, 255, 135, 0.3);
+    0 0 12px rgba(0, 255, 135, 0.95),
+    0 0 30px rgba(0, 255, 135, 0.7),
+    0 0 60px rgba(0, 255, 135, 0.4);
 }
 
 .glow-timer {
   color: #00FF87;
-  text-shadow: 0 0 20px rgba(0, 255, 135, 0.8);
+  font-family: 'JetBrains Mono', monospace;
+  text-shadow: 0 0 25px rgba(0, 255, 135, 0.9);
 }
 
 .glow-price {
-  color: #00F2FE;
-  text-shadow: 0 0 20px rgba(0, 242, 254, 0.8);
+  color: #00FF87;
+  font-family: 'Outfit', sans-serif;
+  text-shadow: 0 0 20px rgba(0, 255, 135, 0.8);
 }
 
-/* Glassmorphism Cards & Panels */
-.mockup-card {
-  background: linear-gradient(160deg, rgba(22, 29, 45, 0.85) 0%, rgba(13, 18, 30, 0.95) 100%);
+/* 3D Glossy Category Square Tile Styles from Mockup */
+.cat-tile-resorts {
+  background: linear-gradient(145deg, rgba(5, 72, 56, 0.85) 0%, rgba(12, 32, 26, 0.95) 100%);
+  border: 1px solid rgba(0, 255, 135, 0.5);
+  box-shadow: 0 8px 24px rgba(0, 255, 135, 0.25);
+}
+
+.cat-tile-tours {
+  background: linear-gradient(145deg, rgba(4, 61, 84, 0.85) 0%, rgba(10, 27, 40, 0.95) 100%);
+  border: 1px solid rgba(0, 242, 254, 0.5);
+  box-shadow: 0 8px 24px rgba(0, 242, 254, 0.25);
+}
+
+.cat-tile-experiences {
+  background: linear-gradient(145deg, rgba(77, 56, 5, 0.85) 0%, rgba(32, 26, 10, 0.95) 100%);
+  border: 1px solid rgba(255, 179, 2, 0.5);
+  box-shadow: 0 8px 24px rgba(255, 179, 2, 0.25);
+}
+
+.cat-tile-yachts {
+  background: linear-gradient(145deg, rgba(11, 43, 64, 0.85) 0%, rgba(8, 19, 29, 0.95) 100%);
+  border: 1px solid rgba(0, 242, 254, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 242, 254, 0.2);
+}
+
+.cat-tile-stay {
+  background: linear-gradient(145deg, rgba(77, 16, 16, 0.85) 0%, rgba(32, 10, 10, 0.95) 100%);
+  border: 1px solid rgba(255, 42, 109, 0.5);
+  box-shadow: 0 8px 24px rgba(255, 42, 109, 0.25);
+}
+
+/* Mockup Main Auction Card */
+.mockup-card-main {
+  background: linear-gradient(165deg, rgba(22, 29, 45, 0.92) 0%, rgba(11, 16, 26, 0.98) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 24px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 26px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.mockup-card:hover {
+.mockup-card-main:hover {
   border-color: rgba(0, 242, 254, 0.5);
-  box-shadow: 
-    0 0 30px rgba(0, 242, 254, 0.25),
-    0 16px 48px rgba(0, 0, 0, 0.7);
-  transform: translateY(-4px);
+  box-shadow: 0 0 35px rgba(0, 242, 254, 0.3);
 }
 
-/* Mockup Large Action Buttons */
-.mockup-btn-primary {
+/* Mockup Full Width Bright Action Button */
+.mockup-action-btn {
   background: linear-gradient(135deg, #00F2FE 0%, #00FF87 100%);
   color: #060911;
   font-family: var(--font-display);
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   border-radius: 16px;
-  box-shadow: 0 6px 24px rgba(0, 242, 254, 0.4);
+  box-shadow: 0 6px 28px rgba(0, 242, 254, 0.45);
   transition: all 0.2s ease;
 }
 
-.mockup-btn-primary:hover {
-  filter: brightness(1.15);
-  box-shadow: 0 0 35px rgba(0, 255, 135, 0.6);
+.mockup-action-btn:hover {
+  filter: brightness(1.18);
+  box-shadow: 0 0 40px rgba(0, 255, 135, 0.7);
   transform: scale(1.02);
 }
 
-.mockup-btn-primary:active {
+.mockup-action-btn:active {
   transform: scale(0.98);
 }
 
-/* Category Quick Square Buttons */
-.category-square-btn {
-  background: linear-gradient(145deg, rgba(33, 43, 67, 0.7) 0%, rgba(20, 26, 42, 0.9) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
-  transition: all 0.25s ease;
+/* Bottom Glass Nav Bar */
+.bottom-nav-glass {
+  background: rgba(11, 16, 26, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.category-square-btn:hover {
-  border-color: rgba(0, 242, 254, 0.6);
-  box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
-  transform: translateY(-2px);
-}
-
-/* Safe Area Insets */
+/* Safe Areas */
 .safe-area-top {
   padding-top: env(safe-area-inset-top, 0px);
 }
-
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 16px);
 }
 
-/* Custom Scrollbars */
+/* Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--cyan);
+  border-radius: 5px;
 }
