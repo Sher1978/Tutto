@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { Navbar } from './components/Navbar'
+import { MockupAuctionSection } from './components/MockupAuctionSection'
 import { RequestCard } from './components/RequestCard'
+import { TemplateCard } from './components/TemplateCard'
 import { CreateRequestModal } from './components/CreateRequestModal'
 import { BidModal } from './components/BidModal'
 import { BusinessProfileView } from './components/BusinessProfileView'
 import { DealChatModal } from './components/DealChatModal'
 import { BottomNav, TabId } from './components/BottomNav'
-import { MOCK_REQUESTS } from './data/mockData'
-import { RequestItem, BidItem } from './types'
+import { MOCK_REQUESTS, SERVICE_TEMPLATES } from './data/mockData'
+import { RequestItem, BidItem, ServiceTemplate } from './types'
 import { initTelegramApp, triggerHapticFeedback } from './lib/telegram'
-import { Sparkles, CheckCircle2 } from 'lucide-react'
+import { CheckCircle2, Zap } from 'lucide-react'
 
 export function App() {
   const [activeHub, setActiveHub] = useState<string>('bali')
@@ -58,6 +60,35 @@ export function App() {
   const handleSelectHub = (hub: string) => {
     setActiveHub(hub)
     triggerHapticFeedback('light')
+  }
+
+  const handleCreateRequestFromTemplate = (template: ServiceTemplate) => {
+    const createdItem: RequestItem = {
+      id: `req-tpl-${Date.now()}`,
+      clientId: 'usr-current',
+      clientName: 'Kaitlyn L.',
+      clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+      clientRating: 5.0,
+      hub: activeHub as any,
+      district: 'Central Hub',
+      categoryL1Id: template.categoryL1Id,
+      categoryL1Name: 'Services',
+      title: template.title,
+      description: template.description,
+      budget: template.defaultBudget ?? 345,
+      currency: 'USD',
+      mediaUrls: [template.coverImageUrl],
+      isFeatured: false,
+      status: 'open',
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
+      auctionEndsAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+      bidsCount: 1,
+    }
+
+    setRequests([createdItem, ...requests])
+    setNotificationMsg(`⚡ Заявка "${template.title}" создана в 1-клик!`)
+    setTimeout(() => setNotificationMsg(null), 4000)
   }
 
   const handleCreateRequest = (newReq: Partial<RequestItem>) => {
@@ -120,167 +151,145 @@ export function App() {
     setTimeout(() => setNotificationMsg(null), 4000)
   }
 
-  const hubsList = [
-    { id: 'bali', label: '🌴 BALI' },
-    { id: 'phuket', label: 'PHUKET' },
-    { id: 'bangkok', label: 'BANGKOK' },
-    { id: 'seoul', label: 'SEOUL' },
-    { id: 'tokyo', label: 'TOKYO' },
-  ]
-
-  const categoryTiles = [
-    { id: 'resorts', label: 'RESORTS', icon: '🌴', styleClass: 'cat-tile-resorts' },
-    { id: 'tours', label: 'TOURS', icon: '✈️', styleClass: 'cat-tile-tours' },
-    { id: 'experiences', label: 'EXPERIENCES', icon: '🥂', styleClass: 'cat-tile-experiences' },
-    { id: 'yachts', label: 'YACHTS', icon: '⛵', styleClass: 'cat-tile-yachts' },
-    { id: 'stay', label: 'STAY!', icon: '🏎️', styleClass: 'cat-tile-stay' },
-  ]
-
   return (
-    <div className="min-h-screen text-white flex flex-col font-sans pb-24">
-      {/* 1. Header (Centered Logo + Profile Status Bar 1:1 Mockup) */}
-      <Navbar />
+    <div className="min-h-screen bg-gradient-to-b from-[#0a111a] via-[#101926] to-[#05090f] text-white flex flex-col font-sans pb-20">
+      {/* Mobile Frame Centering Container (iPhone 390px calculation) */}
+      <div className="max-w-[420px] w-full mx-auto flex flex-col flex-1">
+        {/* А. System Status Bar & Header (1:1 Mockup Spec) */}
+        <Navbar />
 
-      {/* Notification Toast */}
-      {notificationMsg && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl bg-gradient-to-r from-[#00F2FE] to-[#00FF87] text-[#060911] font-black text-xs shadow-[0_0_30px_rgba(0,255,135,0.6)] flex items-center gap-2 animate-bounce">
-          <CheckCircle2 className="w-4 h-4 text-black" />
-          <span>{notificationMsg}</span>
-        </div>
-      )}
+        {/* Notification Toast */}
+        {notificationMsg && (
+          <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-cyan-400 text-black font-black text-xs shadow-[0_0_25px_rgba(0,242,254,0.6)] flex items-center gap-2 animate-bounce">
+            <CheckCircle2 className="w-4 h-4 text-black" />
+            <span>{notificationMsg}</span>
+          </div>
+        )}
 
-      {/* Main Content Area */}
-      <main className="max-w-xl w-full mx-auto px-4 py-2 flex-1 space-y-5">
-        {activeTab === 'home' && (
-          <>
-            {/* 2. ASIAN HUBS (1:1 Mockup Text Tabs) */}
-            <div className="space-y-2">
-              <h2 className="text-xs uppercase tracking-widest font-black text-gray-300 font-display">
-                ASIAN HUBS
-              </h2>
-              <div className="flex items-center justify-between overflow-x-auto pb-1 scrollbar-none gap-3">
-                {hubsList.map((h) => (
+        {/* Main Content Area */}
+        <main className="w-full px-4 py-2 flex-1 space-y-5">
+          {activeTab === 'home' && (
+            <>
+              {/* В & Г. Asian Hubs & Live Reverse Auctions (1:1 Mockup Spec) */}
+              <MockupAuctionSection
+                activeHub={activeHub}
+                onSelectHub={handleSelectHub}
+                activeCategory={activeCategory}
+                onSelectCategory={setActiveCategory}
+                onOpenBidModal={(req) => setSelectedRequestForBid(req)}
+                requests={requests}
+              />
+
+              {/* 1-CLICK TEMPLATES & EXTRA AUCTIONS CATALOG */}
+              <div className="space-y-3 pt-3 border-t border-white/5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-[11px] font-bold text-gray-400 tracking-widest uppercase flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>КАТАЛОГ ШАБЛОНОВ (1-CLICK LAUNCH)</span>
+                  </h3>
                   <button
-                    key={h.id}
-                    onClick={() => handleSelectHub(h.id)}
-                    className={`text-xs font-black uppercase tracking-wider transition-all py-1 shrink-0 ${
-                      activeHub === h.id
-                        ? 'text-[#00FF87] border-b-2 border-[#00FF87] glow-green'
-                        : 'text-gray-400 hover:text-white'
-                    }`}
+                    onClick={() => setIsCreateOpen(true)}
+                    className="text-[10px] font-bold text-cyan-400 hover:underline cursor-pointer"
                   >
-                    {h.label}
+                    + Своя заявка
                   </button>
-                ))}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  {SERVICE_TEMPLATES.map((tpl) => (
+                    <TemplateCard
+                      key={tpl.id}
+                      template={tpl}
+                      onLaunchTemplate={handleCreateRequestFromTemplate}
+                      onSaveTemplate={() => {
+                        setNotificationMsg(`📌 Шаблон "${tpl.title}" сохранен!`)
+                        setTimeout(() => setNotificationMsg(null), 3000)
+                      }}
+                    />
+                  ))}
+                </div>
+
+                {/* Additional Live Feed Cards */}
+                <div className="space-y-3 pt-2">
+                  <h3 className="text-[11px] font-bold text-gray-400 tracking-widest uppercase">
+                    ВСЕ АКТИВНЫЕ ЗАЯВКИ ПОКУПАТЕЛЕЙ
+                  </h3>
+                  {requests.slice(1).map((req) => (
+                    <RequestCard
+                      key={req.id}
+                      request={req}
+                      onOpenDetails={() => setSelectedRequestForBid(req)}
+                      onQuickBid={() => setSelectedRequestForBid(req)}
+                    />
+                  ))}
+                </div>
               </div>
+            </>
+          )}
+
+          {activeTab === 'explore' && (
+            <div className="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center my-4">
+              <h3 className="font-bold text-base text-white">Explore All Auctions</h3>
+              <p className="text-xs text-gray-400 mt-1">Browse all available reverse auctions in South East Asia</p>
             </div>
+          )}
 
-            {/* 3. 3D GLOSSY CATEGORY TILES (1:1 Mockup 5-Column Tiles) */}
-            <div className="grid grid-cols-5 gap-2.5">
-              {categoryTiles.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id === activeCategory ? null : cat.id)}
-                  className={`p-2.5 rounded-2xl flex flex-col items-center justify-center text-center transition-all ${cat.styleClass} ${
-                    activeCategory === cat.id ? 'scale-105 shadow-[0_0_25px_rgba(0,242,254,0.5)]' : ''
-                  }`}
-                >
-                  <span className="text-2xl mb-1 drop-shadow-md">{cat.icon}</span>
-                  <span className="text-[9px] font-black uppercase tracking-wider text-white font-display">
-                    {cat.label}
-                  </span>
-                </button>
-              ))}
+          {activeTab === 'my-bids' && (
+            <div className="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center my-4">
+              <h3 className="font-bold text-base text-white">My Bids & Auctions</h3>
+              <p className="text-xs text-gray-400 mt-1">Track your active bids and incoming offers</p>
             </div>
+          )}
 
-            {/* 4. LIVE REVERSE AUCTIONS (1:1 Mockup Card Grid) */}
-            <div className="space-y-3 pt-1">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs uppercase tracking-widest font-black text-white font-display flex items-center gap-1.5">
-                  <span>LIVE REVERSE AUCTIONS</span>
-                  <span className="w-2 h-2 rounded-full bg-[#00FF87] animate-ping" />
-                </h2>
-                <span className="text-[10px] text-[#00FF87] font-bold flex items-center gap-1 glow-green">
-                  <Sparkles className="w-3 h-3" /> Live Feed
-                </span>
-              </div>
-
-              {/* Render Pristine Auction Cards */}
-              <div className="space-y-4">
-                {requests.map((req) => (
-                  <RequestCard
-                    key={req.id}
-                    request={req}
-                    onOpenDetails={() => setSelectedRequestForBid(req)}
-                    onQuickBid={() => setSelectedRequestForBid(req)}
-                  />
-                ))}
-              </div>
+          {activeTab === 'chat' && (
+            <div className="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center my-4">
+              <h3 className="font-bold text-base text-white">In-App Messages</h3>
+              <p className="text-xs text-gray-400 mt-1">Realtime conversation with clients and service providers</p>
             </div>
-          </>
-        )}
+          )}
 
-        {activeTab === 'explore' && (
-          <div className="mockup-card-main p-6 text-center border-white/15 my-4">
-            <h3 className="font-display font-extrabold text-base text-white">Explore All Auctions</h3>
-            <p className="text-xs text-gray-400 mt-1">Browse all available reverse auctions in South East Asia</p>
-          </div>
-        )}
+          {activeTab === 'account' && <BusinessProfileView />}
+        </main>
 
-        {activeTab === 'my-bids' && (
-          <div className="mockup-card-main p-6 text-center border-white/15 my-4">
-            <h3 className="font-display font-extrabold text-base text-white">My Bids & Auctions</h3>
-            <p className="text-xs text-gray-400 mt-1">Track your active bids and incoming offers</p>
-          </div>
-        )}
+        {/* Modals */}
+        <CreateRequestModal
+          isOpen={isCreateOpen}
+          onClose={() => setIsCreateOpen(false)}
+          currentHub={activeHub as any}
+          onCreateRequest={handleCreateRequest}
+        />
 
-        {activeTab === 'chat' && (
-          <div className="mockup-card-main p-6 text-center border-white/15 my-4">
-            <h3 className="font-display font-extrabold text-base text-white">In-App Messages</h3>
-            <p className="text-xs text-gray-400 mt-1">Realtime conversation with clients and service providers</p>
-          </div>
-        )}
+        <BidModal
+          isOpen={Boolean(selectedRequestForBid)}
+          request={selectedRequestForBid}
+          onClose={() => setSelectedRequestForBid(null)}
+          onSubmitBid={handleSubmitBid}
+        />
 
-        {activeTab === 'account' && <BusinessProfileView />}
-      </main>
+        {/* In-App Realtime Deal Chat Modal */}
+        <DealChatModal
+          isOpen={Boolean(activeDealRequest && activeDealBid)}
+          request={activeDealRequest}
+          bid={activeDealBid}
+          onClose={() => {
+            setActiveDealRequest(null)
+            setActiveDealBid(null)
+          }}
+          onCompleteDeal={() => {
+            setNotificationMsg('🎉 Deal completed! Review window opened.')
+            setTimeout(() => setNotificationMsg(null), 4000)
+          }}
+        />
 
-      {/* Modals */}
-      <CreateRequestModal
-        isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
-        currentHub={activeHub as any}
-        onCreateRequest={handleCreateRequest}
-      />
-
-      <BidModal
-        isOpen={Boolean(selectedRequestForBid)}
-        request={selectedRequestForBid}
-        onClose={() => setSelectedRequestForBid(null)}
-        onSubmitBid={handleSubmitBid}
-      />
-
-      {/* In-App Realtime Deal Chat Modal */}
-      <DealChatModal
-        isOpen={Boolean(activeDealRequest && activeDealBid)}
-        request={activeDealRequest}
-        bid={activeDealBid}
-        onClose={() => {
-          setActiveDealRequest(null)
-          setActiveDealBid(null)
-        }}
-        onCompleteDeal={() => {
-          setNotificationMsg('🎉 Deal completed! Review window opened.')
-          setTimeout(() => setNotificationMsg(null), 4000)
-        }}
-      />
-
-      {/* 5. Bottom Navigation (1:1 Mockup) */}
-      <BottomNav
-        activeTab={activeTab}
-        onSelectTab={setActiveTab}
-      />
+        {/* Д. Bottom Tab Bar (1:1 Mockup Spec) */}
+        <BottomNav
+          activeTab={activeTab}
+          onSelectTab={setActiveTab}
+        />
+      </div>
     </div>
   )
 }
 
 export default App
+
