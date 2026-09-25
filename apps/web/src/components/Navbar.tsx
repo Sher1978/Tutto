@@ -9,8 +9,8 @@ export const Navbar: React.FC = () => {
     <header className="w-full pt-2 pb-2 px-4 safe-area-top flex flex-col">
       {/* 1. System Status Bar (Time & System Icons) */}
       <div className="w-full flex justify-between items-center text-xs font-medium text-white/90 px-1 py-1">
-        <span>Time</span>
-        <div className="flex items-center gap-1.5 text-white/80">
+        <span className="pl-1 text-white/90 font-medium">Time</span>
+        <div className="flex items-center gap-1.5 text-white/80 pr-1">
           <Signal className="w-3.5 h-3.5" />
           <Wifi className="w-3.5 h-3.5" />
           <Battery className="w-4 h-4" />

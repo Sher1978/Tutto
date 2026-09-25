@@ -83,13 +83,13 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
 
   return (
     <div className="w-full">
-      {/* В. ASIAN HUBS NAVIGATION */}
-      <h2 className="mt-5 text-[11px] font-bold text-gray-400 tracking-widest uppercase">
+      {/* 1. СЕКЦИЯ ХАБОВ (ASIAN HUBS) */}
+      <h2 className="mt-4 text-[11px] font-bold text-gray-400 tracking-widest uppercase">
         ASIAN HUBS
       </h2>
 
-      {/* City Selector */}
-      <div className="flex justify-between items-center mt-2 pb-2 border-b border-white/5 text-xs font-bold tracking-wider uppercase">
+      {/* City Selector (Clean Flex Gap layout without distracting lines) */}
+      <div className="flex justify-between items-center mt-2 text-xs font-bold tracking-wider uppercase">
         {hubs.map((h) => {
           const isActive = activeHub.toLowerCase() === h.id
           return (
@@ -107,7 +107,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
         })}
       </div>
 
-      {/* Category Horizontal Scroll Slider */}
+      {/* Category Horizontal Slider with w-14 h-14 containers */}
       <div className="flex gap-3 mt-3 overflow-x-auto no-scrollbar py-1">
         {categories.map((cat) => {
           const IconComp = cat.icon
@@ -116,20 +116,20 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
             <button
               key={cat.id}
               onClick={() => onSelectCategory(isActive ? null : cat.id)}
-              className="flex flex-col items-center gap-1 shrink-0 cursor-pointer"
+              className="flex flex-col items-center gap-1 shrink-0 cursor-pointer group"
             >
               <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
                   isActive
-                    ? 'border border-cyan-400 bg-cyan-950/20 text-cyan-400 shadow-[0_0_15px_rgba(0,242,254,0.3)]'
+                    ? 'border-2 border-cyan-400 bg-gradient-to-br from-cyan-900/80 via-cyan-900/50 to-cyan-500/30 text-cyan-400 shadow-[0_0_20px_rgba(0,242,254,0.5)] scale-105'
                     : 'bg-slate-900/80 border border-white/10 text-white/80 hover:border-white/30'
                 }`}
               >
-                <IconComp className="w-5 h-5" />
+                <IconComp className="w-6 h-6" />
               </div>
               <span
-                className={`text-[9px] font-bold uppercase tracking-tight ${
-                  isActive ? 'text-cyan-400' : 'text-gray-400'
+                className={`text-[9.5px] uppercase tracking-tight ${
+                  isActive ? 'font-extrabold text-cyan-400' : 'font-bold text-gray-400'
                 }`}
               >
                 {cat.label}
@@ -139,7 +139,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
         })}
       </div>
 
-      {/* Г. LIVE REVERSE AUCTIONS SECTION */}
+      {/* 2. СЕКЦИЯ АУКЦИОНОВ (LIVE REVERSE AUCTIONS) */}
       <h2 className="mt-5 text-[11px] font-bold text-cyan-400 tracking-widest uppercase flex items-center justify-between">
         <span>LIVE REVERSE AUCTIONS</span>
         <span className="flex items-center gap-1 text-emerald-400 text-[9px] font-semibold">
@@ -147,10 +147,10 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
         </span>
       </h2>
 
-      {/* The Grid System */}
-      <div className="grid grid-cols-12 gap-3 mt-2.5 h-[240px]">
-        {/* 1. Left Main Banner (col-span-8) */}
-        <div className="col-span-8 relative rounded-2xl overflow-hidden border border-white/10 h-full group shadow-2xl">
+      {/* The Grid System (Height 255px perfectly matched for left and right columns) */}
+      <div className="grid grid-cols-12 gap-3 mt-2.5 h-[255px]">
+        {/* Левый главный баннер (Bali) - col-span-8 */}
+        <div className="col-span-8 relative rounded-2xl overflow-hidden border border-white/10 h-full group shadow-2xl flex flex-col justify-between">
           {/* Background image */}
           <img
             src="https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800"
@@ -158,11 +158,14 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
 
-          {/* Shadow Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent flex flex-col justify-between p-2.5">
+          {/* Shadow Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />
+
+          {/* Top Banner Content (Badge left, Prices stacked right) */}
+          <div className="relative z-10 p-2.5 flex justify-between items-start w-full">
             {/* Top Left Badge */}
-            <div className="self-start">
-              <div className="text-[10px] font-bold text-white bg-black/40 px-2 py-1 rounded-md backdrop-blur-sm border border-white/10 inline-block leading-tight">
+            <div className="max-w-[55%]">
+              <div className="text-[10px] font-bold text-white bg-black/50 px-2 py-1 rounded-md backdrop-blur-md border border-white/10 inline-block leading-tight shadow-md">
                 BALI: AYANA Resort - Ocean View Suite
               </div>
               <div className="text-[8px] text-gray-300 mt-0.5 pl-0.5">
@@ -170,74 +173,75 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
               </div>
             </div>
 
-            {/* Middle Right Price Blocks */}
-            <div className="self-end text-right space-y-1 my-auto pr-1">
-              <div className="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/20 inline-block backdrop-blur-sm">
+            {/* Top Right Price Stack (Vertical) */}
+            <div className="text-right space-y-1">
+              <div className="bg-emerald-950/80 backdrop-blur-md border border-emerald-500/30 px-2 py-0.5 rounded-md text-[10px] font-black text-emerald-400 shadow-md inline-block">
                 Current Low Bid: $345
               </div>
-              <div className="text-[9px] font-medium text-gray-400 line-through bg-black/40 px-2 py-0.5 rounded text-right block w-fit ml-auto">
+              <div className="bg-black/50 backdrop-blur-md px-2 py-0.5 rounded-md text-[10px] font-medium text-gray-400 line-through text-right block w-fit ml-auto">
                 Original Price: $980
               </div>
             </div>
+          </div>
 
-            {/* Bottom Content Area */}
-            <div className="w-full flex flex-col items-center">
-              {/* Bidders count */}
-              <div className="w-full text-left text-[9px] text-gray-300 flex items-center gap-1 mb-0.5">
-                <Users className="w-3 h-3 text-cyan-400" />
-                <span>12 Bidders</span>
-              </div>
-
-              {/* Large Timer */}
-              <div className="text-3xl font-mono font-black text-emerald-400 tracking-wider my-0.5 drop-shadow-[0_2px_8px_rgba(16,185,129,0.3)]">
-                {timer1}
-              </div>
-
-              {/* View Offer / Bid Now Button */}
-              <button
-                onClick={() => onOpenBidModal(mainRequest)}
-                className="w-full h-9 bg-cyan-400 hover:bg-cyan-300 text-black font-black text-[10px] tracking-widest uppercase flex items-center justify-center transition-colors rounded-b-xl shadow-[0_4px_20px_rgba(0,242,254,0.4)] cursor-pointer mt-1"
-              >
-                VIEW OFFER / BID NOW
-              </button>
+          {/* Bottom Banner Content (Bidders + Timer + Integrated Rounded-B Button) */}
+          <div className="relative z-10 w-full flex flex-col items-center">
+            {/* Bidders count */}
+            <div className="w-full px-2.5 text-left text-[9px] text-gray-300 flex items-center gap-1 mb-0.5">
+              <Users className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="font-semibold">12 Bidders</span>
             </div>
+
+            {/* Large Glowing Timer */}
+            <div className="text-3xl sm:text-4xl font-mono font-black text-emerald-400 tracking-wider text-center my-0.5 drop-shadow-[0_0_12px_rgba(52,211,153,0.6)]">
+              {timer1}
+            </div>
+
+            {/* View Offer / Bid Now Button (Perfect bottom integration rounded-b-2xl rounded-t-none) */}
+            <button
+              onClick={() => onOpenBidModal(mainRequest)}
+              className="w-full h-10 bg-cyan-400 hover:bg-cyan-300 text-black font-black text-xs tracking-widest uppercase flex items-center justify-center transition-colors rounded-b-2xl rounded-t-none shadow-[0_4px_20px_rgba(0,242,254,0.4)] cursor-pointer mt-1"
+            >
+              VIEW OFFER / BID NOW
+            </button>
           </div>
         </div>
 
-        {/* 2. Right Column Mini-Cards (col-span-4) */}
-        <div className="col-span-4 flex flex-col gap-2 h-full">
-          {/* Top Mini Card */}
-          <div className="h-1/2 rounded-xl overflow-hidden border border-white/10 relative shadow-md">
+        {/* Правая колонка мини-карточек - col-span-4 */}
+        <div className="col-span-4 flex flex-col justify-between h-full gap-2">
+          {/* Верхняя мини-карточка (Бали отель с бассейном) */}
+          <div className="h-[calc(50%-4px)] rounded-xl overflow-hidden border border-white/10 relative shadow-md group">
             <img
-              src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400"
-              alt="Bali Villa"
-              className="w-full h-full object-cover"
+              src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=500"
+              alt="Bali Luxury Pool Villa"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent p-1 flex items-end">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-1.5 flex items-end">
               <span className="text-[8px] font-bold text-white leading-tight">Bali: Royal Pool Villa</span>
             </div>
           </div>
 
-          {/* Bottom Mini Card (Phuket Card) */}
+          {/* Нижняя мини-карточка (Phuket Kata Rocks - Упакованная единая плашка) */}
           <div
             onClick={() => onOpenBidModal(phuketRequest)}
-            className="h-1/2 relative rounded-xl overflow-hidden border border-white/10 shadow-md group cursor-pointer"
+            className="h-[calc(50%-4px)] relative rounded-xl overflow-hidden border border-white/10 shadow-md group cursor-pointer"
           >
             <img
-              src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400"
+              src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=500"
               alt="Kata Rocks Villa"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-1.5 flex flex-col justify-end">
-              <div className="text-[8px] font-bold text-white leading-tight truncate">
-                Phuket: Kata Rocks Villa
-              </div>
-              <div className="bg-black/60 backdrop-blur-xs p-1 text-[8px] rounded mt-0.5 border border-white/10">
-                <div className="text-white font-mono flex items-center justify-between">
-                  <span className="text-amber-400 font-bold">TIMER</span>
-                  <span>{timer2}</span>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-1">
+              {/* Compact Unified Information Overlay */}
+              <div className="bg-black/75 backdrop-blur-md p-1.5 rounded-lg border border-white/10">
+                <div className="text-[9px] font-extrabold text-white leading-tight truncate">
+                  Phuket: Kata Rocks Villa
                 </div>
-                <div className="text-emerald-400 font-medium mt-0.5">
+                <div className="flex items-center justify-between text-[8px] font-mono text-gray-300 mt-0.5">
+                  <span className="text-amber-400 font-bold">TIMER</span>
+                  <span className="font-bold text-white">{timer2}</span>
+                </div>
+                <div className="text-[9px] font-bold text-emerald-400 mt-0.5">
                   Current Bid: $410
                 </div>
               </div>
@@ -248,3 +252,4 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
     </div>
   )
 }
+

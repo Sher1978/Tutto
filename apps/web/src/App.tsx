@@ -151,6 +151,8 @@ export function App() {
     setTimeout(() => setNotificationMsg(null), 4000)
   }
 
+  const [showTemplatesCatalog, setShowTemplatesCatalog] = useState(false)
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a111a] via-[#101926] to-[#05090f] text-white flex flex-col font-sans pb-20">
       {/* Mobile Frame Centering Container (iPhone 390px calculation) */}
@@ -167,7 +169,7 @@ export function App() {
         )}
 
         {/* Main Content Area */}
-        <main className="w-full px-4 py-2 flex-1 space-y-5">
+        <main className="w-full px-4 py-2 flex-1 space-y-4">
           {activeTab === 'home' && (
             <>
               {/* В & Г. Asian Hubs & Live Reverse Auctions (1:1 Mockup Spec) */}
@@ -180,50 +182,61 @@ export function App() {
                 requests={requests}
               />
 
-              {/* 1-CLICK TEMPLATES & EXTRA AUCTIONS CATALOG */}
-              <div className="space-y-3 pt-3 border-t border-white/5">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-[11px] font-bold text-gray-400 tracking-widest uppercase flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>КАТАЛОГ ШАБЛОНОВ (1-CLICK LAUNCH)</span>
-                  </h3>
-                  <button
-                    onClick={() => setIsCreateOpen(true)}
-                    className="text-[10px] font-bold text-cyan-400 hover:underline cursor-pointer"
-                  >
-                    + Своя заявка
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2.5">
-                  {SERVICE_TEMPLATES.map((tpl) => (
-                    <TemplateCard
-                      key={tpl.id}
-                      template={tpl}
-                      onLaunchTemplate={handleCreateRequestFromTemplate}
-                      onSaveTemplate={() => {
-                        setNotificationMsg(`📌 Шаблон "${tpl.title}" сохранен!`)
-                        setTimeout(() => setNotificationMsg(null), 3000)
-                      }}
-                    />
-                  ))}
-                </div>
-
-                {/* Additional Live Feed Cards */}
-                <div className="space-y-3 pt-2">
-                  <h3 className="text-[11px] font-bold text-gray-400 tracking-widest uppercase">
-                    ВСЕ АКТИВНЫЕ ЗАЯВКИ ПОКУПАТЕЛЕЙ
-                  </h3>
-                  {requests.slice(1).map((req) => (
-                    <RequestCard
-                      key={req.id}
-                      request={req}
-                      onOpenDetails={() => setSelectedRequestForBid(req)}
-                      onQuickBid={() => setSelectedRequestForBid(req)}
-                    />
-                  ))}
-                </div>
+              {/* Optional Collapsible 1-Click Templates & Extra Requests */}
+              <div className="pt-2 text-center">
+                <button
+                  onClick={() => setShowTemplatesCatalog(!showTemplatesCatalog)}
+                  className="text-[10px] font-extrabold text-cyan-400/80 hover:text-cyan-400 py-1.5 px-3.5 rounded-full bg-cyan-950/30 border border-cyan-500/20 transition-all cursor-pointer inline-flex items-center gap-1.5"
+                >
+                  <Zap className="w-3 h-3 text-cyan-400" />
+                  <span>{showTemplatesCatalog ? '▲ Скрыть шаблоны' : '⚡ 1-Click Шаблоны услуг (Развернуть)'}</span>
+                </button>
               </div>
+
+              {showTemplatesCatalog && (
+                <div className="space-y-3 pt-3 border-t border-white/5 animate-fadeIn">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-[11px] font-bold text-gray-400 tracking-widest uppercase flex items-center gap-1.5">
+                      <span>КАТАЛОГ ШАБЛОНОВ (1-CLICK LAUNCH)</span>
+                    </h3>
+                    <button
+                      onClick={() => setIsCreateOpen(true)}
+                      className="text-[10px] font-bold text-cyan-400 hover:underline cursor-pointer"
+                    >
+                      + Своя заявка
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {SERVICE_TEMPLATES.map((tpl) => (
+                      <TemplateCard
+                        key={tpl.id}
+                        template={tpl}
+                        onLaunchTemplate={handleCreateRequestFromTemplate}
+                        onSaveTemplate={() => {
+                          setNotificationMsg(`📌 Шаблон "${tpl.title}" сохранен!`)
+                          setTimeout(() => setNotificationMsg(null), 3000)
+                        }}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Additional Live Feed Cards */}
+                  <div className="space-y-3 pt-2">
+                    <h3 className="text-[11px] font-bold text-gray-400 tracking-widest uppercase">
+                      ВСЕ АКТИВНЫЕ ЗАЯВКИ ПОКУПАТЕЛЕЙ
+                    </h3>
+                    {requests.slice(1).map((req) => (
+                      <RequestCard
+                        key={req.id}
+                        request={req}
+                        onOpenDetails={() => setSelectedRequestForBid(req)}
+                        onQuickBid={() => setSelectedRequestForBid(req)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
             </>
           )}
 
