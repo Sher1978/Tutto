@@ -15,7 +15,13 @@ test.describe('TMA Dual-Mode & Market Interface', () => {
     await marketPill.click({ force: true });
     await page.waitForTimeout(500);
 
-    // 2. Проверяем, что отобразилась лента товаров Маркета
+    // 2. Проверяем, что отобразилась лента товаров Маркета и строка поиска
     await expect(page.getByText(/ГОРЯЩИЕ ТОВАРЫ/i).first()).toBeVisible({ timeout: 5000 });
+    await expect(page.getByPlaceholder(/Поиск по названию или описанию/i)).toBeVisible();
+
+    // 3. Тестируем живой поиск товара
+    const searchInput = page.getByPlaceholder(/Поиск по названию или описанию/i);
+    await searchInput.fill('Yamaha');
+    await expect(page.getByText(/Yamaha/i).first()).toBeVisible();
   });
 });

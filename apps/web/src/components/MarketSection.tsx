@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Mic, Flame, MapPin, Clock } from 'lucide-react'
 import { triggerHapticFeedback } from '../lib/telegram'
 import { MarketItem } from '../types'
+import { MarketFilterBar, MarketSortOption } from './MarketFilterBar'
 
 interface MarketSectionProps {
   activeCategory: string | null
@@ -96,29 +97,50 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
   onOpenQuickRequest,
   onSelectProduct
 }) => {
-  const filteredProducts = activeCategory 
-    ? products.filter((p) => p.category === activeCategory)
-    : products
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState<MarketSortOption>('discount')
+  const [conditionFilter, setConditionFilter] = useState<string | null>(null)
+
+  let processed = products.filter((p) => {
+    if (activeCategory && p.category !== activeCategory) return false
+    if (conditionFilter && p.condition !== conditionFilter) return false
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
+      const matchTitle = p.title.toLowerCase().includes(q)
+      const matchDesc = p.description.toLowerCase().includes(q)
+      if (!matchTitle && !matchDesc) return false
+    }
+    return true
+  })
+
+  // Sorting
+  processed = [...processed].sort((a, b) => {
+    if (sortBy === 'discount') {
+      const discA = a.oldPrice > a.price ? (a.oldPrice - a.price) / a.oldPrice : 0
+      const discB = b.oldPrice > b.price ? (b.oldPrice - b.price) / b.oldPrice : 0
+      return discB - discA
+    }
+    if (sortBy === 'price_asc') {
+      return a.price - b.price
+    }
+    if (sortBy === 'urgent') {
+      return a.expiresIn.localeCompare(b.expiresIn)
+    }
+    return 0
+  })
 
   return (
-    <div className="w-full space-y-5 pb-28">
+    <div className="w-full space-y-4 pb-28">
       
-      {/* 1. SEARCH & VOICE BAR (Market Context) */}
-      <div 
-        onClick={() => {
-          triggerHapticFeedback('medium')
-          onOpenQuickRequest({ title: 'Купить вещь...' })
-        }}
-        className="w-full bg-[#161B22] border border-[#2A303C] rounded-2xl p-3 flex items-center gap-3 shadow-lg cursor-text hover:bg-[#1A202A] transition-colors"
-      >
-        <div className="w-9 h-9 rounded-full bg-[#00F2FE]/10 flex items-center justify-center shrink-0">
-          <Mic className="w-4 h-4 text-[#00F2FE]" />
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[14px] font-bold text-white tracking-wide">Что вы ищете на Маркете?</span>
-          <span className="text-[11px] text-gray-400 font-medium">Опишите товар или байк голосом...</span>
-        </div>
-      </div>
+      {/* 1. INTERACTIVE FILTER & SEARCH BAR */}
+      <MarketFilterBar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        conditionFilter={conditionFilter}
+        onConditionChange={setConditionFilter}
+      />
 
       {/* 2. CHIP CATEGORIES (Horizontal Scroll) */}
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-2 px-2">
@@ -159,7 +181,7 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          {filteredProducts.map((item) => (
+          {processed.map((item) => (
             <div 
               key={item.id}
               onClick={() => {
