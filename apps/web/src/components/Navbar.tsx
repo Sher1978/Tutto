@@ -16,8 +16,8 @@ export const Navbar: React.FC = () => {
           <span className="glow-tutto text-[#00F2FE]">TUTTO</span>
           <span className="glow-minutto text-[#00FF87]">MINUTTO</span>
         </h1>
-        <p className="text-xs font-semibold text-gray-300 tracking-wide mt-0.5">
-          Here, you choose!
+        <p className="text-[11px] font-semibold text-gray-200 tracking-wide mt-1.5 max-w-sm mx-auto leading-relaxed" style={{ fontFamily: "'Roboto', sans-serif" }}>
+          Платформа, где <span className="text-[#00FF87] font-bold">цену определяет покупатель</span>, а не продавец. Создайте заявку и получайте предложения за 1 минуту!
         </p>
       </div>
 
