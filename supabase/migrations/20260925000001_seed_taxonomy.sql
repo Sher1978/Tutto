@@ -4,7 +4,7 @@
 -- ============================================================
 
 -- ============================================================
--- L1: МЕГАКАТЕГОРИИ (7 штук)
+-- L1: МЕГАКАТЕГОРИИ (8 штук)
 -- ============================================================
 INSERT INTO categories_l1 (slug, title_ru, title_en, icon_name, sort_order) VALUES
   ('transport',  'Транспорт',        'Transport',          'bike',       1),
@@ -13,7 +13,8 @@ INSERT INTO categories_l1 (slug, title_ru, title_en, icon_name, sort_order) VALU
   ('food',       'Еда и доставка',   'Food & Delivery',    'utensils',   4),
   ('beauty',     'Красота и здоровье','Beauty & Wellness',  'heart',      5),
   ('tours',      'Туры и активности','Tours & Activities',  'map',        6),
-  ('services',   'Прочие услуги',    'Other Services',     'wrench',     7)
+  ('services',   'Прочие услуги',    'Other Services',     'wrench',     7),
+  ('other',      'Другое / More',    'More / Custom',      'more-horizontal', 8)
 ON CONFLICT (slug) DO NOTHING;
 
 -- ============================================================
@@ -180,4 +181,52 @@ INSERT INTO categories_l3 (parent_id, slug, title_ru, title_en, hint_ru, hint_en
 SELECT id, 'massage_oil', 'Масляный / Ароматерапия (1 час)', 'Oil / Aromatherapy Massage (1 hr)',
   'Опишите предпочтения (интенсивность, масло)', 'Describe preferences (pressure, oil)', 15.00, 35.00
 FROM categories_l2 WHERE slug = 'beauty_massage'
+ON CONFLICT (slug) DO NOTHING;
+
+-- ============================================================
+-- L2 + L3: ДРУГОЕ / MORE
+-- ============================================================
+INSERT INTO categories_l2 (parent_id, slug, title_ru, title_en, icon_name, sort_order)
+SELECT id, 'other_moving', 'Переезд и грузчики', 'Moving & Cargo', 'truck', 1
+FROM categories_l1 WHERE slug = 'other'
+ON CONFLICT (slug) DO NOTHING;
+
+INSERT INTO categories_l2 (parent_id, slug, title_ru, title_en, icon_name, sort_order)
+SELECT id, 'other_pets', 'Уход за питомцами', 'Pet Care', 'dog', 2
+FROM categories_l1 WHERE slug = 'other'
+ON CONFLICT (slug) DO NOTHING;
+
+INSERT INTO categories_l2 (parent_id, slug, title_ru, title_en, icon_name, sort_order)
+SELECT id, 'other_tutoring', 'Обучение и репетиторы', 'Tutoring & Lessons', 'book-open', 3
+FROM categories_l1 WHERE slug = 'other'
+ON CONFLICT (slug) DO NOTHING;
+
+INSERT INTO categories_l2 (parent_id, slug, title_ru, title_en, icon_name, sort_order)
+SELECT id, 'other_custom', 'Своя услуга / Запрос', 'Custom Request', 'help-circle', 4
+FROM categories_l1 WHERE slug = 'other'
+ON CONFLICT (slug) DO NOTHING;
+
+-- L3 — Другое
+INSERT INTO categories_l3 (parent_id, slug, title_ru, title_en, hint_ru, hint_en, price_min, price_max)
+SELECT id, 'moving_help', 'Помощь при переезде и перевозка вещей', 'Moving & Freight Assistance',
+  'Опишите объем вещей, откуда и куда перевозить', 'Describe cargo volume, pickup and dropoff', 30.00, 150.00
+FROM categories_l2 WHERE slug = 'other_moving'
+ON CONFLICT (slug) DO NOTHING;
+
+INSERT INTO categories_l3 (parent_id, slug, title_ru, title_en, hint_ru, hint_en, price_min, price_max)
+SELECT id, 'pet_sitting', 'Выгул / Передержка животных', 'Pet Sitting / Walking',
+  'Укажите вид питомца и нужные даты', 'Specify pet type and required dates', 10.00, 30.00
+FROM categories_l2 WHERE slug = 'other_pets'
+ON CONFLICT (slug) DO NOTHING;
+
+INSERT INTO categories_l3 (parent_id, slug, title_ru, title_en, hint_ru, hint_en, price_min, price_max)
+SELECT id, 'tutor_lesson', 'Инструктор / Репетитор', 'Private Tutor / Instructor',
+  'Укажите предмет, цель и формат занятий', 'Specify subject, goal and class format', 15.00, 50.00
+FROM categories_l2 WHERE slug = 'other_tutoring'
+ON CONFLICT (slug) DO NOTHING;
+
+INSERT INTO categories_l3 (parent_id, slug, title_ru, title_en, hint_ru, hint_en, price_min, price_max)
+SELECT id, 'custom_request', 'Индивидуальный запрос (любая услуга)', 'Custom Service Request',
+  'Опишите подробно, что именно вам требуется и желаемый бюджет', 'Describe in detail what you need and your target budget', 10.00, 500.00
+FROM categories_l2 WHERE slug = 'other_custom'
 ON CONFLICT (slug) DO NOTHING;

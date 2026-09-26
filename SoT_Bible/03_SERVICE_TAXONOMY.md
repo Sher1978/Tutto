@@ -22,16 +22,23 @@ L1 (Мегакатегория)
 -- ============================================================
 
 -- ============================================================
--- L1: МЕГАКАТЕГОРИИ (7 штук)
+-- L1: МЕГАКАТЕГОРИИ (Отсортировано по частоте запросов экспатов/туристов)
+-- Названия: ровно 1 слово, до 7 букв
 -- ============================================================
 INSERT INTO categories_l1 (slug, title_ru, title_en, icon_name, sort_order) VALUES
-  ('transport',  'Транспорт',        'Transport',          'bike',       1),
-  ('housing',    'Жильё',            'Housing',            'home',       2),
-  ('cleaning',   'Клининг',          'Cleaning',           'sparkles',   3),
-  ('food',       'Еда и доставка',   'Food & Delivery',    'utensils',   4),
-  ('beauty',     'Красота и здоровье','Beauty & Wellness',  'heart',      5),
-  ('tours',      'Туры и активности','Tours & Activities',  'map',        6),
-  ('services',   'Прочие услуги',    'Other Services',     'wrench',     7);
+  ('transport', 'Прокат',   'Rentals',    'bike',            1),  -- #1: Байки, авто, трансферы (~35% всех запросов)
+  ('housing',   'Жильё',    'Housing',    'home',            2),  -- #2: Виллы, кондо, апартаменты (~25%)
+  ('finance',   'Деньги',   'Money',      'banknote',        3),  -- #3: Обмен валют, USDT, наличные в отель (~15%)
+  ('services',  'Услуги',   'Services',   'scale',           4),  -- #4: Визаран, страховки, юристы, нотариус
+  ('food',      'Еда',      'Food',       'utensils',        5),  -- #5: Доставка еды, продуктов, личный повар
+  ('cleaning',  'Клининг',  'Cleaning',   'sparkles',        6),  -- #6: Уборка вилл, бассейн, прачечная
+  ('beauty',    'Красота',  'Beauty',     'heart',           7),  -- #7: Массаж на дом, СПА, ногти, стрижки
+  ('kids',      'Дети',     'Kids',       'baby',            8),  -- #8: Няни, садики, прокат детских товаров
+  ('tours',     'Туры',     'Tours',      'map',             9),  -- #9: Экскурсии на острова, сёрфинг, развлечения
+  ('health',    'Врачи',    'Health',     'heart-pulse',     10), -- #10: Вызов врача, IV-капельницы, детокс
+  ('courier',   'Курьер',   'Courier',    'package',         11), -- #11: Срочная доставка за 1 час, выкуп лекарств
+  ('events',    'Ивенты',   'Events',     'party-popper',    12), -- #12: Праздники, ведущий, диджей, декор
+  ('other',     'Другое',   'More',       'more-horizontal', 13); -- #13: Любой свой запрос
 
 -- ============================================================
 -- L2 + L3: ТРАНСПОРТ
@@ -463,38 +470,81 @@ INSERT INTO categories_l3 (parent_id, slug, title_ru, title_en, hint_ru, hint_en
 SELECT id, 'medical_pcr', 'ПЦР-тест / экспресс-тест', 'PCR / Rapid Test',
   'Укажите тип теста и адрес', 'Specify test type and address', 15.00, 60.00
 FROM categories_l2 WHERE slug = 'services_medical';
+
+-- ============================================================
+-- L2 + L3: ДРУГОЕ / MORE
+-- ============================================================
+INSERT INTO categories_l2 (parent_id, slug, title_ru, title_en, icon_name, sort_order)
+SELECT id, 'other_moving', 'Переезд и грузчики', 'Moving & Cargo', 'truck', 1
+FROM categories_l1 WHERE slug = 'other';
+
+INSERT INTO categories_l2 (parent_id, slug, title_ru, title_en, icon_name, sort_order)
+SELECT id, 'other_pets', 'Уход за питомцами', 'Pet Care', 'dog', 2
+FROM categories_l1 WHERE slug = 'other';
+
+INSERT INTO categories_l2 (parent_id, slug, title_ru, title_en, icon_name, sort_order)
+SELECT id, 'other_tutoring', 'Обучение и репетиторы', 'Tutoring & Lessons', 'book-open', 3
+FROM categories_l1 WHERE slug = 'other';
+
+INSERT INTO categories_l2 (parent_id, slug, title_ru, title_en, icon_name, sort_order)
+SELECT id, 'other_custom', 'Своя услуга / Запрос', 'Custom Request', 'help-circle', 4
+FROM categories_l1 WHERE slug = 'other';
+
+-- L3 — Другое
+INSERT INTO categories_l3 (parent_id, slug, title_ru, title_en, hint_ru, hint_en, price_min, price_max)
+SELECT id, 'moving_help', 'Помощь при переезде и перевозка вещей', 'Moving & Freight Assistance',
+  'Опишите объем вещей, откуда и куда перевозить', 'Describe cargo volume, pickup and dropoff', 30.00, 150.00
+FROM categories_l2 WHERE slug = 'other_moving';
+
+INSERT INTO categories_l3 (parent_id, slug, title_ru, title_en, hint_ru, hint_en, price_min, price_max)
+SELECT id, 'pet_sitting', 'Выгул / Передержка животных', 'Pet Sitting / Walking',
+  'Укажите вид питомца и нужные даты', 'Specify pet type and required dates', 10.00, 30.00
+FROM categories_l2 WHERE slug = 'other_pets';
+
+INSERT INTO categories_l3 (parent_id, slug, title_ru, title_en, hint_ru, hint_en, price_min, price_max)
+SELECT id, 'tutor_lesson', 'Инструктор / Репетитор', 'Private Tutor / Instructor',
+  'Укажите предмет, цель и формат занятий', 'Specify subject, goal and class format', 15.00, 50.00
+FROM categories_l2 WHERE slug = 'other_tutoring';
+
+INSERT INTO categories_l3 (parent_id, slug, title_ru, title_en, hint_ru, hint_en, price_min, price_max)
+SELECT id, 'custom_request', 'Индивидуальный запрос (любая услуга)', 'Custom Service Request',
+  'Опишите подробно, что именно вам требуется и желаемый бюджет', 'Describe in detail what you need and your target budget', 10.00, 500.00
+FROM categories_l2 WHERE slug = 'other_custom';
 ```
 
 ---
 
 ## Сводная таблица рубрикатора
 
-| L1 | L2 | Кол-во L3 |
+| L1 (Мегакатегория) | L2 (Категория) | Кол-во L3 |
 |---|---|---|
-| 🚗 Транспорт | Мотобайки | 4 |
+| 🚗 **Транспорт** | Мотобайки | 4 |
 | | Аренда авто | 3 |
 | | Трансферы | 2 |
 | | Лодки / Яхты | 3 |
-| 🏡 Жильё | Вилла | 2 |
+| 🏡 **Жильё** | Вилла | 2 |
 | | Кондо | 4 |
-| | Отель | - |
-| | Комната | - |
-| 🧹 Клининг | Регулярная | 3 |
+| | Отель / Хостел | 2 |
+| 🧹 **Клининг** | Регулярная | 3 |
 | | Генеральная | 2 |
 | | Бассейн | 1 |
 | | Стирка | 2 |
-| 🍽️ Еда | Доставка | 2 |
+| 🍽️ **Еда** | Доставка | 2 |
 | | Личный повар | 2 |
-| | Кейтеринг | - |
-| 💆 Красота | Массаж | 3 |
+| | Кейтеринг | 1 |
+| 💆 **Красота** | Массаж | 3 |
 | | Ногти | 2 |
 | | Волосы | 2 |
 | | Фитнес / Йога | 2 |
-| 🗺️ Туры | Острова | 2 |
+| 🗺️ **Туры** | Острова | 2 |
 | | Экскурсии | 2 |
 | | Водные активности | 3 |
-| 🔧 Прочие | Ремонт | 3 |
+| 🔧 **Прочие** | Ремонт | 3 |
 | | Фото / Видео | 2 |
 | | Ассистент | 2 |
 | | Медицина | 2 |
-| **ИТОГО** | **26 L2** | **~55 L3** |
+| 🌀 **Другое / More** | Переезд и грузчики | 1 |
+| | Уход за питомцами | 1 |
+| | Обучение и репетиторы | 1 |
+| | Своя услуга / Запрос | 1 |
+| **ИТОГО (8 мегакатегорий)** | **30 L2** | **~60 L3** |
