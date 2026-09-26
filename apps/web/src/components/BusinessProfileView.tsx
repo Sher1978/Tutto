@@ -8,11 +8,25 @@ export const BusinessProfileView: React.FC = () => {
   const bizCard = MOCK_BUSINESS_CARDS[0]
   const [aiEnabled, setAiEnabled] = useState(bizCard.isAiEnabled)
   const [copiedRef, setCopiedRef] = useState(false)
+  
+  // New RAG Knowledge Base and Min Budget state
+  const [knowledgeBaseText, setKnowledgeBaseText] = useState(
+    'Прайс: Тойота Фортунер — 1500 THB/сут. Хонда Клик — 300 THB/сут. Залог: Паспорт или 200$. Бесплатная доставка по Раваи и Найхарну при аренде от 7 дней. Страховка включена.'
+  )
+  const [minBudget, setMinBudget] = useState(25)
+  const [isSaved, setIsSaved] = useState(false)
 
   const handleToggleAi = () => {
     setAiEnabled(!aiEnabled)
     triggerHapticFeedback('medium')
     triggerNotificationFeedback('success')
+  }
+
+  const handleSaveAiSettings = () => {
+    setIsSaved(true)
+    triggerHapticFeedback('heavy')
+    triggerNotificationFeedback('success')
+    setTimeout(() => setIsSaved(false), 2500)
   }
 
   const handleCopyRef = () => {
@@ -69,6 +83,78 @@ export const BusinessProfileView: React.FC = () => {
             <div className="text-[10px] text-gray-400">Сделок проведено</div>
           </div>
         </div>
+      </div>
+
+      {/* AI Knowledge Base (RAG) & Auto-Bid Settings */}
+      <div className="glass-card p-5 border-cyan-500/30 space-y-4">
+        <div className="flex items-center justify-between border-b border-white/10 pb-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-cyan-400" />
+            <div>
+              <h4 className="font-display font-bold text-sm text-white">База знаний ИИ-продавца (RAG)</h4>
+              <p className="text-[11px] text-gray-400">ИИ консультирует клиентов строго по вашим правилам</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Text Area for RAG Prompt */}
+        <div>
+          <label className="block text-gray-300 font-medium text-xs mb-1">
+            Инструкции и Прайс-лист для ИИ:
+          </label>
+          <textarea
+            value={knowledgeBaseText}
+            onChange={(e) => setKnowledgeBaseText(e.target.value)}
+            rows={4}
+            placeholder="Введите ваши цены, условия аренды, районы доставки, правила залога..."
+            className="w-full bg-slate-950/80 border border-white/15 rounded-xl p-3 text-gray-200 text-xs focus:border-cyan-400 focus:outline-none resize-none leading-relaxed"
+          />
+        </div>
+
+        {/* Min Budget Threshold Slider */}
+        <div className="pt-2">
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="text-gray-300 font-medium text-xs flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 text-amber-400" />
+              <span>Минимальный бюджет заказа для авто-отклика:</span>
+            </label>
+            <span className="font-extrabold text-cyan-400 text-sm bg-cyan-950/60 px-2 py-0.5 rounded-lg border border-cyan-500/30">
+              ${minBudget} USD
+            </span>
+          </div>
+          <input
+            type="range"
+            min="5"
+            max="300"
+            step="5"
+            value={minBudget}
+            onChange={(e) => setMinBudget(Number(e.target.value))}
+            className="w-full accent-cyan-400 bg-white/10 rounded-lg h-2 cursor-pointer"
+          />
+          <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+            <span>$5 (все подряд)</span>
+            <span>$150 (средние)</span>
+            <span>$300 (только крупные)</span>
+          </div>
+        </div>
+
+        {/* Save Settings Button */}
+        <button
+          onClick={handleSaveAiSettings}
+          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-[0.98] transition-all"
+        >
+          {isSaved ? (
+            <>
+              <Check className="w-4 h-4 text-black" />
+              <span>Настройки ИИ успешно сохранены!</span>
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-4 h-4 text-black" />
+              <span>Сохранить настройки ИИ-менеджера</span>
+            </>
+          )}
+        </button>
       </div>
 
       {/* Business Card Preview */}
@@ -157,3 +243,4 @@ export const BusinessProfileView: React.FC = () => {
     </div>
   )
 }
+
