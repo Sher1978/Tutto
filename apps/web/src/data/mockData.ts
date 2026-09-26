@@ -654,6 +654,24 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
     currency: 'USD',
     coverImageUrl: 'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=600&auto=format&fit=crop&q=80',
   },
+  {
+    id: 'tmpl-group-yoga',
+    categoryL1Id: 'cat-spirit',
+    title: 'Групповые занятия Йоги, Медитации & Садху-группы',
+    description: 'Регулярные групповые практики йоги на открытом воздухе, групповые медитации с чашами и гвоздестояние в комьюнити.',
+    defaultBudget: 15,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'tmpl-group-bachata',
+    categoryL1Id: 'cat-spirit',
+    title: 'Групповая Бачата, Сальса & Вечеринки Open-Air',
+    description: 'Групповые танцевальные мастер-классы, опен-эйр вечеринки бачаты на пляже и комьюнити-вечера для всех уровней.',
+    defaultBudget: 15,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=600&auto=format&fit=crop&q=80',
+  },
 
   // 14. OTHER (cat-other)
   {
