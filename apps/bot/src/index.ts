@@ -19,7 +19,6 @@ interface CustomCategoryWizardState {
 
 const adminWizards: Record<number, CustomCategoryWizardState> = {}
 
-// Command /start
 bot.command('start', async (ctx: Context) => {
   const startParam = ctx.match
   const userName = ctx.from?.first_name || 'Пользователь'
@@ -33,7 +32,13 @@ bot.command('start', async (ctx: Context) => {
   welcomeText += `3. Вы выбираете лучший отклик и связываетесь напрямую в чате Telegram.\n\n`
 
   if (startParam) {
-    welcomeText += `🎁 *Вы пришли по ссылке заказа:* \`${startParam}\`\n\n`
+    if (startParam.startsWith('ref_')) {
+      const partnerId = startParam.split('_')[1]
+      welcomeText += `🎉 *Вы приглашены партнёром (ID: ${partnerId})!*\n`
+      welcomeText += `Вам начислен приветственный бонус. Ваш партнер также будет получать комиссионные с ваших заказов.\n\n`
+    } else {
+      welcomeText += `🎁 *Вы пришли по ссылке заказа:* \`${startParam}\`\n\n`
+    }
   }
 
   const keyboard = new InlineKeyboard()
