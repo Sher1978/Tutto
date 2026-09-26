@@ -171,20 +171,21 @@ const InteractiveMarqueeSlider: React.FC<InteractiveMarqueeSliderProps> = ({
                 </p>
               </div>
 
-              {/* Card Middle: Giant Pulsing Plus */}
-              <div className="relative z-10 flex items-center justify-center my-1">
-                <span
-                  className={`font-black leading-none select-none transition-all duration-300 ${
+              {/* Card Middle: Giant Pulsing Plus with Dashed Outline */}
+              <div className="relative z-10 flex items-center justify-center my-1.5">
+                <div
+                  className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border-2 border-dashed flex items-center justify-center transition-all duration-300 ${
                     isSelected
-                      ? 'text-[#00FF87] scale-135 drop-shadow-[0_0_35px_rgba(0,255,135,1)] animate-bounce'
+                      ? 'border-[#00FF87] bg-[#00FF87]/25 text-[#00FF87] scale-110 shadow-[0_0_25px_rgba(0,255,135,0.8)] animate-pulse'
                       : isCustomCard
-                      ? 'text-[#00FF87] scale-125 drop-shadow-[0_0_25px_rgba(0,255,135,0.9)]'
-                      : 'text-[#00FF87]/80 group-hover:scale-125 group-hover:text-[#00FF87] drop-shadow-[0_0_20px_rgba(0,255,135,0.8)]'
+                      ? 'border-[#00FF87] bg-[#00FF87]/15 text-[#00FF87] shadow-[0_0_20px_rgba(0,255,135,0.5)]'
+                      : 'border-[#00FF87]/70 bg-black/40 text-[#00FF87] group-hover:border-[#00FF87] group-hover:bg-[#00FF87]/20 group-hover:scale-110 shadow-[0_0_15px_rgba(0,255,135,0.4)]'
                   }`}
-                  style={{ fontSize: '56px', lineHeight: 1 }}
                 >
-                  +
-                </span>
+                  <span className="font-black text-3xl sm:text-4xl leading-none select-none drop-shadow-[0_0_10px_rgba(0,255,135,0.9)]">
+                    +
+                  </span>
+                </div>
               </div>
 
               {/* Card Bottom CTA Button */}
@@ -352,9 +353,15 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
   const transportItems = makeSliderItems('cat-transport', 'row-transport')
   const housingItems = makeSliderItems('cat-housing', 'row-housing')
   const financeItems = makeSliderItems('cat-finance', 'row-finance')
-  const beautyItems = makeSliderItems('cat-beauty', 'row-beauty')
-  const toursItems = makeSliderItems('cat-tours', 'row-tours')
   const servicesItems = makeSliderItems('cat-services', 'row-services')
+  const foodItems = makeSliderItems('cat-food', 'row-food')
+  const cleaningItems = makeSliderItems('cat-cleaning', 'row-cleaning')
+  const beautyItems = makeSliderItems('cat-beauty', 'row-beauty')
+  const kidsItems = makeSliderItems('cat-kids', 'row-kids')
+  const toursItems = makeSliderItems('cat-tours', 'row-tours')
+  const healthItems = makeSliderItems('cat-health', 'row-health')
+  const courierItems = makeSliderItems('cat-courier', 'row-courier')
+  const eventsItems = makeSliderItems('cat-events', 'row-events')
 
   return (
     <div className="w-full space-y-6">
@@ -466,7 +473,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
           <div className="h-0.5 flex-1 bg-gradient-to-r from-cyan-500/50 to-transparent" />
         </h3>
 
-        {/* Row 1: Прокат (Moving Left ◀️) */}
+        {/* Row 1: Прокат */}
         <InteractiveMarqueeSlider
           title="🛵 ПРОКАТ БАЙКОВ И АВТО"
           items={transportItems}
@@ -476,7 +483,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
           onCardClick={handleCardClick}
         />
 
-        {/* Row 2: Жильё (Moving Right ▶️) */}
+        {/* Row 2: Жильё */}
         <InteractiveMarqueeSlider
           title="🏡 ВИЛЛЫ, КОНДО И ЖИЛЬЁ"
           items={housingItems}
@@ -486,7 +493,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
           onCardClick={handleCardClick}
         />
 
-        {/* Row 3: Деньги (Moving Left ◀️) */}
+        {/* Row 3: Деньги */}
         <InteractiveMarqueeSlider
           title="💵 ОБМЕН ВАЛЮТ И КРИПТЫ"
           items={financeItems}
@@ -496,7 +503,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
           onCardClick={handleCardClick}
         />
 
-        {/* Row 4: Услуги & Визы (Moving Right ▶️) */}
+        {/* Row 4: Услуги & Визы */}
         <InteractiveMarqueeSlider
           title="💼 УСЛУГИ, ВИЗЫ И СТРАХОВКИ"
           items={servicesItems}
@@ -506,7 +513,27 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
           onCardClick={handleCardClick}
         />
 
-        {/* Row 5: Красота (Moving Left ◀️) */}
+        {/* Row 5: Еда */}
+        <InteractiveMarqueeSlider
+          title="🍽️ ЕДА И ЛИЧНЫЙ ПОВАР"
+          items={foodItems}
+          direction="left"
+          activeHub={activeHub}
+          selectedCardId={selectedCardId}
+          onCardClick={handleCardClick}
+        />
+
+        {/* Row 6: Клининг */}
+        <InteractiveMarqueeSlider
+          title="🧹 КЛИНИНГ И БАССЕЙНЫ"
+          items={cleaningItems}
+          direction="right"
+          activeHub={activeHub}
+          selectedCardId={selectedCardId}
+          onCardClick={handleCardClick}
+        />
+
+        {/* Row 7: Красота */}
         <InteractiveMarqueeSlider
           title="💆 МАССАЖ И СПА НА ВИЛЛУ"
           items={beautyItems}
@@ -516,10 +543,50 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
           onCardClick={handleCardClick}
         />
 
-        {/* Row 6: Туры (Moving Right ▶️) */}
+        {/* Row 8: Дети */}
         <InteractiveMarqueeSlider
-          title="🗺️ ТУРЫИ ЭКСКУРСИИ НА ОСТРОВА"
+          title="👶 ДЕТИ, НЯНИ И КОЛЯСКИ"
+          items={kidsItems}
+          direction="right"
+          activeHub={activeHub}
+          selectedCardId={selectedCardId}
+          onCardClick={handleCardClick}
+        />
+
+        {/* Row 9: Туры */}
+        <InteractiveMarqueeSlider
+          title="🗺️ ТУРЫ И ЭКСКУРСИИ НА ОСТРОВА"
           items={toursItems}
+          direction="left"
+          activeHub={activeHub}
+          selectedCardId={selectedCardId}
+          onCardClick={handleCardClick}
+        />
+
+        {/* Row 10: Врачи */}
+        <InteractiveMarqueeSlider
+          title="🩺 ВРАЧИ И IV-КАПЕЛЬНИЦЫ 24/7"
+          items={healthItems}
+          direction="right"
+          activeHub={activeHub}
+          selectedCardId={selectedCardId}
+          onCardClick={handleCardClick}
+        />
+
+        {/* Row 11: Курьер */}
+        <InteractiveMarqueeSlider
+          title="📦 КУРЬЕР И ЭКСПРЕСС-ДОСТАВКА"
+          items={courierItems}
+          direction="left"
+          activeHub={activeHub}
+          selectedCardId={selectedCardId}
+          onCardClick={handleCardClick}
+        />
+
+        {/* Row 12: Ивенты */}
+        <InteractiveMarqueeSlider
+          title="🎈 ИВЕНТЫ, ДИДЖЕИ И ФОТОСЕССИИ"
+          items={eventsItems}
           direction="right"
           activeHub={activeHub}
           selectedCardId={selectedCardId}
