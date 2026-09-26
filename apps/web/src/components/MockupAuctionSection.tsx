@@ -114,7 +114,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
       </div>
 
       {/* 2. FROSTED GLASS CATEGORY TILES WITH TELEGRAM EMOJIS */}
-      <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 -mx-0.5 px-0.5">
+      <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1.5 -mx-1 px-1">
         {CATEGORY_TILES.map((cat, idx) => {
           const isActive = activeCategory === cat.id || (!activeCategory && idx === 0)
           const emojiIcon =
@@ -128,23 +128,23 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
             <button
               key={cat.id}
               onClick={() => onSelectCategory(isActive ? null : cat.id)}
-              className={`relative min-w-[56px] h-[60px] shrink-0 rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all duration-200 group ${
+              className={`relative min-w-[73px] h-[78px] shrink-0 rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all duration-200 group ${
                 isActive
                   ? 'scale-[1.05]'
-                  : 'opacity-85 hover:opacity-100 hover:scale-[1.02]'
+                  : 'opacity-90 hover:opacity-100 hover:scale-[1.02]'
               }`}
               style={{
                 background: isActive
-                  ? 'rgba(0, 255, 135, 0.12)'
-                  : 'rgba(255, 255, 255, 0.07)',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
+                  ? 'rgba(0, 255, 135, 0.16)'
+                  : 'rgba(255, 255, 255, 0.12)',
+                backdropFilter: 'blur(30px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(30px) saturate(180%)',
                 border: isActive
-                  ? '1px solid rgba(0, 255, 135, 0.6)'
-                  : '1px solid rgba(255, 255, 255, 0.16)',
+                  ? '1px solid rgba(0, 255, 135, 0.7)'
+                  : '1px solid rgba(255, 255, 255, 0.25)',
                 boxShadow: isActive
-                  ? '0 0 16px rgba(0, 255, 135, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-                  : '0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12)',
+                  ? '0 0 20px rgba(0, 255, 135, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3)'
+                  : '0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 1px 1px 0 rgba(255, 255, 255, 0.22)',
               }}
             >
               {/* Active neon highlight glow */}
@@ -152,16 +152,16 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
                 <div className="absolute inset-0 rounded-2xl bg-[#00FF87]/10" />
               )}
               {/* Icon & Label (Telegram Emojis + Roboto label) */}
-              <div className="relative z-10 flex flex-col items-center justify-center p-0.5 text-center">
+              <div className="relative z-10 flex flex-col items-center justify-center p-1 text-center">
                 <span
-                  className="leading-none mb-1 filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] group-hover:scale-115 transition-transform"
-                  style={{ fontSize: '22px' }}
+                  className="leading-none mb-1.5 filter drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)] group-hover:scale-110 transition-transform"
+                  style={{ fontSize: '29px' }}
                 >
                   {emojiIcon}
                 </span>
                 <span
-                  className={`text-[7px] font-bold uppercase tracking-wider leading-none text-center ${
-                    isActive ? 'text-[#00FF87]' : 'text-gray-200'
+                  className={`text-[9px] font-bold uppercase tracking-wider leading-none text-center ${
+                    isActive ? 'text-[#00FF87]' : 'text-gray-100'
                   }`}
                   style={{ fontFamily: "'Roboto', sans-serif" }}
                 >
