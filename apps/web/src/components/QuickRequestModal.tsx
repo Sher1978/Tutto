@@ -3,7 +3,8 @@ import { Sparkles, Zap, MapPin, Calendar, FileText, CheckCircle2, Edit3, ArrowRi
 import { RequestItem, HubId } from '../types'
 import { HUBS } from '../data/mockData'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
-import { detectUserLocation } from '../lib/geo'
+import { detectUserLocation, detectLocationFromCoords } from '../lib/geo'
+import { MapLocationPickerModal } from './MapLocationPickerModal'
 
 interface QuickRequestModalProps {
   isOpen: boolean
@@ -36,6 +37,7 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
   const [showTutorial, setShowTutorial] = useState(true)
   const [isDetectingGeo, setIsDetectingGeo] = useState(false)
   const [geoStatusMsg, setGeoStatusMsg] = useState('')
+  const [isMapOpen, setIsMapOpen] = useState(false)
 
   // Generated AI Preview State
   const [aiPreviewData, setAiPreviewData] = useState({
@@ -202,15 +204,24 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
                     <MapPin className="w-4 h-4 text-[#00FF87]" />
                     <span>Локация (Курорт & Район)</span>
                   </label>
-                  <button
-                    type="button"
-                    onClick={handleGPSDetect}
-                    disabled={isDetectingGeo}
-                    className="text-[11px] font-bold text-[#00FF87] bg-[#00FF87]/15 px-2.5 py-1 rounded-lg border border-[#00FF87]/40 flex items-center gap-1 hover:bg-[#00FF87]/25"
-                  >
-                    <Navigation className={`w-3 h-3 ${isDetectingGeo ? 'animate-spin' : ''}`} />
-                    <span>GPS Найти</span>
-                  </button>
+                  <div className="flex gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setIsMapOpen(true)}
+                      className="text-[11px] font-bold text-cyan-300 bg-cyan-500/15 px-2.5 py-1 rounded-lg border border-cyan-500/40 flex items-center gap-1 hover:bg-cyan-500/25 transition-colors"
+                    >
+                      🗺 Карта
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleGPSDetect}
+                      disabled={isDetectingGeo}
+                      className="text-[11px] font-bold text-[#00FF87] bg-[#00FF87]/15 px-2.5 py-1 rounded-lg border border-[#00FF87]/40 flex items-center gap-1 hover:bg-[#00FF87]/25"
+                    >
+                      <Navigation className={`w-3 h-3 ${isDetectingGeo ? 'animate-spin' : ''}`} />
+                      <span>GPS Найти</span>
+                    </button>
+                  </div>
                 </div>
 
                 {geoStatusMsg && (
@@ -394,6 +405,23 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
           </div>
         )}
       </div>
+
+      <MapLocationPickerModal
+        isOpen={isMapOpen}
+        onClose={() => setIsMapOpen(false)}
+        onSelectLocation={async (lat, lng) => {
+          try {
+            const res = detectLocationFromCoords(lat, lng)
+            setHubName(res.hubNameRu.toUpperCase())
+            setDistrictName(res.district)
+            setLocation(`${res.hubNameRu.toUpperCase()}, ${res.district}`)
+            setGeoStatusMsg(`📍 Найдено по карте: ${res.hubNameRu} (${res.district})`)
+            triggerHapticFeedback('heavy')
+          } catch (err) {
+            setGeoStatusMsg('⚠️ Карта: не удалось определить хаб')
+          }
+        }}
+      />
     </div>
   )
 }

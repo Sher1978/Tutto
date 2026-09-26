@@ -42,6 +42,31 @@ export interface DetectedLocationResult {
 }
 
 /**
+ * Map coordinates to nearest Hub
+ */
+export function detectLocationFromCoords(userLat: number, userLng: number): DetectedLocationResult {
+  let closestHub = HUB_COORDINATES[0]
+  let minDistance = getDistanceKm(userLat, userLng, closestHub.lat, closestHub.lng)
+
+  for (let i = 1; i < HUB_COORDINATES.length; i++) {
+    const dist = getDistanceKm(userLat, userLng, HUB_COORDINATES[i].lat, HUB_COORDINATES[i].lng)
+    if (dist < minDistance) {
+      minDistance = dist
+      closestHub = HUB_COORDINATES[i]
+    }
+  }
+
+  const hubData = HUBS.find((h) => h.id === closestHub.id) || HUBS[0]
+
+  return {
+    hubId: closestHub.id,
+    hubNameRu: hubData.nameRu,
+    district: hubData.districts[0] || closestHub.defaultDistrict,
+    distanceKm: Math.round(minDistance),
+  }
+}
+
+/**
  * Detect user's current GPS location and return the nearest Hub & District
  */
 export function detectUserLocation(): Promise<DetectedLocationResult> {
@@ -56,25 +81,7 @@ export function detectUserLocation(): Promise<DetectedLocationResult> {
         const userLat = position.coords.latitude
         const userLng = position.coords.longitude
 
-        let closestHub = HUB_COORDINATES[0]
-        let minDistance = getDistanceKm(userLat, userLng, closestHub.lat, closestHub.lng)
-
-        for (let i = 1; i < HUB_COORDINATES.length; i++) {
-          const dist = getDistanceKm(userLat, userLng, HUB_COORDINATES[i].lat, HUB_COORDINATES[i].lng)
-          if (dist < minDistance) {
-            minDistance = dist
-            closestHub = HUB_COORDINATES[i]
-          }
-        }
-
-        const hubData = HUBS.find((h) => h.id === closestHub.id) || HUBS[0]
-
-        resolve({
-          hubId: closestHub.id,
-          hubNameRu: hubData.nameRu,
-          district: hubData.districts[0] || closestHub.defaultDistrict,
-          distanceKm: Math.round(minDistance),
-        })
+        resolve(detectLocationFromCoords(userLat, userLng))
       },
       (error) => {
         let msg = 'Не удалось определить геолокацию'

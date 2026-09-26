@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Clock, Zap, MapPin, Users, Star } from 'lucide-react'
 import { RequestItem } from '../types'
 import { CATEGORIES } from '../data/mockData'
+import { triggerHapticFeedback } from '../lib/telegram'
 
 interface RequestCardProps {
   request: RequestItem
