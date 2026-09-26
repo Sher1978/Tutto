@@ -9,5 +9,9 @@
   },
   "workspaces": [
     "apps/*"
-  ]
+  ],
+  "optionalDependencies": {
+    "@rolldown/binding-linux-x64-gnu": "1.2.11",
+    "rolldown": "1.2.11"
+  }
 }
