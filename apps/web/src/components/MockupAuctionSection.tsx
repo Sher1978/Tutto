@@ -27,7 +27,8 @@ const ALL_CATEGORY_TILES = [
   { id: 'cat-tours', label: 'ТУРЫ', icon: '🗺️', slug: 'tours' },
   { id: 'cat-health', label: 'ВРАЧИ', icon: '🩺', slug: 'health' },
   { id: 'cat-courier', label: 'КУРЬЕР', icon: '📦', slug: 'courier' },
-  { id: 'cat-events', label: 'ИВЕНТЫ', icon: '🎈', slug: 'events' },
+  {id: 'cat-events', label: 'ИВЕНТЫ', icon: '🎈', slug: 'events' },
+  { id: 'cat-spirit', label: 'ПРАКТИКИ', icon: '🔮', slug: 'spirit' },
   { id: 'cat-other', label: 'ДРУГОЕ', icon: '🌀', slug: 'other' },
 ]
 
@@ -362,6 +363,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
   const healthItems = makeSliderItems('cat-health', 'row-health')
   const courierItems = makeSliderItems('cat-courier', 'row-courier')
   const eventsItems = makeSliderItems('cat-events', 'row-events')
+  const spiritItems = makeSliderItems('cat-spirit', 'row-spirit')
 
   return (
     <div className="w-full space-y-6">
@@ -588,6 +590,16 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
           title="🎈 ИВЕНТЫ, ДИДЖЕИ И ФОТОСЕССИИ"
           items={eventsItems}
           direction="right"
+          activeHub={activeHub}
+          selectedCardId={selectedCardId}
+          onCardClick={handleCardClick}
+        />
+
+        {/* Row 13: Практики & Спирит */}
+        <InteractiveMarqueeSlider
+          title="🔮 ПРАКТИКИ, ТАНТРА, ЙОГА И ТАРО"
+          items={spiritItems}
+          direction="left"
           activeHub={activeHub}
           selectedCardId={selectedCardId}
           onCardClick={handleCardClick}

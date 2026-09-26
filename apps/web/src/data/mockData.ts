@@ -141,6 +141,15 @@ export const CATEGORIES: Category[] = [
     defaultCoverUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&auto=format&fit=crop&q=80',
   },
   {
+    id: 'cat-spirit',
+    slug: 'spirit',
+    titleRu: 'Практики',
+    titleEn: 'Spirit',
+    iconName: 'Sparkles',
+    description: 'Йога, медитации, таро, астрология, тантра, дыхательные практики, гвозди и бачата',
+    defaultCoverUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&auto=format&fit=crop&q=80',
+  },
+  {
     id: 'cat-other',
     slug: 'other',
     titleRu: 'Другое',
@@ -608,7 +617,45 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
     coverImageUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&auto=format&fit=crop&q=80',
   },
 
-  // 13. OTHER (cat-other)
+  // 13. SPIRIT & PRACTICES (cat-spirit)
+  {
+    id: 'tmpl-tantra-breathwork',
+    categoryL1Id: 'cat-spirit',
+    title: 'Тантра & Дыхательные практики (Womb & Breathwork)',
+    description: 'Глубокие дыхательные сессии, проработка энергетических блоков, тантрические практики и гармонизация состояния.',
+    defaultBudget: 80,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'tmpl-taro-astrology',
+    categoryL1Id: 'cat-spirit',
+    title: 'Разбор Таро & Натальная карта (Маги / Астрологи / Гадалки)',
+    description: 'Персональный расклад ситуаций, астрологический прогноз, матрица судьбы и нумерология от проверенного практика.',
+    defaultBudget: 60,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'tmpl-yoga-sound-healing',
+    categoryL1Id: 'cat-spirit',
+    title: 'Йога, Поющие чаши (Sound Healing) & Гвозди Садху',
+    description: 'Персональная Хатха/Кундалини йога на вилле, звуковая терапия поющими чашами и практическое стояние на гвоздях.',
+    defaultBudget: 50,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'tmpl-bachata-dance',
+    categoryL1Id: 'cat-spirit',
+    title: 'Урок Бачаты / Танцевальный экстатик (Ecstatic Dance)',
+    description: 'Обучение чувственным парным танцам, бачата/сальса с выездом хореографа или проводник в экстатик-сессию.',
+    defaultBudget: 40,
+    currency: 'USD',
+    coverImageUrl: 'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=600&auto=format&fit=crop&q=80',
+  },
+
+  // 14. OTHER (cat-other)
   {
     id: 'tmpl-personal-assistant',
     categoryL1Id: 'cat-other',
