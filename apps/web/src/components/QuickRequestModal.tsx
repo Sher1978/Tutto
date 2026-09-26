@@ -103,7 +103,7 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
           </div>
           <div>
             <h3 className="font-display font-black text-base sm:text-lg text-white tracking-wide uppercase">
-              {step === 'form' && '⚡ БЫСТРАЯ ЗАЯВКА КЛИЕНТА'}
+              {step === 'form' && '⚡ БЫСТРАЯ ЗАЯВКА'}
               {step === 'ai_processing' && '🧠 ИИ ОБРАБОТКА И ОПТИМИЗАЦИЯ...'}
               {step === 'ai_preview' && '✨ ПРЕВЬЮ ЗАЯВКИ ИИ'}
             </h3>
@@ -123,17 +123,17 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
       {/* Content Body — Fullscreen Scrollable */}
       <div className="p-6 space-y-6 overflow-y-auto no-scrollbar flex-1 max-w-2xl mx-auto w-full" style={{ fontFamily: "'Roboto', sans-serif" }}>
         
-        {/* EXPLANATORY INTRO CARD: WHAT AND WHY THE CLIENT IS DOING HERE */}
+        {/* FRIENDLY INTRO CARD: DIRECT ADDRESS & WARM INSTRUCTIONS */}
         <div className="p-4 rounded-2xl bg-gradient-to-br from-cyan-950/50 via-slate-900/80 to-emerald-950/40 border border-cyan-500/40 shadow-[0_8px_30px_rgba(0,0,0,0.4)] space-y-2.5">
           <div className="flex items-center gap-2 text-[#00FF87] font-bold text-[15px]">
             <Target className="w-5 h-5 text-[#00FF87]" />
-            <span>Что и зачем делает клиент на этой странице:</span>
+            <span>Как это работает и почему это удобно:</span>
           </div>
           <p className="text-[13px] text-gray-200 leading-relaxed font-normal">
-            <strong className="text-white font-semibold">Что вы делаете:</strong> Вы создаёте мгновенный запрос на необходимую вам услугу или товар в вашем курортном районе.
+            <strong className="text-white font-semibold">Ваша заявка — ваши правила:</strong> Опишите, что вам нужно и укажите желаемую цену (или «Жду предложений»).
           </p>
           <p className="text-[13px] text-gray-300 leading-relaxed font-normal">
-            <strong className="text-[#00F2FE] font-semibold">Зачем это нужно:</strong> Вам больше не нужно самостоятельно искать контакты, писать в десятки чатов и сравнивать цены. В режиме обратного аукциона проверенные исполнители и ИИ-менеджеры сами предлагают вам лучшие цены и условия за 1 минуту!
+            <strong className="text-[#00F2FE] font-semibold">Без лишней суеты:</strong> Больше не нужно искать контакты и писать в десятки чатов. Проверенные исполнители и ИИ-менеджеры сами пришлют вам лучшие предложения за 1 минуту. Вам останется только выбрать подходящее!
           </p>
         </div>
 
