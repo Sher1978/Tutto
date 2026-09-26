@@ -98,12 +98,11 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
                     : 'text-gray-400 hover:text-white'
                 }`}
                 style={{
-                  fontFamily: "'Barlow Condensed', 'Oswald', sans-serif",
-                  fontWeight: 300,
-                  fontSize: '15px',
-                  letterSpacing: '-0.03em',
+                  fontFamily: "'Roboto', sans-serif",
+                  fontWeight: 700,
+                  fontSize: '13px',
+                  letterSpacing: '0.04em',
                   textTransform: 'uppercase',
-                  transform: 'scaleY(1.12)',
                 }}
               >
                 {h.label}
