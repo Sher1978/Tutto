@@ -137,7 +137,7 @@ export function App() {
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [selectedQuickRequestItem, setSelectedQuickRequestItem] = useState<RequestItem | null>(null)
   const [selectedRequestForBid, setSelectedRequestForBid] = useState<RequestItem | null>(null)
-  
+
   // In-App Deal Chat State
   const [activeDealRequest, setActiveDealRequest] = useState<RequestItem | null>(null)
   const [activeDealBid, setActiveDealBid] = useState<BidItem | null>(null)

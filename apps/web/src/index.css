@@ -17,7 +17,7 @@
 body {
   font-family: var(--font-sans);
   background-color: #000000;
-  background-image: 
+  background-image:
     radial-gradient(circle at top left, rgba(0, 102, 255, 0.08) 0%, transparent 600px),
     radial-gradient(circle at top right, rgba(0, 255, 135, 0.07) 0%, transparent 600px),
     linear-gradient(180deg, rgba(10, 17, 26, 0.4) 0%, #000000 100%);
@@ -35,16 +35,19 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* Neon Glow Typography 1:1 Mockup */
 .glow-tutto {
   color: #00F2FE;
-  text-shadow: 
+  text-shadow:
     0 0 12px rgba(0, 242, 254, 0.95),
     0 0 30px rgba(0, 242, 254, 0.7),
     0 0 60px rgba(0, 242, 254, 0.4);
@@ -52,7 +55,7 @@ body {
 
 .glow-minutto {
   color: #00FF87;
-  text-shadow: 
+  text-shadow:
     0 0 12px rgba(0, 255, 135, 0.95),
     0 0 30px rgba(0, 255, 135, 0.7),
     0 0 60px rgba(0, 255, 135, 0.4);
@@ -71,22 +74,26 @@ body {
 }
 
 /* Unified Matte Glass Cards (Mockup, Template, Profile) */
-.mockup-card-main, .mockup-card, .glass-card {
+.mockup-card-main,
+.mockup-card,
+.glass-card {
   background: rgba(22, 30, 44, 0.35);
   backdrop-filter: blur(48px);
   -webkit-backdrop-filter: blur(48px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 26px;
-  box-shadow: 
+  box-shadow:
     0 15px 35px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.mockup-card-main:hover, .mockup-card:hover, .glass-card:hover {
+.mockup-card-main:hover,
+.mockup-card:hover,
+.glass-card:hover {
   border-color: rgba(0, 242, 254, 0.4);
   background: rgba(22, 30, 44, 0.45);
-  box-shadow: 
+  box-shadow:
     0 12px 35px rgba(0, 242, 254, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
@@ -95,7 +102,7 @@ body {
 .safe-area-top {
   padding-top: env(safe-area-inset-top, 0px);
 }
+
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 16px);
 }
-
