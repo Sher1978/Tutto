@@ -13,7 +13,8 @@ import { BottomNav, TabId } from './components/BottomNav'
 import { MOCK_REQUESTS, SERVICE_TEMPLATES } from './data/mockData'
 import { RequestItem, BidItem, ServiceTemplate } from './types'
 import { initTelegramApp, triggerHapticFeedback } from './lib/telegram'
-import { CheckCircle2, Zap } from 'lucide-react'
+import { CheckCircle2, Zap, Scale } from 'lucide-react'
+import { AdminDisputePanel } from './components/AdminDisputePanel'
 
 export function App() {
   const [activeHub, setActiveHub] = useState<string>('bali')
@@ -141,6 +142,7 @@ export function App() {
   // In-App Deal Chat State
   const [activeDealRequest, setActiveDealRequest] = useState<RequestItem | null>(null)
   const [activeDealBid, setActiveDealBid] = useState<BidItem | null>(null)
+  const [isAdminDisputeOpen, setIsAdminDisputeOpen] = useState(false)
 
   const [notificationMsg, setNotificationMsg] = useState<string | null>(null)
 
@@ -346,11 +348,24 @@ export function App() {
           }}
         />
 
+        <AdminDisputePanel 
+          isOpen={isAdminDisputeOpen} 
+          onClose={() => setIsAdminDisputeOpen(false)} 
+        />
+
         {/* Bottom Tab Bar */}
         <BottomNav
           activeTab={activeTab}
           onSelectTab={handleSelectTab}
         />
+        
+        {/* Admin Dev Button */}
+        <button 
+          onClick={() => setIsAdminDisputeOpen(true)}
+          className="absolute bottom-24 right-4 w-12 h-12 bg-red-500/20 hover:bg-red-500/40 border border-red-500/50 rounded-full flex items-center justify-center text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] backdrop-blur-md z-40 transition-all active:scale-95"
+        >
+          <Scale className="w-6 h-6" />
+        </button>
       </div>
     </div>
   )
