@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Sparkles, Zap, MapPin, Calendar, FileText, CheckCircle2, Edit3, ArrowRight, X, Info, Target, Navigation } from 'lucide-react'
-import { RequestItem } from '../types'
+import { RequestItem, HubId } from '../types'
+import { HUBS } from '../data/mockData'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
 import { detectUserLocation } from '../lib/geo'
 
@@ -216,13 +217,45 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
                   <p className="text-[11px] text-cyan-300 font-medium">{geoStatusMsg}</p>
                 )}
 
-                <input
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Например: PHUKET, Patong"
-                  className="w-full px-4 py-3 rounded-2xl bg-slate-900/90 border border-white/20 text-white font-semibold text-[14px] focus:outline-none focus:border-[#00FF87] transition-all shadow-inner"
-                />
+                <div className="grid grid-cols-2 gap-3 mt-1">
+                  <div>
+                    <select
+                      value={hubName.toLowerCase()}
+                      onChange={(e) => {
+                        const newH = e.target.value as HubId
+                        setHubName(newH.toUpperCase())
+                        const hd = HUBS.find((h) => h.id === newH)
+                        if (hd) {
+                          setDistrictName(hd.districts[0] || 'Center')
+                          setLocation(`${newH.toUpperCase()}, ${hd.districts[0] || 'Center'}`)
+                        }
+                      }}
+                      className="w-full px-3 py-3 rounded-2xl bg-slate-900/90 border border-white/20 text-white font-semibold text-[14px] focus:outline-none focus:border-[#00FF87] transition-all shadow-inner appearance-none"
+                    >
+                      {HUBS.map((h) => (
+                        <option key={h.id} value={h.id}>
+                          {h.flag} {h.nameRu}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <select
+                      value={districtName}
+                      onChange={(e) => {
+                        setDistrictName(e.target.value)
+                        setLocation(`${hubName}, ${e.target.value}`)
+                      }}
+                      className="w-full px-3 py-3 rounded-2xl bg-slate-900/90 border border-white/20 text-white font-semibold text-[14px] focus:outline-none focus:border-[#00FF87] transition-all shadow-inner appearance-none"
+                    >
+                      {(HUBS.find((h) => h.id.toLowerCase() === hubName.toLowerCase()) || HUBS[0]).districts.map((d) => (
+                        <option key={d} value={d}>
+                          {d}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
               </div>
 
               {/* 2. Date & Time */}

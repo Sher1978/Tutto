@@ -46,22 +46,29 @@ bot.command('start', async (ctx: Context) => {
     .row()
     .url('💬 Поддержка & Вопросы', 'https://t.me/tuttominutto_bot')
 
-  await ctx.reply(welcomeText, {
-    parse_mode: 'Markdown',
-    reply_markup: keyboard,
-  })
+  await ctx.replyWithPhoto(
+    'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800',
+    {
+      caption: welcomeText,
+      parse_mode: 'Markdown',
+      reply_markup: keyboard,
+    }
+  )
 })
 
 // Command /help
 bot.command('help', async (ctx: Context) => {
-  await ctx.reply(
-    `ℹ️ *Справка TuttoMinutto*\n\n` +
-    `_Здесь выбираешь ты!_\n\n` +
-    `• /start — Перезапустить бота и открыть Mini App\n` +
-    `• Нажмите кнопку «Открыть TuttoMinutto App» для просмотра аукционов\n` +
-    `• Вся связь между клиентом и исполнителем происходит напрямую.\n\n` +
-    `Юзернейм бота: @tuttominutto_bot`,
-    { parse_mode: 'Markdown' }
+  await ctx.replyWithPhoto(
+    'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=800',
+    {
+      caption: `ℹ️ *Справка TuttoMinutto*\n\n` +
+      `_Здесь выбираешь ты!_\n\n` +
+      `• /start — Перезапустить бота и открыть Mini App\n` +
+      `• Нажмите кнопку «Открыть TuttoMinutto App» для просмотра аукционов\n` +
+      `• Вся связь между клиентом и исполнителем происходит напрямую.\n\n` +
+      `Юзернейм бота: @tuttominutto_bot`,
+      parse_mode: 'Markdown'
+    }
   )
 })
 
