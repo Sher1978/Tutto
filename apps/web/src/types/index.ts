@@ -1,4 +1,4 @@
-export type HubId = 'phuket' | 'bali' | 'bangkok' | 'vietnam'
+export type HubId = 'phuket' | 'bali' | 'bangkok' | 'vietnam' | 'seoul' | 'tokyo'
 
 export interface HubLocation {
   id: HubId

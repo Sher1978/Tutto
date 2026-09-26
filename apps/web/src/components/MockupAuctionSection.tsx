@@ -87,6 +87,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
     status: 'open',
     createdAt: new Date().toISOString(),
     expiresAt: new Date(Date.now() + 120 * 60 * 1000).toISOString(),
+    auctionEndsAt: new Date(Date.now() + 120 * 60 * 1000).toISOString(),
     bidsCount: 4,
   }))
 
@@ -110,6 +111,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
     status: 'open',
     createdAt: new Date().toISOString(),
     expiresAt: new Date(Date.now() + 120 * 60 * 1000).toISOString(),
+    auctionEndsAt: new Date(Date.now() + 120 * 60 * 1000).toISOString(),
     bidsCount: 0,
   }
 
