@@ -75,7 +75,7 @@ export const TokenWalletModal: React.FC<TokenWalletModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
       <div className="w-full sm:max-w-lg glass-panel rounded-t-3xl sm:rounded-3xl border border-amber-400/30 flex flex-col max-h-[90vh] overflow-hidden safe-area-bottom relative">
         {/* Glow Background */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-amber-500/20 blur-[80px] rounded-full pointer-events-none" />
