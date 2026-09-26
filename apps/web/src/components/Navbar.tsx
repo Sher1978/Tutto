@@ -21,9 +21,9 @@ export const Navbar: React.FC = () => {
         </p>
       </div>
 
-      {/* 4. AI Agent Status Card — Frosted Glassmorphism */}
+      {/* 4. AI Agent Status Card — Compact Frosted Glassmorphism */}
       <div
-        className="mt-3.5 rounded-3xl p-3 flex items-center justify-between"
+        className="mt-3.5 rounded-2xl px-3 py-1.5 flex items-center justify-between gap-2"
         style={{
           background: 'rgba(255, 255, 255, 0.10)',
           backdropFilter: 'blur(30px) saturate(180%)',
@@ -33,28 +33,28 @@ export const Navbar: React.FC = () => {
         }}
       >
         {/* Left profile */}
-        <div className="flex items-center gap-2.5 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
           <div className="relative shrink-0">
             <img
               src={user?.photo_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120'}
               alt="User avatar"
-              className="w-11 h-11 rounded-full border border-white/20 object-cover"
+              className="w-8 h-8 rounded-full border border-white/20 object-cover"
             />
-            <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-[#00FF87] border-2 border-[#0f1724]" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#00FF87] border-2 border-[#0f1724]" />
           </div>
           <div className="flex flex-col min-w-0" style={{ fontFamily: "'Roboto', sans-serif" }}>
-            <span className="text-xs font-bold text-white truncate">
+            <span className="text-[11px] font-bold text-white truncate leading-tight">
               {user?.first_name || 'Kaitlyn L.'} <span className="text-gray-300 font-normal">| @{user?.username || 'kaitlyn.l'}</span>
             </span>
-            <span className="text-[10px] text-gray-300 flex items-center gap-1 mt-0.5 font-semibold">
-              4.9 <Star className="w-3 h-3 text-amber-400 fill-amber-400" /> <span className="text-[#00FF87] font-bold">Online</span>
+            <span className="text-[9px] text-gray-300 flex items-center gap-1 leading-none mt-0.5 font-semibold">
+              4.9 <Star className="w-2.5 h-2.5 text-amber-400 fill-amber-400" /> <span className="text-[#00FF87] font-bold">Online</span>
             </span>
           </div>
         </div>
 
         {/* Right AI Status Pill — Frosted Glass neon glow */}
         <div
-          className="rounded-2xl px-2.5 py-1.5 text-right flex flex-col items-end justify-center shrink-0"
+          className="rounded-xl px-2.5 py-1 text-right flex flex-col items-end justify-center shrink-0"
           style={{
             background: 'rgba(0, 255, 135, 0.12)',
             backdropFilter: 'blur(24px)',
@@ -64,15 +64,15 @@ export const Navbar: React.FC = () => {
             fontFamily: "'Roboto', sans-serif",
           }}
         >
-          <div className="flex items-center gap-1.5 text-[9px] font-bold text-[#00FF87] tracking-wider uppercase">
-            <span className="w-2 h-2 rounded-full bg-[#00FF87] animate-ping shadow-[0_0_8px_#00FF87]" />
+          <div className="flex items-center gap-1.5 text-[8.5px] font-bold text-[#00FF87] tracking-wider uppercase leading-none">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00FF87] animate-ping shadow-[0_0_8px_#00FF87]" />
             <span>AI SALES AGENT</span>
           </div>
-          <span className="text-[9px] font-bold text-gray-200 mt-0.5">
+          <span className="text-[8.5px] font-bold text-gray-200 mt-0.5 leading-none">
             <span className="text-[#00FF87]">ACTIVE</span> • Online
           </span>
-          <span className="text-[8px] font-medium text-gray-300">
-            Response Time: &lt;1m
+          <span className="text-[7.5px] font-medium text-gray-300 leading-none mt-0.5">
+            Response: &lt;1m
           </span>
         </div>
       </div>
