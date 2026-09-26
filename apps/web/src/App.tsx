@@ -232,8 +232,8 @@ export function App() {
       {/* 3-Second Onboarding Splash Screen */}
       <SplashScreen isVisible={showSplash} onFinish={() => setShowSplash(false)} />
 
-      {/* Smartphone Shell Container */}
-      <div className="w-full max-w-[390px] min-h-screen sm:min-h-[840px] bg-black/40 backdrop-blur-3xl sm:rounded-[44px] sm:border-[8px] sm:border-[#1c2433] sm:shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col relative overflow-hidden z-10">
+      {/* Smartphone Shell Container / Full Screen on Mobile */}
+      <div className="w-full sm:max-w-[480px] mx-auto min-h-screen sm:min-h-[840px] bg-black/40 backdrop-blur-3xl sm:rounded-[44px] sm:border-[8px] sm:border-[#1c2433] sm:shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col relative overflow-hidden z-10">
         {/* Header */}
         <Navbar
           onOpenQuickRequest={() => setSelectedQuickRequestItem({
