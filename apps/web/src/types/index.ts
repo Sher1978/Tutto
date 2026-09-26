@@ -102,3 +102,20 @@ export interface BusinessCard {
   workingHours: string
   socialLinks: string[]
 }
+
+export interface MarketItem {
+  id: string
+  sellerId?: string
+  sellerName?: string
+  sellerAvatar?: string
+  sellerRating?: number
+  title: string
+  description: string
+  price: number
+  oldPrice: number
+  district: string
+  expiresIn: string
+  image: string
+  condition: 'Б/У' | 'Новое' | 'На запчасти'
+  category: string
+}

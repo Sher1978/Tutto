@@ -1,11 +1,14 @@
 import React from 'react'
 import { Mic, Flame, MapPin, Clock } from 'lucide-react'
 import { triggerHapticFeedback } from '../lib/telegram'
+import { MarketItem } from '../types'
 
 interface MarketSectionProps {
   activeCategory: string | null
+  products?: MarketItem[]
   onSelectCategory: (cat: string | null) => void
   onOpenQuickRequest: (req: any) => void
+  onSelectProduct: (product: MarketItem) => void
 }
 
 const MARKET_CATEGORY_TILES = [
@@ -19,9 +22,13 @@ const MARKET_CATEGORY_TILES = [
   { id: 'mcat-other', label: 'ДРУГОЕ', icon: '📦' },
 ]
 
-const MOCK_PRODUCTS = [
+const DEFAULT_PRODUCTS: MarketItem[] = [
   {
     id: 'prod-1',
+    sellerId: 'seller-1',
+    sellerName: 'Алексей (Мотопарк)',
+    sellerAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100',
+    sellerRating: 4.9,
     title: 'Yamaha NMAX 155cc 2023',
     description: 'Идеальное состояние, пробег 15к. Отдаю срочно в связи с отлетом.',
     price: 1200,
@@ -30,9 +37,14 @@ const MOCK_PRODUCTS = [
     expiresIn: '03:15',
     image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400&q=80',
     condition: 'Б/У',
+    category: 'mcat-moto',
   },
   {
     id: 'prod-2',
+    sellerId: 'seller-2',
+    sellerName: 'Иван TechStore',
+    sellerAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
+    sellerRating: 4.8,
     title: 'MacBook Pro 14 M1 Pro',
     description: '16GB RAM, 512GB SSD. Есть небольшая царапина на крышке.',
     price: 1100,
@@ -41,9 +53,14 @@ const MOCK_PRODUCTS = [
     expiresIn: '08:40',
     image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80',
     condition: 'Б/У',
+    category: 'mcat-tech',
   },
   {
     id: 'prod-3',
+    sellerId: 'seller-3',
+    sellerName: 'Мария Event',
+    sellerAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100',
+    sellerRating: 5.0,
     title: 'Билеты на Finns VIP (2 шт)',
     description: 'Купили, но заболели. Продаю в 2 раза дешевле номинала!',
     price: 50,
@@ -52,9 +69,14 @@ const MOCK_PRODUCTS = [
     expiresIn: '01:20',
     image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80',
     condition: 'Новое',
+    category: 'mcat-tickets',
   },
   {
     id: 'prod-4',
+    sellerId: 'seller-4',
+    sellerName: 'Сергей SurfClub',
+    sellerAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100',
+    sellerRating: 4.9,
     title: 'Серфборд Pyzel 5\'10',
     description: 'Откатал сезон, борд пушка. В комплекте лиш и чехол.',
     price: 250,
@@ -63,31 +85,38 @@ const MOCK_PRODUCTS = [
     expiresIn: '12:00',
     image: 'https://images.unsplash.com/photo-1531722569936-825d3dd91b15?w=400&q=80',
     condition: 'Б/У',
+    category: 'mcat-sport',
   }
 ]
 
 export const MarketSection: React.FC<MarketSectionProps> = ({
   activeCategory,
+  products = DEFAULT_PRODUCTS,
   onSelectCategory,
-  onOpenQuickRequest
+  onOpenQuickRequest,
+  onSelectProduct
 }) => {
+  const filteredProducts = activeCategory 
+    ? products.filter((p) => p.category === activeCategory)
+    : products
+
   return (
-    <div className="w-full space-y-5 pb-6">
+    <div className="w-full space-y-5 pb-28">
       
       {/* 1. SEARCH & VOICE BAR (Market Context) */}
       <div 
         onClick={() => {
           triggerHapticFeedback('medium')
-          onOpenQuickRequest({ title: 'Купить вещь...' }) // Mock action
+          onOpenQuickRequest({ title: 'Купить вещь...' })
         }}
         className="w-full bg-[#161B22] border border-[#2A303C] rounded-2xl p-3 flex items-center gap-3 shadow-lg cursor-text hover:bg-[#1A202A] transition-colors"
       >
-        <div className="w-9 h-9 rounded-full bg-[#CCFF00]/10 flex items-center justify-center shrink-0">
-          <Mic className="w-4 h-4 text-[#CCFF00]" />
+        <div className="w-9 h-9 rounded-full bg-[#00F2FE]/10 flex items-center justify-center shrink-0">
+          <Mic className="w-4 h-4 text-[#00F2FE]" />
         </div>
         <div className="flex flex-col">
-          <span className="text-[14px] font-bold text-white tracking-wide">Что вы ищете?</span>
-          <span className="text-[11px] text-gray-400 font-medium">Опишите товар голосом...</span>
+          <span className="text-[14px] font-bold text-white tracking-wide">Что вы ищете на Маркете?</span>
+          <span className="text-[11px] text-gray-400 font-medium">Опишите товар или байк голосом...</span>
         </div>
       </div>
 
@@ -104,7 +133,7 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
               }}
               className={`shrink-0 rounded-full flex items-center gap-1.5 px-3.5 py-2 cursor-pointer transition-all duration-200 border ${
                 isActive
-                  ? 'bg-[#CCFF00]/10 border-[#CCFF00]/50 text-[#CCFF00] shadow-[0_0_15px_rgba(204,255,0,0.15)]'
+                  ? 'bg-[#00F2FE]/20 border-[#00F2FE]/60 text-[#00F2FE] shadow-[0_0_15px_rgba(0,242,254,0.2)]'
                   : 'bg-[#0D1117] border-[#222222] text-gray-300 hover:bg-[#161B22]'
               }`}
             >
@@ -121,7 +150,7 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
       <div className="space-y-4 pt-2">
         <div className="flex items-center justify-between mb-1 px-1">
           <div className="flex items-center gap-2">
-            <Flame className="w-4 h-4 text-[#CCFF00] animate-pulse" />
+            <Flame className="w-4 h-4 text-[#00F2FE] animate-pulse" />
             <h2 className="text-[13px] font-bold uppercase tracking-wider text-white">
               ГОРЯЩИЕ ТОВАРЫ
             </h2>
@@ -130,10 +159,14 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          {MOCK_PRODUCTS.map((item) => (
+          {filteredProducts.map((item) => (
             <div 
               key={item.id}
-              className="bg-[#0D1117] border border-[#222222] rounded-2xl overflow-hidden flex flex-col hover:border-[#333333] transition-colors cursor-pointer group"
+              onClick={() => {
+                triggerHapticFeedback('medium')
+                onSelectProduct(item)
+              }}
+              className="glass-card border border-[#00F2FE]/20 rounded-2xl overflow-hidden flex flex-col hover:border-[#00F2FE]/50 transition-all cursor-pointer group"
             >
               {/* Product Image with Overlays */}
               <div className="relative aspect-square w-full">
@@ -145,7 +178,7 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0D1117] via-transparent to-transparent opacity-80" />
                 
                 {/* Condition Badge */}
-                <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[9px] font-bold text-white uppercase tracking-wider">
+                <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[9px] font-bold text-white uppercase tracking-wider border border-white/10">
                   {item.condition}
                 </div>
 
@@ -162,21 +195,29 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
                   {item.title}
                 </h3>
                 <div className="flex items-center gap-1 text-[10px] text-gray-400 font-medium mb-3 mt-auto">
-                  <MapPin className="w-3 h-3 text-[#CCFF00]" />
+                  <MapPin className="w-3 h-3 text-[#00F2FE]" />
                   <span className="truncate">{item.district}</span>
                 </div>
 
                 {/* Price Row */}
-                <div className="flex items-end justify-between pt-2 border-t border-[#222222]">
+                <div className="flex items-end justify-between pt-2 border-t border-white/10">
                   <div className="flex flex-col">
                     <span className="text-[10px] text-gray-500 line-through font-semibold leading-none mb-0.5">
                       ${item.oldPrice}
                     </span>
-                    <span className="text-[15px] font-black text-[#CCFF00] leading-none">
+                    <span className="text-[15px] font-black text-[#00F2FE] leading-none">
                       ${item.price}
                     </span>
                   </div>
-                  <button className="bg-gradient-to-r from-[#CCFF00] via-[#A8F000] to-[#00F2FE] hover:opacity-90 text-black text-[12px] font-black px-4 py-2 rounded-xl transition-all shadow-[0_0_15px_rgba(204,255,0,0.4)]">
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      triggerHapticFeedback('heavy')
+                      onSelectProduct(item)
+                    }}
+                    className="bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] hover:brightness-110 text-black text-[11px] font-black px-3 py-1.5 rounded-xl transition-all shadow-[0_0_15px_rgba(0,242,254,0.3)]"
+                  >
                     В корзину
                   </button>
                 </div>

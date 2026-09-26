@@ -60,6 +60,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
                 <div className="relative flex justify-center items-center w-[60px]">
                   <button
                     onClick={handleFabClick}
+                    aria-label={mode === 'services' ? 'Создать заказ' : 'Добавить лот'}
                     className={`absolute -top-6 flex items-center justify-center w-[64px] h-[64px] rounded-full border-2 transition-all duration-300 shadow-xl z-[60] ${
                       mode === 'services'
                         ? 'bg-gradient-to-br from-[#00D4E8] to-[#00F2FE] border-black shadow-[0_4px_25px_rgba(0,242,254,0.4)]'

@@ -12,8 +12,10 @@ import { SplashScreen } from './components/SplashScreen'
 import { BottomNav, TabId, AppMode } from './components/BottomNav'
 import { PillSwitcher } from './components/PillSwitcher'
 import { MarketSection } from './components/MarketSection'
+import { CreateMarketListingModal } from './components/CreateMarketListingModal'
+import { MarketBuyModal } from './components/MarketBuyModal'
 import { MOCK_REQUESTS, SERVICE_TEMPLATES } from './data/mockData'
-import { RequestItem, BidItem, ServiceTemplate } from './types'
+import { RequestItem, BidItem, ServiceTemplate, MarketItem } from './types'
 import { initTelegramApp, triggerHapticFeedback, isTelegramEnvironment } from './lib/telegram'
 import { CheckCircle2, Zap, Scale } from 'lucide-react'
 import { AdminDisputePanel } from './components/AdminDisputePanel'
@@ -150,6 +152,11 @@ export function App() {
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false)
   const [selectedRequestForBid, setSelectedRequestForBid] = useState<RequestItem | null>(null)
 
+  // Flash Market State
+  const [isCreateMarketListingOpen, setIsCreateMarketListingOpen] = useState(false)
+  const [selectedMarketProduct, setSelectedMarketProduct] = useState<MarketItem | null>(null)
+  const [marketProducts, setMarketProducts] = useState<MarketItem[]>([])
+
   // In-App Deal Chat State
   const [activeDealRequest, setActiveDealRequest] = useState<RequestItem | null>(null)
   const [activeDealBid, setActiveDealBid] = useState<BidItem | null>(null)
@@ -198,6 +205,7 @@ export function App() {
   const handleModeChange = (newMode: AppMode) => {
     setMode(newMode)
     setActiveTab(newMode === 'services' ? 'home' : 'market')
+    setActiveCategory(null)
   }
 
   const handleCreateRequest = (newReq: Partial<RequestItem>) => {
@@ -227,6 +235,58 @@ export function App() {
     setRequests([createdItem, ...requests])
     setNotificationMsg('🎉 Заявка опубликована на живой аукцион!')
     setTimeout(() => setNotificationMsg(null), 4000)
+  }
+
+  const handleCreateMarketListing = (newItem: MarketItem) => {
+    setMarketProducts((prev) => [newItem, ...prev])
+    setActiveCategory(null)
+    setNotificationMsg('🔥 Лот успешно опубликован во Flash Market!')
+    setTimeout(() => setNotificationMsg(null), 4000)
+  }
+
+  const handleContactSeller = (item: MarketItem, deliveryMethod: string) => {
+    const marketDealReq: RequestItem = {
+      id: `req-market-${Date.now()}`,
+      clientId: 'usr-buyer',
+      clientName: 'Покупатель',
+      clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+      clientRating: 5.0,
+      hub: activeHub as any,
+      district: item.district,
+      categoryL1Id: 'cat-market',
+      categoryL1Name: 'Маркет',
+      title: `Покупка: «${item.title}»`,
+      description: `Покупка лота на Маркете. Способ получения: ${deliveryMethod}.`,
+      budget: item.price,
+      currency: 'USD',
+      mediaUrls: [item.image],
+      isFeatured: true,
+      status: 'in_progress',
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
+      auctionEndsAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
+      bidsCount: 1,
+    }
+
+    const sellerBid: BidItem = {
+      id: `bid-seller-${Date.now()}`,
+      requestId: marketDealReq.id,
+      providerId: item.sellerId || 'seller-1',
+      providerName: item.sellerName || 'Продавец',
+      providerAvatar: item.sellerAvatar,
+      providerRating: item.sellerRating || 4.9,
+      isPro: true,
+      isAiAgent: false,
+      proposedPrice: item.price,
+      currency: 'USD',
+      comment: `Здравствуйте! Готов к сделке по «${item.title}». Вариант получения: ${deliveryMethod}.`,
+      status: 'accepted',
+      createdAt: new Date().toISOString(),
+    }
+
+    setActiveDealRequest(marketDealReq)
+    setActiveDealBid(sellerBid)
+    setSelectedMarketProduct(null)
   }
 
   const handleSubmitBid = (requestId: string, price: number, comment: string) => {
@@ -345,8 +405,10 @@ export function App() {
           {mode === 'market' && (activeTab === 'home' || activeTab === 'market') && (
             <MarketSection
               activeCategory={activeCategory}
+              products={marketProducts.length > 0 ? marketProducts : undefined}
               onSelectCategory={setActiveCategory}
               onOpenQuickRequest={() => setIsAIAssistantOpen(true)}
+              onSelectProduct={(product) => setSelectedMarketProduct(product)}
             />
           )}
 
@@ -429,6 +491,20 @@ export function App() {
           }}
         />
 
+        <CreateMarketListingModal
+          isOpen={isCreateMarketListingOpen}
+          onClose={() => setIsCreateMarketListingOpen(false)}
+          currentHub={activeHub as any}
+          onCreateListing={handleCreateMarketListing}
+        />
+
+        <MarketBuyModal
+          isOpen={Boolean(selectedMarketProduct)}
+          item={selectedMarketProduct}
+          onClose={() => setSelectedMarketProduct(null)}
+          onContactSeller={handleContactSeller}
+        />
+
         {/* Bottom Tab Bar */}
         <BottomNav
           activeTab={activeTab}
@@ -439,6 +515,7 @@ export function App() {
               setIsCreateOpen(true)
             } else {
               triggerHapticFeedback('heavy')
+              setIsCreateMarketListingOpen(true)
             }
           }}
         />
