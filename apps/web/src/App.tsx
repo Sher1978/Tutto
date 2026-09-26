@@ -233,7 +233,33 @@ export function App() {
       {/* Smartphone Shell Container */}
       <div className="w-full max-w-[390px] min-h-screen sm:min-h-[840px] bg-black/40 backdrop-blur-3xl sm:rounded-[44px] sm:border-[8px] sm:border-[#1c2433] sm:shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col relative overflow-hidden z-10">
         {/* Header */}
-        <Navbar />
+        <Navbar
+          onOpenQuickRequest={() => setSelectedQuickRequestItem({
+            id: 'new',
+            title: '',
+            hub: activeHub as any,
+            district: '',
+            categoryL1Id: 'cat-realestate',
+            categoryL1Name: 'Жильё',
+            description: '',
+            budget: 0,
+            currency: 'USD',
+            mediaUrls: [],
+            isFeatured: false,
+            status: 'open',
+            createdAt: new Date().toISOString(),
+            expiresAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
+            auctionEndsAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
+            bidsCount: 0,
+            clientId: 'usr-current',
+            clientName: 'Александр',
+            clientAvatar: '',
+            clientRating: 5.0,
+          })}
+          activeAuctionsCount={requests.filter(r => r.status === 'open').length}
+          totalBidsCount={requests.reduce((acc, r) => acc + r.bidsCount, 0)}
+          userRole="client"
+        />
 
         {/* Notification Toast */}
         {notificationMsg && (
