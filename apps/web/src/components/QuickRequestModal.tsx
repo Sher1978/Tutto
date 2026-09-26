@@ -240,20 +240,22 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
                     </select>
                   </div>
                   <div>
-                    <select
+                    <input
+                      type="text"
+                      list="quick_districts_list"
                       value={districtName}
                       onChange={(e) => {
                         setDistrictName(e.target.value)
                         setLocation(`${hubName}, ${e.target.value}`)
                       }}
-                      className="w-full px-3 py-3 rounded-2xl bg-slate-900/90 border border-white/20 text-white font-semibold text-[14px] focus:outline-none focus:border-[#00FF87] transition-all shadow-inner appearance-none"
-                    >
+                      placeholder="Район (напр. Canggu или свой)"
+                      className="w-full px-3 py-3 rounded-2xl bg-slate-900/90 border border-white/20 text-white placeholder-gray-500 font-semibold text-[14px] focus:outline-none focus:border-[#00FF87] transition-all shadow-inner"
+                    />
+                    <datalist id="quick_districts_list">
                       {(HUBS.find((h) => h.id.toLowerCase() === hubName.toLowerCase()) || HUBS[0]).districts.map((d) => (
-                        <option key={d} value={d}>
-                          {d}
-                        </option>
+                        <option key={d} value={d} />
                       ))}
-                    </select>
+                    </datalist>
                   </div>
                 </div>
               </div>

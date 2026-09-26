@@ -187,17 +187,19 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
 
               <div>
                 <label className="block text-gray-400 text-[10px] mb-1">Район (District)</label>
-                <select
+                <input
+                  type="text"
+                  list="districts_list"
                   value={district}
                   onChange={(e) => setDistrict(e.target.value)}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-2.5 py-2 text-white focus:border-cyan-400 outline-none text-xs"
-                >
+                  placeholder="Например: Rawai или свой..."
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-2.5 py-2 text-white placeholder-gray-500 focus:border-cyan-400 outline-none text-xs"
+                />
+                <datalist id="districts_list">
                   {currentHubData.districts.map((d) => (
-                    <option key={d} value={d}>
-                      {d}
-                    </option>
+                    <option key={d} value={d} />
                   ))}
-                </select>
+                </datalist>
               </div>
             </div>
           </div>

@@ -106,6 +106,38 @@ export const RequestCard: React.FC<RequestCardProps> = ({
         </div>
       </div>
 
+      {/* Clarification Alert (if any) */}
+      {request.clarificationRequests && request.clarificationRequests.length > 0 && !request.clarificationComment && (
+        <div className="mb-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200">
+          <div className="font-bold text-amber-400 mb-1 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            Исполнители просят уточнить:
+          </div>
+          <p className="mb-2 italic">"{request.clarificationRequests[request.clarificationRequests.length - 1].question}"</p>
+          <button 
+            onClick={() => {
+              const answer = prompt('Ваш ответ (он будет добавлен к заявке для всех исполнителей):')
+              if (answer) {
+                // mock behavior: ideally this hits an API and parent updates state
+                alert('Ответ сохранен: ' + answer)
+                request.clarificationComment = answer
+                triggerHapticFeedback('medium')
+              }
+            }}
+            className="px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-400 font-semibold border border-amber-500/40 hover:bg-amber-500/30 transition-colors w-full"
+          >
+            Уточнить детали
+          </button>
+        </div>
+      )}
+      
+      {/* Client's Clarification Comment (if answered) */}
+      {request.clarificationComment && (
+        <div className="mb-3 p-2.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-[11px] text-gray-300">
+          <strong className="text-cyan-400">Дополнение к заявке:</strong> {request.clarificationComment}
+        </div>
+      )}
+
       {/* Full Width Bright Gradient Action Button (1:1 Mockup) */}
       <button
         onClick={() => onQuickBid(request)}

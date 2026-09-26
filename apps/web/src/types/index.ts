@@ -50,6 +50,8 @@ export interface RequestItem {
   expiresAt: string
   auctionEndsAt: string
   bidsCount: number
+  clarificationRequests?: { providerId: string; question: string; createdAt: string }[]
+  clarificationComment?: string
 }
 
 export interface BidItem {

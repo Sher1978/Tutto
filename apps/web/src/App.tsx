@@ -192,6 +192,28 @@ export function App() {
   }
 
   const handleSubmitBid = (requestId: string, price: number, comment: string) => {
+    if (comment.startsWith('[CLARIFICATION]')) {
+      const question = comment.replace('[CLARIFICATION] ', '')
+      setRequests((prev) =>
+        prev.map((r) => {
+          if (r.id === requestId) {
+            const reqs = r.clarificationRequests || []
+            return {
+              ...r,
+              clarificationRequests: [
+                ...reqs,
+                { providerId: 'biz-current', question, createdAt: new Date().toISOString() }
+              ]
+            }
+          }
+          return r
+        })
+      )
+      setNotificationMsg('📨 Запрос на уточнение отправлен клиенту!')
+      setTimeout(() => setNotificationMsg(null), 4000)
+      return
+    }
+
     setRequests((prev) =>
       prev.map((r) => (r.id === requestId ? { ...r, bidsCount: r.bidsCount + 1 } : r))
     )
