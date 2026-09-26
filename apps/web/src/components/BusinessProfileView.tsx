@@ -3,7 +3,11 @@ import { Shield, Sparkles, Bot, Check, ExternalLink, Copy, Star, Edit3, Zap } fr
 import { MOCK_BUSINESS_CARDS } from '../data/mockData'
 import { getTelegramUser, triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
 
-export const BusinessProfileView: React.FC = () => {
+interface BusinessProfileViewProps {
+  onOpenAdmin?: () => void
+}
+
+export const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({ onOpenAdmin }) => {
   const user = getTelegramUser()
   const bizCard = MOCK_BUSINESS_CARDS[0]
   const [aiEnabled, setAiEnabled] = useState(bizCard.isAiEnabled)
@@ -240,6 +244,16 @@ export const BusinessProfileView: React.FC = () => {
           </button>
         </div>
       </div>
+      
+      {/* Dev / Admin Button */}
+      {onOpenAdmin && (
+        <button
+          onClick={onOpenAdmin}
+          className="w-full py-4 mt-6 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 font-bold tracking-wide flex items-center justify-center gap-2 hover:bg-red-500/20 transition-all"
+        >
+          <Shield className="w-5 h-5" /> ПАНЕЛЬ АДМИНИСТРАТОРА (DEV)
+        </button>
+      )}
     </div>
   )
 }

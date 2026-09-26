@@ -40,6 +40,12 @@
 | [15_TOKEN_AND_PREMIUM.md](./15_TOKEN_AND_PREMIUM.md) | Токеномика: пакеты, цены, DB-триггеры + Verified Partner: галочка, приоритет, $19/мес |
 | [16_NOTIFICATIONS_MATRIX.md](./16_NOTIFICATIONS_MATRIX.md) | Полная матрица уведомлений: 28 событий, шаблоны RU/EN, GrammyJS код |
 | [17_DEAL_FLOW_AND_CHAT.md](./17_DEAL_FLOW_AND_CHAT.md) | Флоу сделки, медиа-чат (6 типов), поддержка + тикеты, апелляции |
+| [18_CLARIFICATION_FLOW.md](./18_CLARIFICATION_FLOW.md) | Флоу уточнения деталей заказа |
+| [18_LEGAL_AND_RULES.md](./18_LEGAL_AND_RULES.md) | Правовая база, правила платформы |
+| [19_ARCHITECTURE_AND_PLATFORMS.md](./19_ARCHITECTURE_AND_PLATFORMS.md) | Архитектура, платформенные решения |
+| [19_MAP_LOCATION_PICKER.md](./19_MAP_LOCATION_PICKER.md) | Пикер геолокации на карте |
+| [20_FLASH_MARKET_SPEC.md](./20_FLASH_MARKET_SPEC.md) | **🔥 Flash Market:** C2C/B2C маркетплейс, аукционы товаров, Buy Now, рубрикатор товаров, DB-схема, уведомления, CRON |
+| [21_DYNAMIC_BOTTOM_NAV_AND_MARKET_ADMIN.md](./21_DYNAMIC_BOTTOM_NAV_AND_MARKET_ADMIN.md) | **🔥 Динамическое меню + Админ маркета:** контекстная навигация, экран «Моё», поиск товаров, статистика маркета, модерация, аналитика аукционов |
 
 ---
 

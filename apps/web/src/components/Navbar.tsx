@@ -1,168 +1,123 @@
-import React, { useState } from 'react'
-import { Star, Plus, Zap, Flame, Coins } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { Coins, ChevronDown, MapPin } from 'lucide-react'
 import { getTelegramUser, triggerHapticFeedback } from '../lib/telegram'
 import { TokenWalletModal } from './TokenWalletModal'
+import { LocationSelectorModal } from './LocationSelectorModal'
+import { AppMode } from './BottomNav'
+import { Session } from '@supabase/supabase-js'
+import { detectUserLocation } from '../lib/geo'
 
 interface NavbarProps {
   onOpenQuickRequest?: () => void
+  onLocationChange?: (hub: string, district: string) => void
   activeAuctionsCount?: number
   totalBidsCount?: number
   savedAmount?: number
   userRole?: 'client' | 'business'
+  mode: AppMode
+  session?: Session | null
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenQuickRequest,
+  onLocationChange,
   activeAuctionsCount = 0,
   totalBidsCount = 0,
   savedAmount = 85,
   userRole = 'client',
+  mode,
+  session,
 }) => {
-  const user = getTelegramUser()
+  const telegramUser = getTelegramUser()
   const [isWalletOpen, setIsWalletOpen] = useState(false)
+  const [isLocationOpen, setIsLocationOpen] = useState(false)
   const [tokenBalance, setTokenBalance] = useState(150)
+  const [currentHubId, setCurrentHubId] = useState<string>('phuket')
+  const [locationName, setLocationName] = useState<string>('Определение...')
 
-  const handleOpenRequest = () => {
-    triggerHapticFeedback('medium')
-    if (onOpenQuickRequest) {
-      onOpenQuickRequest()
+  useEffect(() => {
+    // Автоматическое определение локации 1 и 2 уровня
+    const fetchLoc = async () => {
+      try {
+        const loc = await detectUserLocation()
+        // loc.hubNameRu: Пхукет, loc.district: Равай
+        setCurrentHubId(loc.hubId)
+        setLocationName(`${loc.hubNameRu}, ${loc.district}`)
+        if (onLocationChange) onLocationChange(loc.hubId, loc.district)
+      } catch (err) {
+        setLocationName('Пхукет, Chalong') // Фолбэк
+        if (onLocationChange) onLocationChange('phuket', 'Chalong')
+      }
     }
-  }
+    fetchLoc()
+  }, [])
 
   const handleOpenWallet = () => {
     triggerHapticFeedback('light')
     setIsWalletOpen(true)
   }
 
+  // Определяем аватар: Сначала сессия (Google/Email), затем Telegram, затем дефолт
+  const avatarUrl = session?.user?.user_metadata?.avatar_url || telegramUser?.photo_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120'
+
   return (
     <>
-      <header
-        className="w-full pb-2 px-4 safe-area-top flex flex-col"
-        style={{ paddingTop: '100px' }}
-      >
-        {/* 1. Main Branding Block — pushed 100px down from the top edge */}
-        <div className="text-center">
-          <h1 className="font-display font-black text-3xl sm:text-4xl tracking-wider flex items-center justify-center gap-2">
-            <span className="glow-tutto text-[#00F2FE]">TUTTO</span>
-            <span className="glow-minutto text-[#00FF87]">MINUTTO</span>
-          </h1>
-          <p className="text-[11px] font-semibold text-gray-200 tracking-wide mt-1.5 max-w-sm mx-auto leading-relaxed" style={{ fontFamily: "'Roboto', sans-serif" }}>
-            Платформа, где <span className="text-[#00FF87] font-bold">цену определяет покупатель</span>, а не продавец. Создайте заявку и получайте предложения за 1 минуту!
-          </p>
-        </div>
-
-        {/* 2. Client Profile Card with Dynamic Action Pill */}
-        <div
-          className="mt-3.5 rounded-2xl px-3 py-1.5 flex items-center justify-between gap-2"
-          style={{
-            background: 'rgba(255, 255, 255, 0.10)',
-            backdropFilter: 'blur(30px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(30px) saturate(180%)',
-            border: '1px solid rgba(255, 255, 255, 0.22)',
-            boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 1px 1px 0 rgba(255, 255, 255, 0.25)',
-          }}
-        >
-          {/* Left profile */}
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="relative shrink-0">
-              <img
-                src={user?.photo_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120'}
-                alt="User avatar"
-                className="w-8 h-8 rounded-full border border-white/20 object-cover"
+      <header className="w-full pt-[max(env(safe-area-inset-top),60px)] pb-2 px-4 flex flex-col gap-3 relative z-10">
+        {/* Top Row: Title, Slogan & Profile */}
+        <div className="flex items-center justify-between w-full">
+          <div className="flex flex-col pt-1">
+            <h1 className="font-display text-[28px] font-black tracking-wider leading-none flex items-center gap-1.5">
+              <span className="glow-tutto">TUTTO</span>
+              <span className="glow-minutto">MINUTTO</span>
+            </h1>
+            <span className="text-[11px] font-bold text-white tracking-widest uppercase mt-1.5">
+              ОБРАТНЫЙ АУКЦИОН УСЛУГ
+            </span>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={handleOpenWallet}
+              className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-2.5 py-1 hover:bg-white/10 transition-colors"
+            >
+              <Coins className="w-3.5 h-3.5 text-amber-400" />
+              <span className="text-[12px] font-bold text-white">{tokenBalance}</span>
+            </button>
+            
+            <div className="relative shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
+              {/* Centered Ambient Glow Sprite on User Avatar */}
+              <div 
+                className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full blur-[90px] pointer-events-none transition-all duration-500 z-0 ${
+                  mode === 'services'
+                    ? 'bg-[#CCFF00]/40 shadow-[0_0_80px_rgba(204,255,0,0.5)]'
+                    : 'bg-[#00F2FE]/40 shadow-[0_0_80px_rgba(0,242,254,0.5)]'
+                }`} 
               />
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#00FF87] border-2 border-[#0f1724]" />
-            </div>
-            <div className="flex flex-col min-w-0" style={{ fontFamily: "'Roboto', sans-serif" }}>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[11px] font-bold text-white truncate leading-tight">
-                  {user?.first_name || 'Александр'}
-                </span>
-                {/* Token Wallet Badge */}
-                <button 
-                  onClick={handleOpenWallet}
-                  className="flex items-center gap-0.5 bg-amber-400/20 border border-amber-400/50 rounded-md px-1 py-0.5 hover:bg-amber-400/30 transition-colors"
-                >
-                  <Coins className="w-2.5 h-2.5 text-amber-400" />
-                  <span className="text-[9px] font-black text-amber-400">{tokenBalance}</span>
-                </button>
-              </div>
-              <span className="text-[9px] text-gray-300 flex items-center gap-1 leading-none mt-0.5 font-semibold">
-                4.9 <Star className="w-2.5 h-2.5 text-amber-400 fill-amber-400" /> <span className="text-[#00FF87] font-bold">В сети</span>
-              </span>
+
+              <img
+                src={avatarUrl}
+                alt="Profile"
+                className={`w-12 h-12 rounded-full border-[2.5px] object-cover transition-all duration-300 relative z-10 ${
+                  mode === 'services' 
+                    ? 'border-[#CCFF00] shadow-[0_0_18px_rgba(204,255,0,0.85)]' 
+                    : 'border-[#00F2FE] shadow-[0_0_18px_rgba(0,242,254,0.85)]'
+                }`}
+              />
+              <span className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-[#0A101D] transition-colors duration-300 z-20 ${
+                mode === 'services' ? 'bg-[#CCFF00]' : 'bg-[#00F2FE]'
+              }`} />
             </div>
           </div>
+        </div>
 
-          {/* Right Client Pill: Shows Active Auctions OR '+' Create Quick Request Button */}
-          {userRole === 'business' ? (
-            <div
-              className="rounded-xl px-2.5 py-1 text-right flex flex-col items-end justify-center shrink-0"
-              style={{
-                background: 'rgba(0, 255, 135, 0.12)',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
-                border: '1px solid rgba(0, 255, 135, 0.6)',
-                boxShadow: '0 0 16px rgba(0, 255, 135, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-                fontFamily: "'Roboto', sans-serif",
-              }}
-            >
-              <div className="flex items-center gap-1.5 text-[8.5px] font-bold text-[#00FF87] tracking-wider uppercase leading-none">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00FF87] animate-ping shadow-[0_0_8px_#00FF87]" />
-                <span>ИИ-МЕНЕДЖЕР</span>
-              </div>
-              <span className="text-[8.5px] font-bold text-gray-200 mt-0.5 leading-none">
-                <span className="text-[#00FF87]">АКТИВЕН</span> • В сети
-              </span>
-              <span className="text-[7.5px] font-medium text-gray-300 leading-none mt-0.5">
-                Ответ: &lt;1 мин
-              </span>
-            </div>
-          ) : activeAuctionsCount > 0 ? (
-            <button
-              onClick={handleOpenRequest}
-              className="rounded-xl px-2.5 py-1 text-right flex flex-col items-end justify-center shrink-0 cursor-pointer transition-all hover:scale-105 active:scale-95"
-              style={{
-                background: 'rgba(0, 255, 135, 0.14)',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
-                border: '1px solid rgba(0, 255, 135, 0.65)',
-                boxShadow: '0 0 16px rgba(0, 255, 135, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25)',
-                fontFamily: "'Roboto', sans-serif",
-              }}
-            >
-              <div className="flex items-center gap-1 text-[8.5px] font-bold text-[#00FF87] tracking-wider uppercase leading-none">
-                <Flame className="w-2.5 h-2.5 text-[#00FF87] animate-pulse" />
-                <span>{activeAuctionsCount} АКТИВНЫХ АУКЦИОНА</span>
-              </div>
-              <span className="text-[8.5px] font-bold text-gray-200 mt-0.5 leading-none">
-                {totalBidsCount} офферов • <span className="text-[#00FF87]">Экономия ${savedAmount}</span>
-              </span>
-            </button>
-          ) : (
-            <button
-              onClick={handleOpenRequest}
-              className="rounded-xl px-2.5 py-1 flex items-center gap-1.5 shrink-0 cursor-pointer transition-all hover:scale-105 active:scale-95 group"
-              style={{
-                background: 'rgba(0, 255, 135, 0.16)',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
-                border: '1px solid rgba(0, 255, 135, 0.7)',
-                boxShadow: '0 0 18px rgba(0, 255, 135, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                fontFamily: "'Roboto', sans-serif",
-              }}
-            >
-              <div className="w-6 h-6 rounded-full bg-[#00FF87] text-[#03100A] flex items-center justify-center font-black text-sm shadow-[0_0_10px_#00FF87] group-hover:rotate-90 transition-transform duration-300">
-                +
-              </div>
-              <div className="flex flex-col text-right">
-                <span className="text-[8.5px] font-black text-[#00FF87] tracking-wider uppercase leading-none">
-                  СОЗДАТЬ ЗАЯВКУ
-                </span>
-                <span className="text-[7.5px] font-bold text-gray-200 leading-none mt-0.5">
-                  Запуск за 1 мин
-                </span>
-              </div>
-            </button>
-          )}
+        {/* Bottom Row: Location Badge */}
+        <div 
+          onClick={() => { triggerHapticFeedback('light'); setIsLocationOpen(true) }}
+          className="flex items-center self-start gap-1.5 bg-[#0D1117] border border-[#222222] rounded-full px-3 py-1 cursor-pointer hover:bg-[#161B22] transition-colors"
+        >
+          <MapPin className="w-3.5 h-3.5 text-[#00F2FE]" />
+          <span className="text-[12px] font-bold text-white tracking-wide">{locationName}</span>
+          <ChevronDown className="w-3.5 h-3.5 text-gray-400 ml-1" />
         </div>
       </header>
 
@@ -171,6 +126,20 @@ export const Navbar: React.FC<NavbarProps> = ({
         onClose={() => setIsWalletOpen(false)} 
         currentBalance={tokenBalance}
         onTopUp={(amount) => setTokenBalance(prev => prev + amount)}
+      />
+
+      <LocationSelectorModal
+        isOpen={isLocationOpen}
+        onClose={() => setIsLocationOpen(false)}
+        currentHub={currentHubId}
+        currentDistrict={locationName.split(', ')[1] || ''}
+        onSelect={(hubId, district) => {
+          // find hub name
+          const hubNames: Record<string, string> = { bali: 'Бали', phuket: 'Пхукет', dubai: 'Дубай', samui: 'Самуи' }
+          setCurrentHubId(hubId)
+          setLocationName(`${hubNames[hubId] || hubId}, ${district}`)
+          if (onLocationChange) onLocationChange(hubId, district)
+        }}
       />
     </>
   )

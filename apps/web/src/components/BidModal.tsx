@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { X, Zap, DollarSign, Bot, ShieldCheck } from 'lucide-react'
 import { RequestItem } from '../types'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
@@ -16,13 +16,31 @@ export const BidModal: React.FC<BidModalProps> = ({
   onClose,
   onSubmitBid,
 }) => {
-  if (!isOpen || !request) return null
-
-  const [price, setPrice] = useState(request.budget ? String(request.budget) : '180')
+  const [price, setPrice] = useState('180')
   const [comment, setComment] = useState('Готовы выполнить в лучшем виде. Доставим в течение 30 минут!')
-
   const [isClarifying, setIsClarifying] = useState(false)
   const [clarifyText, setClarifyText] = useState('')
+
+  useEffect(() => {
+    if (request) {
+      setPrice(request.budget ? String(request.budget) : '180')
+      setIsClarifying(false)
+      setClarifyText('')
+    }
+  }, [request])
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
+  if (!isOpen || !request) return null
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -54,19 +72,19 @@ export const BidModal: React.FC<BidModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="w-full sm:max-w-md glass-panel rounded-t-3xl sm:rounded-3xl border border-white/10 p-5 safe-area-bottom">
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+      <div className="w-full sm:max-w-md glass-panel rounded-t-3xl sm:rounded-3xl border border-white/10 p-5 pb-28 sm:pb-6 max-h-[90vh] overflow-y-auto safe-area-bottom">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#00F2FE] to-[#CCFF00] flex items-center justify-center shadow-[0_0_10px_rgba(0,242,254,0.3)]">
               <Zap className="w-4 h-4 text-black fill-black" />
             </div>
             <div>
-              <h3 className="font-display font-bold text-base text-white">
+              <h3 className="font-display font-bold text-lg text-white">
                 {isClarifying ? 'Уточнить детали' : 'Сделать оффер'}
               </h3>
-              <p className="text-xs text-cyan-400 line-clamp-1">{request.title}</p>
+              <p className="text-sm text-[#00F2FE] line-clamp-1 font-medium">{request.title}</p>
             </div>
           </div>
           <button
@@ -77,38 +95,57 @@ export const BidModal: React.FC<BidModalProps> = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+        {/* Request Details */}
+        <div className="flex flex-col gap-3 mb-5 p-3 rounded-2xl bg-black/40 border border-white/5">
+          <div className="flex gap-3">
+            {request.mediaUrls && request.mediaUrls.length > 0 && (
+              <img src={request.mediaUrls[0]} alt="Request" className="w-20 h-20 rounded-xl object-cover shrink-0 border border-white/10" />
+            )}
+            <div className="flex flex-col gap-1.5 flex-1">
+              <span className="text-[16px] font-bold text-white leading-tight">{request.title}</span>
+              <span className="text-[13px] text-gray-300 line-clamp-2 leading-snug">
+                {request.description || 'Описание не указано'}
+              </span>
+              <div className="flex items-center justify-between mt-auto pt-1">
+                <span className="text-[15px] font-black text-[#CCFF00]">Бюджет: ${request.budget || 'Не указан'}</span>
+                <span className="text-[12px] text-gray-400 font-medium">📍 {request.district}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4 text-sm">
           {!isClarifying ? (
             <>
               {/* Proposed Price */}
               <div>
-                <label className="block text-gray-300 font-semibold mb-1.5">Ваша цена ($ USD)</label>
+                <label className="block text-gray-300 font-semibold mb-2 text-[14px]">Ваша цена ($ USD)</label>
                 <div className="relative">
                   <input
                     type="number"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    className="w-full bg-slate-900/90 border border-white/10 rounded-xl px-3 py-3 text-white text-lg font-extrabold pr-16 focus:border-cyan-400 outline-none"
+                    className="w-full bg-slate-900/90 border border-white/10 rounded-xl px-4 py-3.5 text-white text-xl font-extrabold pr-16 focus:border-cyan-400 outline-none"
                   />
-                  <span className="absolute right-3 top-3 text-cyan-400 font-bold text-sm">USD</span>
+                  <span className="absolute right-4 top-4 text-cyan-400 font-bold text-[15px]">USD</span>
                 </div>
               </div>
 
               {/* Comment */}
               <div>
-                <label className="block text-gray-300 font-semibold mb-1.5">Сообщение клиенту</label>
+                <label className="block text-gray-300 font-semibold mb-2 text-[14px]">Сообщение клиенту</label>
                 <textarea
                   rows={3}
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  placeholder="Опишите ваши преимущества, что входит в стоимость..."
-                  className="w-full bg-slate-900/90 border border-white/10 rounded-xl p-3 text-white focus:border-cyan-400 outline-none resize-none"
+                  placeholder="Опишите ваши преимущества..."
+                  className="w-full bg-slate-900/90 border border-white/10 rounded-xl p-4 text-white text-[14px] focus:border-cyan-400 outline-none resize-none leading-relaxed"
                 />
               </div>
 
               {/* Business Guarantee Info */}
-              <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-200 text-[11px] flex items-start gap-2">
-                <ShieldCheck className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+              <div className="p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-200 text-[13px] flex items-start gap-2.5 leading-snug">
+                <ShieldCheck className="w-5 h-5 text-purple-400 shrink-0 mt-0.5" />
                 <div>
                   <span>Ваш профиль и отзывные оценки будут прикреплены к офферу. Оплата принимается напрямую от клиента.</span>
                 </div>
@@ -134,10 +171,10 @@ export const BidModal: React.FC<BidModalProps> = ({
           <div className="flex flex-col gap-2 pt-2">
             <button
               type="submit"
-              className={`w-full py-3 rounded-xl font-extrabold text-sm shadow-lg active:scale-[0.98] transition-all ${
+              className={`w-full py-3 rounded-xl font-extrabold text-[14px] shadow-lg active:scale-[0.98] transition-all ${
                 isClarifying
-                  ? 'bg-amber-500 text-black shadow-amber-500/25'
-                  : 'bg-gradient-to-r from-cyan-400 to-blue-600 text-black shadow-cyan-500/25 hover:brightness-110'
+                  ? 'bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.4)]'
+                  : 'bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black shadow-[0_0_15px_rgba(0,242,254,0.4)] hover:opacity-90'
               }`}
             >
               {isClarifying ? 'Отправить запрос клиенту' : 'Отправить встречное предложение'}

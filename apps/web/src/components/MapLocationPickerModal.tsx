@@ -99,7 +99,7 @@ export const MapLocationPickerModal: React.FC<MapLocationPickerModalProps> = ({
               disabled={!position}
               className={`w-full max-w-sm py-4 rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all shadow-xl
                 ${position 
-                  ? 'bg-[#00FF87] text-[#03100A] shadow-[0_0_30px_rgba(0,255,135,0.4)] hover:brightness-110 active:scale-95' 
+                  ? 'bg-[#00F2FE] text-[#03100A] shadow-[0_0_30px_rgba(0,242,254,0.4)] hover:brightness-110 active:scale-95' 
                   : 'bg-white/10 text-gray-400 cursor-not-allowed'
                 }`}
             >

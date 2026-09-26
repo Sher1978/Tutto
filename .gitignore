@@ -24,6 +24,10 @@ get_input.js
 output.txt
 output_utf8.txt
 
+# Playwright
+test-results/
+playwright-report/
+
 # OS metadata
 .DS_Store
 Thumbs.db

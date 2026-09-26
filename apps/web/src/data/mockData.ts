@@ -165,7 +165,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-nmax',
     categoryL1Id: 'cat-transport',
-    title: 'Yamaha NMAX 155cc / Honda PCX 160 (1-14 дней)',
+    title: 'Ищу Yamaha NMAX 155cc / Honda PCX 160 (1-14 дней)',
     description: 'Свежие скутеры (2023-2024 года) с бесплатной доставкой в отель, 2 чистоплотными шлемами и страховкой без залога паспорта.',
     defaultBudget: 220,
     currency: 'USD',
@@ -174,7 +174,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-car-compact',
     categoryL1Id: 'cat-transport',
-    title: 'Компактный авто (Honda City / Toyota Yaris)',
+    title: 'Ищу Компактный авто (Honda City / Toyota Yaris)',
     description: 'Автомобиль с кондиционером, полной страховкой и доставкой к отелю. Оплата без оригиналов документов в залог.',
     defaultBudget: 380,
     currency: 'USD',
@@ -183,7 +183,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-alphard-transfer',
     categoryL1Id: 'cat-transport',
-    title: 'VIP Встреча в аэропорту на Toyota Alphard',
+    title: 'Ищу VIP Трансфер из аэропорта на Toyota Alphard',
     description: 'Комфортабельный минивен бизнес-класса с личным водителем, детским креслом, водой и быстрым Wi-Fi.',
     defaultBudget: 45,
     currency: 'USD',
@@ -192,7 +192,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-enduro-bike',
     categoryL1Id: 'cat-transport',
-    title: 'Эндуро / Кроссовый байк Kawasaki KLX 250',
+    title: 'Ищу Эндуро / Кроссовый байк Kawasaki KLX 250',
     description: 'Мощный байк для поездок по горным серпантинам и джунглям. Экипировка и шлем включены.',
     defaultBudget: 35,
     currency: 'USD',

@@ -4,23 +4,34 @@ import { MockupAuctionSection } from './components/MockupAuctionSection'
 import { RequestCard } from './components/RequestCard'
 import { TemplateCard } from './components/TemplateCard'
 import { CreateRequestModal } from './components/CreateRequestModal'
-import { QuickRequestModal } from './components/QuickRequestModal'
+import { AIAssistantModal } from './components/AIAssistantModal'
 import { BidModal } from './components/BidModal'
 import { BusinessProfileView } from './components/BusinessProfileView'
 import { DealChatModal } from './components/DealChatModal'
 import { SplashScreen } from './components/SplashScreen'
-import { BottomNav, TabId } from './components/BottomNav'
+import { BottomNav, TabId, AppMode } from './components/BottomNav'
+import { PillSwitcher } from './components/PillSwitcher'
+import { MarketSection } from './components/MarketSection'
 import { MOCK_REQUESTS, SERVICE_TEMPLATES } from './data/mockData'
 import { RequestItem, BidItem, ServiceTemplate } from './types'
-import { initTelegramApp, triggerHapticFeedback } from './lib/telegram'
+import { initTelegramApp, triggerHapticFeedback, isTelegramEnvironment } from './lib/telegram'
 import { CheckCircle2, Zap, Scale } from 'lucide-react'
 import { AdminDisputePanel } from './components/AdminDisputePanel'
+import { AuthModal } from './components/AuthModal'
+import { supabase } from './lib/supabase'
+import { Session } from '@supabase/supabase-js'
 
 export function App() {
+  const [mode, setMode] = useState<AppMode>('services')
   const [activeHub, setActiveHub] = useState<string>('bali')
   const [activeTab, setActiveTab] = useState<TabId>('home')
-  const [activeCategory, setActiveCategory] = useState<string | null>('resorts')
-  const [showSplash, setShowSplash] = useState<boolean>(true)
+  const [activeCategory, setActiveCategory] = useState<string | null>('cat-transport')
+  const [showSplash, setShowSplash] = useState<boolean>(() => {
+    if (typeof window !== 'undefined' && (window as any).isPlaywright) {
+      return false
+    }
+    return true
+  })
 
   const [requests, setRequests] = useState<RequestItem[]>([
     {
@@ -136,7 +147,7 @@ export function App() {
   ])
 
   const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const [selectedQuickRequestItem, setSelectedQuickRequestItem] = useState<RequestItem | null>(null)
+  const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false)
   const [selectedRequestForBid, setSelectedRequestForBid] = useState<RequestItem | null>(null)
 
   // In-App Deal Chat State
@@ -146,8 +157,24 @@ export function App() {
 
   const [notificationMsg, setNotificationMsg] = useState<string | null>(null)
 
+  const [isAuthOpen, setIsAuthOpen] = useState(false)
+  const [session, setSession] = useState<Session | null>(null)
+
   useEffect(() => {
     initTelegramApp()
+    
+    // Auth Session Check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   const handleSelectHub = (hub: string) => {
@@ -156,10 +183,21 @@ export function App() {
   }
 
   const handleSelectTab = (tab: TabId) => {
-    if (tab === 'home') {
+    if ((tab === 'account' || tab === 'my-bids' || tab === 'chat') && !session && !isTelegramEnvironment()) {
+      setIsAuthOpen(true)
+      triggerHapticFeedback('heavy')
+      return
+    }
+
+    if (tab === 'home' || tab === 'market') {
       setShowSplash(true)
     }
     setActiveTab(tab)
+  }
+
+  const handleModeChange = (newMode: AppMode) => {
+    setMode(newMode)
+    setActiveTab(newMode === 'services' ? 'home' : 'market')
   }
 
   const handleCreateRequest = (newReq: Partial<RequestItem>) => {
@@ -218,7 +256,11 @@ export function App() {
       prev.map((r) => (r.id === requestId ? { ...r, bidsCount: r.bidsCount + 1 } : r))
     )
 
-    const targetReq = requests.find((r) => r.id === requestId)
+    let targetReq = requests.find((r) => r.id === requestId)
+    if (!targetReq && selectedRequestForBid) {
+      targetReq = selectedRequestForBid
+    }
+
     if (targetReq) {
       const mockBid: BidItem = {
         id: `bid-${Date.now()}`,
@@ -246,66 +288,69 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center font-sans sm:py-6 selection:bg-[#00F2FE] selection:text-black relative overflow-hidden">
-      {/* Background Glow Sprites: Top-Left Blue, Top-Right Emerald Green, Center & Bottom Pure Black */}
-      <div className="fixed top-0 left-0 w-[450px] h-[450px] bg-[#00F2FE]/20 rounded-full blur-[140px] pointer-events-none z-0" />
-      <div className="fixed top-0 right-0 w-[450px] h-[450px] bg-[#00FF87]/20 rounded-full blur-[140px] pointer-events-none z-0" />
+      {/* Background Glow Sprites */}
+      <div className={`fixed top-[-5%] left-[-10%] w-[500px] h-[500px] rounded-full blur-[140px] pointer-events-none z-0 transition-colors duration-1000 ${
+        mode === 'services' ? 'bg-[#00F2FE]/15' : 'bg-[#CCFF00]/10'
+      }`} />
+      <div className={`fixed top-[-5%] right-[-15%] w-[400px] h-[400px] rounded-full blur-[100px] pointer-events-none z-0 transition-colors duration-1000 ${
+        mode === 'services' ? 'bg-[#00F2FE]/30' : 'bg-[#CCFF00]/30'
+      }`} />
       <div className="fixed inset-0 bg-gradient-to-b from-transparent via-[#050811]/90 to-[#000000] pointer-events-none z-0" />
 
       {/* 3-Second Onboarding Splash Screen */}
       <SplashScreen isVisible={showSplash} onFinish={() => setShowSplash(false)} />
 
-      {/* Smartphone Shell Container / Full Screen on Mobile */}
-      <div className="w-full sm:max-w-[480px] mx-auto min-h-screen sm:min-h-[840px] bg-black/40 backdrop-blur-3xl sm:rounded-[44px] sm:border-[8px] sm:border-[#1c2433] sm:shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col relative overflow-hidden z-10">
+      {/* Main Full-Width Application Container */}
+      <div className="relative flex min-h-[100dvh] w-full flex-col overflow-x-hidden bg-transparent z-10">
         {/* Header */}
         <Navbar
-          onOpenQuickRequest={() => setSelectedQuickRequestItem({
-            id: 'new',
-            title: '',
-            hub: activeHub as any,
-            district: '',
-            categoryL1Id: 'cat-realestate',
-            categoryL1Name: 'Жильё',
-            description: '',
-            budget: 0,
-            currency: 'USD',
-            mediaUrls: [],
-            isFeatured: false,
-            status: 'open',
-            createdAt: new Date().toISOString(),
-            expiresAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
-            auctionEndsAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
-            bidsCount: 0,
-            clientId: 'usr-current',
-            clientName: 'Александр',
-            clientAvatar: '',
-            clientRating: 5.0,
-          })}
+          onOpenQuickRequest={() => setIsAIAssistantOpen(true)}
+          onLocationChange={(hub, district) => {
+            handleSelectHub(hub)
+            // If you want to store district globally you can add it to state too
+          }}
           activeAuctionsCount={requests.filter(r => r.status === 'open').length}
           totalBidsCount={requests.reduce((acc, r) => acc + r.bidsCount, 0)}
           userRole="client"
+          mode={mode}
+          session={session}
         />
+
+        {(activeTab === 'home' || activeTab === 'market') && (
+          <PillSwitcher mode={mode} onModeChange={handleModeChange} />
+        )}
 
         {/* Notification Toast */}
         {notificationMsg && (
-          <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-[#00FF87] text-[#050811] font-black text-xs shadow-[0_0_25px_rgba(0,255,135,0.6)] flex items-center gap-2 animate-bounce">
+          <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-[#00F2FE] text-[#050811] font-black text-xs shadow-[0_0_25px_rgba(0,242,254,0.6)] flex items-center gap-2 animate-bounce">
             <CheckCircle2 className="w-4 h-4 text-[#050811]" />
             <span>{notificationMsg}</span>
           </div>
         )}
 
         {/* Main Content Area */}
-        <main className="w-full px-4 py-2 flex-1 space-y-4">
-          {activeTab === 'home' && (
+        <main className="w-full px-4 py-2 flex-1 space-y-4 relative z-10 pb-32">
+          {mode === 'services' && (activeTab === 'home' || activeTab === 'market') && (
             <MockupAuctionSection
               activeHub={activeHub}
               onSelectHub={handleSelectHub}
               activeCategory={activeCategory}
               onSelectCategory={setActiveCategory}
               onOpenBidModal={(req) => setSelectedRequestForBid(req)}
-              onOpenQuickRequest={(req) => setSelectedQuickRequestItem(req)}
+              onOpenQuickRequest={() => setIsAIAssistantOpen(true)}
               requests={requests}
             />
           )}
+
+          {mode === 'market' && (activeTab === 'home' || activeTab === 'market') && (
+            <MarketSection
+              activeCategory={activeCategory}
+              onSelectCategory={setActiveCategory}
+              onOpenQuickRequest={() => setIsAIAssistantOpen(true)}
+            />
+          )}
+
+
 
           {activeTab === 'explore' && (
             <div className="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center my-4">
@@ -339,13 +384,12 @@ export function App() {
           onCreateRequest={handleCreateRequest}
         />
 
-        <QuickRequestModal
-          isOpen={Boolean(selectedQuickRequestItem)}
-          onClose={() => setSelectedQuickRequestItem(null)}
-          initialHub={selectedQuickRequestItem?.hub || activeHub}
-          initialServiceTitle={selectedQuickRequestItem?.title || ''}
-          initialDistrict={selectedQuickRequestItem?.district || 'Jimbaran'}
-          onCreateRequest={handleCreateRequest}
+        <AIAssistantModal
+          isOpen={isAIAssistantOpen}
+          onClose={() => setIsAIAssistantOpen(false)}
+          currentHub={activeHub}
+          currentDistrict="Равай" // Fallback district, could be dynamic
+          onPublish={handleCreateRequest}
         />
 
         <BidModal
@@ -375,19 +419,30 @@ export function App() {
           onClose={() => setIsAdminDisputeOpen(false)} 
         />
 
+        <AuthModal
+          isOpen={isAuthOpen}
+          onClose={() => setIsAuthOpen(false)}
+          onSuccess={() => {
+            setIsAuthOpen(false)
+            setNotificationMsg('✅ Авторизация успешна!')
+            setTimeout(() => setNotificationMsg(null), 3000)
+          }}
+        />
+
         {/* Bottom Tab Bar */}
         <BottomNav
           activeTab={activeTab}
           onSelectTab={handleSelectTab}
+          mode={mode}
+          onCentralAction={() => {
+            if (mode === 'services') {
+              setIsCreateOpen(true)
+            } else {
+              triggerHapticFeedback('heavy')
+            }
+          }}
         />
-        
-        {/* Admin Dev Button */}
-        <button 
-          onClick={() => setIsAdminDisputeOpen(true)}
-          className="absolute bottom-24 right-4 w-12 h-12 bg-red-500/20 hover:bg-red-500/40 border border-red-500/50 rounded-full flex items-center justify-center text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] backdrop-blur-md z-40 transition-all active:scale-95"
-        >
-          <Scale className="w-6 h-6" />
-        </button>
+
       </div>
     </div>
   )

@@ -149,7 +149,7 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
           <div className="space-y-2 p-3 rounded-2xl bg-white/5 border border-white/10">
             <div className="flex items-center justify-between mb-1">
               <span className="text-gray-300 font-bold flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-[#00FF87]" /> Гео-матрица (Локация & Район)
+                <MapPin className="w-3.5 h-3.5 text-[#00F2FE]" /> Гео-матрица (Локация & Район)
               </span>
               <div className="flex gap-1.5">
                 <button
@@ -163,7 +163,7 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
                   type="button"
                   onClick={handleGPSDetect}
                   disabled={isDetectingGeo}
-                  className="text-[11px] font-bold text-[#00FF87] hover:underline flex items-center gap-1 bg-[#00FF87]/10 px-2 py-1 rounded-lg border border-[#00FF87]/30"
+                  className="text-[11px] font-bold text-[#00F2FE] hover:underline flex items-center gap-1 bg-[#00F2FE]/10 px-2 py-1 rounded-lg border border-[#00F2FE]/30"
                 >
                   <Navigation className={`w-3 h-3 ${isDetectingGeo ? 'animate-spin' : ''}`} />
                   <span>GPS</span>

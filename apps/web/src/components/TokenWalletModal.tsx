@@ -21,13 +21,13 @@ export const TokenWalletModal: React.FC<TokenWalletModalProps> = ({
   currentBalance,
   onTopUp,
 }) => {
-  if (!isOpen) return null
-
   const [isProcessing, setIsProcessing] = useState(false)
   const [successPack, setSuccessPack] = useState<number | null>(null)
   const [promoCode, setPromoCode] = useState('')
   const [promoError, setPromoError] = useState('')
   const [promoSuccess, setPromoSuccess] = useState('')
+
+  if (!isOpen) return null
 
   const handleApplyPromoCode = (e: React.FormEvent) => {
     e.preventDefault()
@@ -149,7 +149,7 @@ export const TokenWalletModal: React.FC<TokenWalletModalProps> = ({
             </form>
 
             {promoSuccess && (
-              <div className="text-[11px] text-[#00FF87] font-bold flex items-center gap-1.5 pt-1 animate-fadeIn relative z-10">
+              <div className="text-[11px] text-[#00F2FE] font-bold flex items-center gap-1.5 pt-1 animate-fadeIn relative z-10">
                 <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                 <span>{promoSuccess}</span>
               </div>
@@ -202,7 +202,7 @@ export const TokenWalletModal: React.FC<TokenWalletModalProps> = ({
             </div>
 
             {successPack && (
-              <div className="mt-3 p-2.5 rounded-xl bg-[#00FF87]/10 border border-[#00FF87]/30 flex items-center justify-center gap-2 animate-fadeIn text-[#00FF87] font-bold">
+              <div className="mt-3 p-2.5 rounded-xl bg-[#00F2FE]/10 border border-[#00F2FE]/30 flex items-center justify-center gap-2 animate-fadeIn text-[#00F2FE] font-bold">
                 <CheckCircle2 className="w-4 h-4" />
                 Успешно зачислено {successPack} токенов!
               </div>
@@ -222,7 +222,7 @@ export const TokenWalletModal: React.FC<TokenWalletModalProps> = ({
                 <div key={tx.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
                   <div className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      tx.type === 'income' ? 'bg-[#00FF87]/10 text-[#00FF87]' : 'bg-white/10 text-gray-400'
+                      tx.type === 'income' ? 'bg-[#00F2FE]/10 text-[#00F2FE]' : 'bg-white/10 text-gray-400'
                     }`}>
                       {tx.type === 'income' ? <ArrowDownRight className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
                     </div>
@@ -232,7 +232,7 @@ export const TokenWalletModal: React.FC<TokenWalletModalProps> = ({
                     </div>
                   </div>
                   <div className={`font-extrabold font-mono text-sm ${
-                    tx.type === 'income' ? 'text-[#00FF87]' : 'text-white'
+                    tx.type === 'income' ? 'text-[#00F2FE]' : 'text-white'
                   }`}>
                     {tx.amount}
                   </div>

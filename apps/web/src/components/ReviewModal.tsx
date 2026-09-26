@@ -44,8 +44,8 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = (e?: React.SyntheticEvent) => {
+    if (e) e.preventDefault()
     setIsSubmitted(true)
     triggerHapticFeedback('heavy')
     triggerNotificationFeedback('success')
@@ -55,16 +55,12 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
       comment,
       tags: selectedTags,
     })
-
-    setTimeout(() => {
-      setIsSubmitted(false)
-      onClose()
-    }, 1500)
+    onClose()
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="w-full max-w-md glass-panel rounded-3xl border border-amber-400/40 p-5 space-y-4 relative overflow-hidden text-xs">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+      <form onSubmit={handleSubmit} className="w-full max-w-md glass-panel rounded-3xl border border-amber-400/40 p-5 space-y-4 relative overflow-y-auto max-h-[90vh] text-xs">
         {/* Glow Sprite */}
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-400/20 rounded-full blur-3xl pointer-events-none" />
 
@@ -80,6 +76,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white"
           >
@@ -173,11 +170,12 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
         {/* Bonus Notification */}
         <div className="flex items-center gap-2 p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-200 text-[11px]">
           <Sparkles className="w-4 h-4 text-purple-400 shrink-0" />
-          <span>За публикацию отзыва вы получите <strong>+10 Tuttos</strong> на ваш бонусный счёт!</span>
+          <span>За публикацию отзыва вы получите <strong>+15 Coins (Tuttos)</strong> на ваш бонусный счёт!</span>
         </div>
 
         {/* Submit Button */}
         <button
+          type="button"
           onClick={handleSubmit}
           disabled={isSubmitted}
           className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-black font-extrabold text-xs flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(251,191,36,0.4)] active:scale-[0.98] transition-transform"
@@ -194,7 +192,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
             </>
           )}
         </button>
-      </div>
+      </form>
     </div>
   )
 }

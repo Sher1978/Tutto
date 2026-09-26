@@ -1,56 +1,103 @@
-/**
- * Google Gemini API Client for TuttoMinutto AI Sales Consultant & Assistant
- */
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || ''
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent'
+// В продакшене это должно быть в Edge Function, чтобы не светить ключ!
+// Для прототипирования используем прямо из фронтенда.
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || ''
+const genAI = new GoogleGenerativeAI(apiKey)
 
-export interface GeminiMessage {
-  role: 'user' | 'model'
-  parts: { text: string }[]
+export interface ParsedRequest {
+  title: string
+  categoryName: string
+  budget: number
+  description: string
+  district?: string
+  hub?: string
 }
 
-/**
- * Ask Google Gemini API for an instant consulting response
- */
-export async function askGeminiConsultant(promptText: string, contextHistory: GeminiMessage[] = []): Promise<string> {
-  if (!GEMINI_API_KEY) {
-    return 'Укажите GEMINI_API_KEY в файле .env для включения ответов ИИ-консультанта Gemini.'
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export interface SmartAIResponse {
+  status: 'clarify' | 'complete'
+  question?: string
+  requestParams?: ParsedRequest
+}
+
+export async function analyzeRequestFlowWithAI(
+  conversation: { role: 'user' | 'model', text: string }[],
+  currentHub: string,
+  currentDistrict: string,
+  maxRetries = 3
+): Promise<SmartAIResponse> {
+  const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' })
+
+  const conversationText = conversation.map(c => `${c.role === 'user' ? 'Пользователь' : 'ИИ'}: ${c.text}`).join('\n')
+
+  const prompt = `
+Ты - ИИ-ассистент платформы обратных аукционов (маркетплейс услуг). 
+Твоя задача - помочь пользователю составить заявку (карточку) на услугу.
+Чтобы карточка получилась качественной, тебе нужны основные параметры (что именно, когда, бюджет, локация).
+
+История общения:
+${conversationText}
+
+Текущая локация по GPS: Хаб ${currentHub}, Район ${currentDistrict}.
+
+Правила:
+1. Проанализируй весь диалог.
+2. Если информации недостаточно (например, пользователь просто сказал "нужен байк", но не сказал на какой срок или бюджет), ты должен ВЕЖЛИВО задать ОДИН уточняющий вопрос. Верни status: "clarify" и твой question.
+3. Если информации достаточно (понятно что, когда, и есть примерный бюджет или понятно, что бюджет "по договоренности"), верни status: "complete" и заполни requestParams.
+
+Верни СТРОГО только JSON следующего формата:
+Для уточнения:
+{
+  "status": "clarify",
+  "question": "На какие даты вам нужен байк и какой примерно бюджет?"
+}
+
+Для завершения:
+{
+  "status": "complete",
+  "requestParams": {
+    "title": "Краткое название (до 40 симв)",
+    "categoryName": "ОДНА_ИЗ_КАТЕГОРИЙ: ПРОКАТ, ЖИЛЬЁ, ДЕНЬГИ, УСЛУГИ, ЕДА, КЛИНИНГ, КРАСОТА, ДЕТИ, ТУРЫ, ВРАЧИ, КУРЬЕР, ИВЕНТЫ, ПРАКТИКИ, ДРУГОЕ",
+    "budget": 300,
+    "description": "Полное красивое описание на основе диалога, с эмодзи",
+    "district": "район (из диалога или текущий)"
   }
+}
+`
 
-  const systemInstruction = 
-    `Вы — вежливый, дружелюбный и экспертный ИИ-консультант сервиса обратного аукциона TuttoMinutto ("Здесь выбираешь ты!"). ` +
-    `Помогайте экспатам и туристам в курортных хабах (Пхукет, Бали, Бангкок, Вьетнам, Сеул, Токио) находить лучшие услуги: прокат байков/авто, жильё, обмен валют, визаран, клининг, гидов. ` +
-    `Пишите кратко, тепло, без клише, обращайтесь к пользователю напрямую ("вы"/"ты").`
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const result = await model.generateContent(prompt)
+      const text = result.response.text()
+      const jsonStr = text.replace(/```json/g, '').replace(/```/g, '').trim()
+      const parsed = JSON.parse(jsonStr)
 
-  const contents = [
-    ...contextHistory,
-    {
-      role: 'user',
-      parts: [{ text: `${systemInstruction}\n\nЗапрос пользователя: ${promptText}` }],
-    },
-  ]
-
-  try {
-    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ contents }),
-    })
-
-    if (!response.ok) {
-      const errText = await response.text()
-      console.warn('[Gemini API Warning]', errText)
-      return `Заявка принята! ИИ-менеджер обработал ваш запрос в хабе. Ожидайте первые предложения от исполнителей в течение 1 минуты!`
+      return parsed as SmartAIResponse
+    } catch (error: any) {
+      console.error(`Gemini API Error (Attempt ${attempt}):`, error)
+      const isRateLimit = error?.status === 429 || error?.message?.includes('429') || error?.message?.includes('Quota')
+      if (attempt < maxRetries && (isRateLimit || error?.message?.includes('503') || error?.message?.includes('fetch failed'))) {
+        await delay(attempt * 2000)
+        continue
+      }
+      if (attempt === maxRetries) {
+        // Fallback to complete
+        return {
+          status: 'complete',
+          requestParams: {
+            title: 'Заявка',
+            categoryName: 'ДРУГОЕ',
+            budget: 0,
+            description: conversation[0]?.text || '',
+            district: currentDistrict,
+            hub: currentHub
+          }
+        }
+      }
     }
-
-    const data = await response.json()
-    const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text
-    return candidateText || 'ИИ-консультант Gemini сформировал ответ по вашему заказу!'
-  } catch (error) {
-    console.error('[Gemini API Error]', error)
-    return `Заявка принята! ИИ-менеджер обработал ваш запрос в хабе. Ожидайте первые предложения от исполнителей в течение 1 минуты!`
   }
+
+  throw new Error('Failed to analyze request')
 }

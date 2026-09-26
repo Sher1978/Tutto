@@ -8,10 +8,17 @@ interface SplashScreenProps {
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible, onFinish }) => {
   const [progress, setProgress] = useState(0)
+  const onFinishRef = React.useRef(onFinish)
+  onFinishRef.current = onFinish
 
   useEffect(() => {
     if (!isVisible) {
       setProgress(0)
+      return
+    }
+
+    if (typeof window !== 'undefined' && (window as any).isPlaywright) {
+      onFinishRef.current()
       return
     }
 
@@ -26,12 +33,12 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible, onFinish 
 
       if (elapsed >= duration) {
         clearInterval(interval)
-        onFinish()
+        onFinishRef.current()
       }
     }, 30)
 
     return () => clearInterval(interval)
-  }, [isVisible, onFinish])
+  }, [isVisible])
 
   if (!isVisible) return null
 
@@ -46,20 +53,20 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible, onFinish 
     >
       {/* Background Animated Neon Glow Orbs */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#00F2FE]/15 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 w-96 h-96 bg-[#00FF87]/15 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 w-96 h-96 bg-[#00F2FE]/15 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Top Bar: Progress Timer */}
       <div className="relative z-10 w-full space-y-2">
         <div className="flex items-center justify-between text-[11px] font-bold tracking-widest text-cyan-400 uppercase">
           <span className="flex items-center gap-1.5">
-            <Zap className="w-3.5 h-3.5 fill-[#00FF87] text-[#00FF87] animate-pulse" />
+            <Zap className="w-3.5 h-3.5 fill-[#00F2FE] text-[#00F2FE] animate-pulse" />
             <span>TUTTOMINUTTO REVERSE AUCTION</span>
           </span>
-          <span className="text-[#00FF87] font-mono">{Math.ceil((3000 - (progress * 30)) / 1000)}s</span>
+          <span className="text-[#00F2FE] font-mono">{Math.ceil((3000 - (progress * 30)) / 1000)}s</span>
         </div>
         <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden border border-white/10">
           <div
-            className="h-full bg-gradient-to-r from-[#00F2FE] via-[#00FF87] to-[#00F2FE] transition-all ease-linear"
+            className="h-full bg-gradient-to-r from-[#00F2FE] via-[#00F2FE] to-[#00F2FE] transition-all ease-linear"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -71,7 +78,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible, onFinish 
         <div>
           <h1 className="font-display font-black text-4xl sm:text-5xl tracking-wider flex items-center justify-center gap-2">
             <span className="glow-tutto text-[#00F2FE]">TUTTO</span>
-            <span className="glow-minutto text-[#00FF87]">MINUTTO</span>
+            <span className="glow-minutto text-[#00F2FE]">MINUTTO</span>
           </h1>
           <p className="text-[12px] font-bold text-cyan-300 tracking-widest uppercase mt-1">
             Платформа обратных аукционов №1
@@ -85,19 +92,19 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible, onFinish 
             background: 'rgba(255, 255, 255, 0.08)',
             backdropFilter: 'blur(30px) saturate(180%)',
             WebkitBackdropFilter: 'blur(30px) saturate(180%)',
-            border: '1px solid rgba(0, 255, 135, 0.35)',
-            boxShadow: '0 0 30px rgba(0, 255, 135, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.2)',
+            border: '1px solid rgba(0, 242, 254, 0.35)',
+            boxShadow: '0 0 30px rgba(0, 242, 254, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.2)',
           }}
         >
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00FF87]/15 border border-[#00FF87]/40 text-[#00FF87] text-[11px] font-extrabold uppercase tracking-wider mb-1">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00F2FE]/15 border border-[#00F2FE]/40 text-[#00F2FE] text-[11px] font-extrabold uppercase tracking-wider mb-1">
             <ShieldCheck className="w-4 h-4" />
             <span>ГЛАВНЫЙ ПРИНЦИП ПЛАТФОРМЫ</span>
           </div>
           <h2
             className="text-[17px] sm:text-[19px] font-black leading-snug text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
-            style={{ fontFamily: "'Roboto', sans-serif" }}
+            style={{ fontFamily: "'Outfit', sans-serif" }}
           >
-            Единственная платформа, где <span className="text-[#00FF87] underline decoration-[#00FF87]/60 underline-offset-4">цену услуги определяет покупатель</span>, а не продавец!
+            Экосистема, где <span className="text-[#00F2FE] underline decoration-[#00F2FE]/60 underline-offset-4">цену определяешь ты</span>. Первые офферы за 1 минуту.
           </h2>
         </div>
 
@@ -112,13 +119,13 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible, onFinish 
           }}
         >
           <h3 className="text-[13px] font-black text-cyan-400 uppercase tracking-wider flex items-center gap-2 border-b border-white/10 pb-2">
-            <Target className="w-4 h-4 text-[#00FF87]" />
+            <Target className="w-4 h-4 text-[#00F2FE]" />
             <span>КАК ПОЛЬЗОВАТЬСЯ ПЛАТФОРМОЙ:</span>
           </h3>
 
           <div className="space-y-3 text-[13px] text-gray-200">
             <div className="flex items-start gap-3">
-              <span className="w-6 h-6 rounded-full bg-[#00FF87]/20 border border-[#00FF87]/60 text-[#00FF87] font-extrabold text-[12px] flex items-center justify-center shrink-0 mt-0.5">
+              <span className="w-6 h-6 rounded-full bg-[#00F2FE]/20 border border-[#00F2FE]/60 text-[#00F2FE] font-extrabold text-[12px] flex items-center justify-center shrink-0 mt-0.5">
                 1
               </span>
               <p className="leading-tight font-medium">
@@ -150,7 +157,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ isVisible, onFinish 
       {/* Bottom Footer Tip */}
       <div className="relative z-10 w-full text-center pb-2">
         <p className="text-[11px] font-semibold text-gray-400 tracking-wide flex items-center justify-center gap-1.5">
-          <CheckCircle2 className="w-3.5 h-3.5 text-[#00FF87]" />
+          <CheckCircle2 className="w-3.5 h-3.5 text-[#00F2FE]" />
           <span>Загрузка интерфейса аукциона... ({Math.ceil(progress)}%)</span>
         </p>
       </div>

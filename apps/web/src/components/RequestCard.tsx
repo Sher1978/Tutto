@@ -58,7 +58,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
           onClick={() => onOpenDetails(request)}
           className="font-display font-black text-base text-white hover:text-[#00F2FE] transition-colors cursor-pointer line-clamp-1 leading-snug"
         >
-          <span className="text-[#00FF87]">{request.hub.toUpperCase()}:</span> {request.title}
+          <span className="text-[#00F2FE]">{request.hub.toUpperCase()}:</span> {request.title}
         </h3>
         <div className="flex items-center gap-1 text-[11px] text-gray-400 font-medium mt-0.5">
           <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
@@ -84,7 +84,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
           <div>
             <div className="flex items-baseline justify-between">
               <span className="text-[11px] text-gray-400">Current Low Bid:</span>
-              <span className="text-xl font-black text-[#00FF87] font-display glow-price">
+              <span className="text-xl font-black text-[#00F2FE] font-display glow-price">
                 ${request.budget || 345}
               </span>
             </div>
@@ -100,7 +100,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
 
           {/* Giant Glowing Timer (1:1 Mockup) */}
           <div className="mt-2">
-            <span className="text-[28px] font-black text-[#00FF87] font-mono glow-timer leading-none tracking-wider block">
+            <span className="text-[28px] font-black text-[#00F2FE] font-mono glow-timer leading-none tracking-wider block">
               {timeLeft || '00:04:18'}
             </span>
           </div>

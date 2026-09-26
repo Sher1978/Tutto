@@ -25,7 +25,7 @@ const CATEGORY_COLORS: Record<string, { glow: string; border: string; from: stri
   'cat-transport':  { glow: '0,242,254',    border: 'rgba(0,242,254,0.5)',    from: '#003a4d', to: '#001a26' },
   'cat-tours':      { glow: '255,196,0',    border: 'rgba(255,196,0,0.5)',    from: '#3a2e00', to: '#1a1400' },
   'cat-exchange':   { glow: '168,85,247',   border: 'rgba(168,85,247,0.5)',   from: '#2d0a4e', to: '#12032b' },
-  'cat-realestate': { glow: '0,255,135',    border: 'rgba(0,255,135,0.5)',    from: '#003323', to: '#001510' },
+  'cat-realestate': { glow: '0,242,254',    border: 'rgba(0,242,254,0.5)',    from: '#003323', to: '#001510' },
   'cat-beauty':     { glow: '255,100,180',  border: 'rgba(255,100,180,0.5)',  from: '#3a0028', to: '#1a0012' },
   'cat-services':   { glow: '255,140,0',    border: 'rgba(255,140,0,0.5)',    from: '#3a1a00', to: '#1a0c00' },
 }
