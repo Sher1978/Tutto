@@ -44,10 +44,10 @@ export const Navbar: React.FC = () => {
           </div>
           <div className="flex flex-col min-w-0" style={{ fontFamily: "'Roboto', sans-serif" }}>
             <span className="text-[11px] font-bold text-white truncate leading-tight">
-              {user?.first_name || 'Kaitlyn L.'} <span className="text-gray-300 font-normal">| @{user?.username || 'kaitlyn.l'}</span>
+              {user?.first_name || 'Александр'} <span className="text-gray-300 font-normal">| @{user?.username || 'alex_phuket'}</span>
             </span>
             <span className="text-[9px] text-gray-300 flex items-center gap-1 leading-none mt-0.5 font-semibold">
-              4.9 <Star className="w-2.5 h-2.5 text-amber-400 fill-amber-400" /> <span className="text-[#00FF87] font-bold">Online</span>
+              4.9 <Star className="w-2.5 h-2.5 text-amber-400 fill-amber-400" /> <span className="text-[#00FF87] font-bold">В сети</span>
             </span>
           </div>
         </div>
@@ -66,13 +66,13 @@ export const Navbar: React.FC = () => {
         >
           <div className="flex items-center gap-1.5 text-[8.5px] font-bold text-[#00FF87] tracking-wider uppercase leading-none">
             <span className="w-1.5 h-1.5 rounded-full bg-[#00FF87] animate-ping shadow-[0_0_8px_#00FF87]" />
-            <span>AI SALES AGENT</span>
+            <span>ИИ-МЕНЕДЖЕР</span>
           </div>
           <span className="text-[8.5px] font-bold text-gray-200 mt-0.5 leading-none">
-            <span className="text-[#00FF87]">ACTIVE</span> • Online
+            <span className="text-[#00FF87]">АКТИВЕН</span> • В сети
           </span>
           <span className="text-[7.5px] font-medium text-gray-300 leading-none mt-0.5">
-            Response: &lt;1m
+            Ответ: &lt;1 мин
           </span>
         </div>
       </div>

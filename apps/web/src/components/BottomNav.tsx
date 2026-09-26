@@ -80,11 +80,11 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   }
 
   const navItems: { id: TabId; label: string }[] = [
-    { id: 'home', label: 'HOME' },
-    { id: 'my-bids', label: 'MY BIDS' },
-    { id: 'explore', label: 'EXPLORE' },
-    { id: 'chat', label: 'CHAT' },
-    { id: 'account', label: 'ACCOUNT' },
+    { id: 'home', label: 'ГЛАВНАЯ' },
+    { id: 'my-bids', label: 'ОТКЛИКИ' },
+    { id: 'explore', label: 'ПОИСК' },
+    { id: 'chat', label: 'ЧАТ' },
+    { id: 'account', label: 'КАБИНЕТ' },
   ]
 
   return (

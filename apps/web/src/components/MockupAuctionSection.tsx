@@ -68,11 +68,11 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
   requests,
 }) => {
   const hubsList = [
-    { id: 'bali', label: '🌴 BALI' },
-    { id: 'phuket', label: 'PHUKET' },
-    { id: 'bangkok', label: 'BANGKOK' },
-    { id: 'seoul', label: 'SEOUL' },
-    { id: 'tokyo', label: 'TOKYO' },
+    { id: 'bali', label: '🌴 БАЛИ' },
+    { id: 'phuket', label: 'ПХУКЕТ' },
+    { id: 'bangkok', label: 'БАНГКОК' },
+    { id: 'seoul', label: 'СЕУЛ' },
+    { id: 'tokyo', label: 'ТОКИО' },
   ]
 
   return (
@@ -83,7 +83,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
           className="text-[11px] uppercase tracking-widest font-bold text-gray-300"
           style={{ fontFamily: "'Roboto', sans-serif" }}
         >
-          CHOOSE WHAT YOU NEED
+          ВЫБЕРИТЕ ЧТО ВАМ НУЖНО
         </h2>
         <div className="flex items-center overflow-x-auto pb-1 no-scrollbar gap-4">
           {hubsList.map((h) => {
@@ -179,11 +179,11 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
             className="text-xs uppercase tracking-wider font-bold text-white flex items-center gap-1.5"
             style={{ fontFamily: "'Roboto', sans-serif" }}
           >
-            <span>CREATE YOUR REQUEST</span>
+            <span>СОЗДАЙТЕ ЗАЯВКУ</span>
             <span className="w-2 h-2 rounded-full bg-[#00FF87] animate-ping" />
           </h2>
           <span className="text-[10px] text-[#00FF87] font-bold flex items-center gap-1 drop-shadow-[0_0_8px_rgba(0,255,135,0.6)]" style={{ fontFamily: "'Roboto', sans-serif" }}>
-            <Sparkles className="w-3 h-3" /> Live Feed
+            <Sparkles className="w-3 h-3" /> Прямой эфир
           </span>
         </div>
 

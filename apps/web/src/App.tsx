@@ -8,6 +8,7 @@ import { QuickRequestModal } from './components/QuickRequestModal'
 import { BidModal } from './components/BidModal'
 import { BusinessProfileView } from './components/BusinessProfileView'
 import { DealChatModal } from './components/DealChatModal'
+import { SplashScreen } from './components/SplashScreen'
 import { BottomNav, TabId } from './components/BottomNav'
 import { MOCK_REQUESTS, SERVICE_TEMPLATES } from './data/mockData'
 import { RequestItem, BidItem, ServiceTemplate } from './types'
@@ -18,12 +19,13 @@ export function App() {
   const [activeHub, setActiveHub] = useState<string>('bali')
   const [activeTab, setActiveTab] = useState<TabId>('home')
   const [activeCategory, setActiveCategory] = useState<string | null>('resorts')
+  const [showSplash, setShowSplash] = useState<boolean>(true)
 
   const [requests, setRequests] = useState<RequestItem[]>([
     {
       id: 'req-bike',
       clientId: 'usr-kaitlyn',
-      clientName: 'Kaitlyn L.',
+      clientName: 'Александр',
       clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
       clientRating: 5.0,
       hub: 'bali',
@@ -45,7 +47,7 @@ export function App() {
     {
       id: 'req-car',
       clientId: 'usr-kaitlyn',
-      clientName: 'Kaitlyn L.',
+      clientName: 'Александр',
       clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
       clientRating: 4.9,
       hub: 'bali',
@@ -67,7 +69,7 @@ export function App() {
     {
       id: 'req-villa-short',
       clientId: 'usr-kaitlyn',
-      clientName: 'Kaitlyn L.',
+      clientName: 'Александр',
       clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
       clientRating: 4.95,
       hub: 'bali',
@@ -75,7 +77,7 @@ export function App() {
       categoryL1Id: 'cat-realestate',
       categoryL1Name: 'Жильё',
       title: 'АРЕНДА ПОСУТОЧНО',
-      description: 'Посуточная аренда виллы с бассейноим.',
+      description: 'Посуточная аренда виллы с бассейном.',
       budget: 250,
       currency: 'USD',
       mediaUrls: ['https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600'],
@@ -89,7 +91,7 @@ export function App() {
     {
       id: 'req-villa-long',
       clientId: 'usr-kaitlyn',
-      clientName: 'Kaitlyn L.',
+      clientName: 'Александр',
       clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
       clientRating: 4.9,
       hub: 'bali',
@@ -98,9 +100,9 @@ export function App() {
       categoryL1Name: 'Жильё',
       title: 'АРЕНДА ДОЛГОСРОК',
       description: 'Долгосрочная аренда апартаментов или виллы.',
-      budget: 1800,
+      budget: 1200,
       currency: 'USD',
-      mediaUrls: ['https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600'],
+      mediaUrls: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600'],
       isFeatured: true,
       status: 'open',
       createdAt: new Date().toISOString(),
@@ -111,7 +113,7 @@ export function App() {
     {
       id: 'req-exchange',
       clientId: 'usr-kaitlyn',
-      clientName: 'Kaitlyn L.',
+      clientName: 'Александр',
       clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
       clientRating: 5.0,
       hub: 'bali',
@@ -151,18 +153,25 @@ export function App() {
     triggerHapticFeedback('light')
   }
 
+  const handleSelectTab = (tab: TabId) => {
+    if (tab === 'home') {
+      setShowSplash(true)
+    }
+    setActiveTab(tab)
+  }
+
   const handleCreateRequest = (newReq: Partial<RequestItem>) => {
     const createdItem: RequestItem = {
       id: `req-${Date.now()}`,
       clientId: 'usr-current',
-      clientName: 'Kaitlyn L.',
+      clientName: 'Александр',
       clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
       clientRating: 5.0,
       hub: (newReq.hub as any) || activeHub,
       district: newReq.district || 'Jimbaran',
       categoryL1Id: newReq.categoryL1Id || 'cat-realestate',
-      categoryL1Name: newReq.categoryL1Name || 'Resorts',
-      title: newReq.title || 'Special Villa Request',
+      categoryL1Name: newReq.categoryL1Name || 'Жильё',
+      title: newReq.title || 'Запрос на услугу',
       description: newReq.description || '',
       budget: newReq.budget ?? 345,
       currency: 'USD',
@@ -176,7 +185,7 @@ export function App() {
     }
 
     setRequests([createdItem, ...requests])
-    setNotificationMsg('🎉 Request published to live auction!')
+    setNotificationMsg('🎉 Заявка опубликована на живой аукцион!')
     setTimeout(() => setNotificationMsg(null), 4000)
   }
 
@@ -198,7 +207,7 @@ export function App() {
         isAiAgent: true,
         proposedPrice: price,
         currency: 'USD',
-        comment: comment || 'Villa is ready for immediate booking!',
+        comment: comment || 'Вилла готова к бронированию!',
         status: 'accepted',
         createdAt: new Date().toISOString(),
       }
@@ -207,21 +216,29 @@ export function App() {
       setActiveDealBid(mockBid)
     }
 
-    setNotificationMsg(`✅ Offer accepted! In-app deal chat opened.`)
+    setNotificationMsg(`✅ Предложение принято! Чат сделки открыт.`)
     setTimeout(() => setNotificationMsg(null), 4000)
   }
 
   return (
-    <div className="min-h-screen bg-transparent text-white flex flex-col items-center justify-center font-sans sm:py-6 selection:bg-[#00F2FE] selection:text-black">
-      {/* Smartphone Shell Container for Pixel-Perfect Mockup Presentation */}
-      <div className="w-full max-w-[390px] min-h-screen sm:min-h-[840px] bg-transparent sm:rounded-[44px] sm:border-[8px] sm:border-[#1c2433] sm:shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col relative overflow-hidden">
-        {/* А. System Status Bar & Header (1:1 Mockup Spec) */}
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center font-sans sm:py-6 selection:bg-[#00F2FE] selection:text-black relative overflow-hidden">
+      {/* Background Glow Sprites: Top-Left Blue, Top-Right Emerald Green, Center & Bottom Pure Black */}
+      <div className="fixed top-0 left-0 w-[450px] h-[450px] bg-[#00F2FE]/20 rounded-full blur-[140px] pointer-events-none z-0" />
+      <div className="fixed top-0 right-0 w-[450px] h-[450px] bg-[#00FF87]/20 rounded-full blur-[140px] pointer-events-none z-0" />
+      <div className="fixed inset-0 bg-gradient-to-b from-transparent via-[#050811]/90 to-[#000000] pointer-events-none z-0" />
+
+      {/* 3-Second Onboarding Splash Screen */}
+      <SplashScreen isVisible={showSplash} onFinish={() => setShowSplash(false)} />
+
+      {/* Smartphone Shell Container */}
+      <div className="w-full max-w-[390px] min-h-screen sm:min-h-[840px] bg-black/40 backdrop-blur-3xl sm:rounded-[44px] sm:border-[8px] sm:border-[#1c2433] sm:shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col relative overflow-hidden z-10">
+        {/* Header */}
         <Navbar />
 
         {/* Notification Toast */}
         {notificationMsg && (
-          <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-cyan-400 text-black font-black text-xs shadow-[0_0_25px_rgba(0,242,254,0.6)] flex items-center gap-2 animate-bounce">
-            <CheckCircle2 className="w-4 h-4 text-black" />
+          <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-[#00FF87] text-[#050811] font-black text-xs shadow-[0_0_25px_rgba(0,255,135,0.6)] flex items-center gap-2 animate-bounce">
+            <CheckCircle2 className="w-4 h-4 text-[#050811]" />
             <span>{notificationMsg}</span>
           </div>
         )}
@@ -242,22 +259,22 @@ export function App() {
 
           {activeTab === 'explore' && (
             <div className="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center my-4">
-              <h3 className="font-bold text-base text-white">Explore All Auctions</h3>
-              <p className="text-xs text-gray-400 mt-1">Browse all available reverse auctions in South East Asia</p>
+              <h3 className="font-bold text-base text-white">Все доступные аукционы</h3>
+              <p className="text-xs text-gray-300 mt-1">Просмотр всех обратных аукционов в хабах ЮВА</p>
             </div>
           )}
 
           {activeTab === 'my-bids' && (
             <div className="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center my-4">
-              <h3 className="font-bold text-base text-white">My Bids & Auctions</h3>
-              <p className="text-xs text-gray-400 mt-1">Track your active bids and incoming offers</p>
+              <h3 className="font-bold text-base text-white">Мои отклики и заявки</h3>
+              <p className="text-xs text-gray-300 mt-1">Отслеживание активных откликов и встречных предложений</p>
             </div>
           )}
 
           {activeTab === 'chat' && (
             <div className="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center my-4">
-              <h3 className="font-bold text-base text-white">In-App Messages</h3>
-              <p className="text-xs text-gray-400 mt-1">Realtime conversation with clients and service providers</p>
+              <h3 className="font-bold text-base text-white">Чат сделок</h3>
+              <p className="text-xs text-gray-300 mt-1">Прямое общение клиентов с исполнителями в реальном времени</p>
             </div>
           )}
 
@@ -298,15 +315,15 @@ export function App() {
             setActiveDealBid(null)
           }}
           onCompleteDeal={() => {
-            setNotificationMsg('🎉 Deal completed! Review window opened.')
+            setNotificationMsg('🎉 Сделка завершена! Открыто окно отзыва.')
             setTimeout(() => setNotificationMsg(null), 4000)
           }}
         />
 
-        {/* Д. Bottom Tab Bar (1:1 Mockup Spec) */}
+        {/* Bottom Tab Bar */}
         <BottomNav
           activeTab={activeTab}
-          onSelectTab={setActiveTab}
+          onSelectTab={handleSelectTab}
         />
       </div>
     </div>
@@ -314,4 +331,3 @@ export function App() {
 }
 
 export default App
-
