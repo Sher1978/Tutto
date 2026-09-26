@@ -31,7 +31,7 @@ bot.command('start', async (ctx: Context) => {
   welcomeText += `2. Проверенные исполнители и *AI Sales Agent* делают встречные офферы за 1 минуту.\n`
   welcomeText += `3. Вы выбираете лучший отклик и связываетесь напрямую в чате Telegram.\n\n`
 
-  if (startParam) {
+  if (startParam && typeof startParam === 'string') {
     if (startParam.startsWith('ref_')) {
       const partnerId = startParam.split('_')[1]
       welcomeText += `🎉 *Вы приглашены партнёром (ID: ${partnerId})!*\n`
