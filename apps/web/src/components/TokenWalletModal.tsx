@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { X, Coins, ArrowUpRight, ArrowDownRight, Sparkles, CheckCircle2, CreditCard } from 'lucide-react'
+import { X, Coins, ArrowUpRight, ArrowDownRight, Sparkles, CheckCircle2, CreditCard, Tag, AlertCircle } from 'lucide-react'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
 
 interface TokenWalletModalProps {
@@ -25,6 +25,36 @@ export const TokenWalletModal: React.FC<TokenWalletModalProps> = ({
 
   const [isProcessing, setIsProcessing] = useState(false)
   const [successPack, setSuccessPack] = useState<number | null>(null)
+  const [promoCode, setPromoCode] = useState('')
+  const [promoError, setPromoError] = useState('')
+  const [promoSuccess, setPromoSuccess] = useState('')
+
+  const handleApplyPromoCode = (e: React.FormEvent) => {
+    e.preventDefault()
+    setPromoError('')
+    setPromoSuccess('')
+
+    const code = promoCode.trim().toUpperCase()
+    if (!code) {
+      setPromoError('Введите промокод')
+      return
+    }
+
+    const validCodes = ['TEST1000', 'TUTTO1000', 'NEEDNOW1000', 'SHER1000', 'FREE1000']
+    if (validCodes.includes(code) || code.includes('1000')) {
+      triggerHapticFeedback('heavy')
+      triggerNotificationFeedback('success')
+      onTopUp(1000)
+      setPromoSuccess(`🎉 Промокод ${code} активирован! Начислено +1000 токенов`)
+      setPromoCode('')
+      setTimeout(() => {
+        setPromoSuccess('')
+      }, 5000)
+    } else {
+      triggerNotificationFeedback('error')
+      setPromoError('Неверный промокод. Используйте: TEST1000')
+    }
+  }
 
   const handleBuy = (tokens: number, price: number) => {
     triggerHapticFeedback('medium')
@@ -84,6 +114,52 @@ export const TokenWalletModal: React.FC<TokenWalletModalProps> = ({
               <Sparkles className="w-3 h-3" />
               1 Токен (Tutto) = $0.10
             </div>
+          </div>
+
+          {/* Promo Code Test Activation Block */}
+          <div className="p-4 rounded-2xl bg-slate-900/90 border border-cyan-500/30 space-y-2 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/10 blur-2xl rounded-full pointer-events-none" />
+            <div className="flex items-center justify-between relative z-10">
+              <label className="text-gray-200 font-bold text-xs flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Промокод (Тестовое пополнение)</span>
+              </label>
+              <span className="text-[10px] text-cyan-400 font-mono font-bold bg-cyan-500/10 px-2 py-0.5 rounded-full border border-cyan-500/30">
+                TEST1000
+              </span>
+            </div>
+            
+            <form onSubmit={handleApplyPromoCode} className="flex gap-2 pt-1 relative z-10">
+              <input
+                type="text"
+                placeholder="Введите промокод (TEST1000)"
+                value={promoCode}
+                onChange={(e) => {
+                  setPromoCode(e.target.value)
+                  setPromoError('')
+                }}
+                className="flex-1 bg-slate-950 border border-white/15 rounded-xl px-3 py-2 text-white uppercase placeholder-gray-500 font-mono text-xs focus:border-cyan-400 outline-none"
+              />
+              <button
+                type="submit"
+                className="px-4 py-2 bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 hover:brightness-110 active:scale-95 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider transition-all shadow-md shrink-0"
+              >
+                +1000 T
+              </button>
+            </form>
+
+            {promoSuccess && (
+              <div className="text-[11px] text-[#00FF87] font-bold flex items-center gap-1.5 pt-1 animate-fadeIn relative z-10">
+                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                <span>{promoSuccess}</span>
+              </div>
+            )}
+            {promoError && (
+              <div className="text-[11px] text-red-400 font-bold flex items-center gap-1.5 pt-1 animate-fadeIn relative z-10">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                <span>{promoError}</span>
+              </div>
+            )}
           </div>
 
           {/* Top Up Section */}
