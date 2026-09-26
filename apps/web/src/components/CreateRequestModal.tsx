@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { X, Sparkles, MapPin, DollarSign, ImagePlus, CheckCircle } from 'lucide-react'
+import { X, Sparkles, MapPin, DollarSign, CheckCircle, Navigation } from 'lucide-react'
 import { CATEGORIES, HUBS } from '../data/mockData'
 import { HubId, RequestItem } from '../types'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
+import { detectUserLocation } from '../lib/geo'
 
 interface CreateRequestModalProps {
   isOpen: boolean
@@ -24,17 +25,47 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [categoryL1Id, setCategoryL1Id] = useState(CATEGORIES[0].id)
+  const [selectedHub, setSelectedHub] = useState<HubId>(currentHub)
   const [district, setDistrict] = useState(activeHub.districts[0] || 'Rawai')
   const [budgetType, setBudgetType] = useState<'fixed' | 'open'>('fixed')
   const [budgetValue, setBudgetValue] = useState('150')
   const [durationMinutes, setDurationMinutes] = useState('120') // 2 hours default
   const [isFeatured, setIsFeatured] = useState(false)
+  const [isDetectingGeo, setIsDetectingGeo] = useState(false)
+  const [geoStatusMsg, setGeoStatusMsg] = useState('')
+
+  const handleCategoryChange = (catId: string) => {
+    setCategoryL1Id(catId)
+    const catObj = CATEGORIES.find((c) => c.id === catId)
+    if (catObj && !description) {
+      setDescription(`Заявка по направлению "${catObj.titleRu}": нужная услуга, утреннее/вечернее время, желательно без залога паспорта.`)
+    }
+  }
+
+  // GPS Geolocation auto-detection
+  const handleGPSDetect = async () => {
+    triggerHapticFeedback('medium')
+    setIsDetectingGeo(true)
+    setGeoStatusMsg('Определение GPS координаты...')
+    try {
+      const res = await detectUserLocation()
+      setSelectedHub(res.hubId)
+      setDistrict(res.district)
+      setGeoStatusMsg(`📍 Найдено: ${res.hubNameRu} (${res.district}), ~${res.distanceKm} км`)
+      triggerHapticFeedback('heavy')
+    } catch (err: any) {
+      setGeoStatusMsg(`⚠️ ${err.message || 'GPS не доступен'}`)
+      triggerNotificationFeedback('error')
+    } finally {
+      setIsDetectingGeo(false)
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!title.trim() || !description.trim()) {
+    if (!title.trim()) {
       triggerNotificationFeedback('error')
-      alert('Заполните название и описание заявки!')
+      alert('Заполните название вашей заявки!')
       return
     }
 
@@ -42,10 +73,10 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
 
     const newRequest: Partial<RequestItem> = {
       title,
-      description,
+      description: description || `Заявка на услугу "${title}" в районе ${district}`,
       categoryL1Id,
       categoryL1Name: selectedCategory.titleRu,
-      hub: currentHub,
+      hub: selectedHub,
       district,
       budget: budgetType === 'fixed' ? parseFloat(budgetValue) || 0 : null,
       currency: 'USD',
@@ -59,6 +90,8 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
     onClose()
   }
 
+  const currentHubData = HUBS.find((h) => h.id === selectedHub) || HUBS[0]
+
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
       <div className="w-full sm:max-w-lg glass-panel rounded-t-3xl sm:rounded-3xl border border-white/10 p-5 overflow-y-auto max-h-[90vh] safe-area-bottom">
@@ -70,7 +103,7 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
             </div>
             <div>
               <h2 className="font-display font-bold text-lg text-white">Создать заказ</h2>
-              <p className="text-xs text-gray-400">Исполнители предложат свои цены</p>
+              <p className="text-xs text-gray-400">Исполнители предложат лучшие цены</p>
             </div>
           </div>
           <button
@@ -82,13 +115,13 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-          {/* Category */}
+          {/* Category Dropdown */}
           <div>
             <label className="block text-gray-300 font-semibold mb-1.5">Категория услуги</label>
             <select
               value={categoryL1Id}
-              onChange={(e) => setCategoryL1Id(e.target.value)}
-              className="w-full bg-slate-900/90 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:border-cyan-400 outline-none"
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              className="w-full bg-slate-900/90 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:border-cyan-400 outline-none font-medium"
             >
               {CATEGORIES.map((cat) => (
                 <option key={cat.id} value={cat.id}>
@@ -100,7 +133,7 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
 
           {/* Title */}
           <div>
-            <label className="block text-gray-300 font-semibold mb-1.5">Что именно нужно сделать?</label>
+            <label className="block text-gray-300 font-semibold mb-1.5">Что именно вам требуется?</label>
             <input
               type="text"
               placeholder="Например: Нужна аренда NMAX на 14 дней в Раваи"
@@ -110,28 +143,62 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
             />
           </div>
 
-          {/* District & Location */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-gray-300 font-semibold mb-1.5">Хаб</label>
-              <div className="px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-gray-300 flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-cyan-400" />
-                <span>{activeHub.flag} {activeHub.nameRu}</span>
-              </div>
-            </div>
-            <div>
-              <label className="block text-gray-300 font-semibold mb-1.5">Район</label>
-              <select
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                className="w-full bg-slate-900/90 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:border-cyan-400 outline-none"
+          {/* Geo-Matrix: Hub + District + GPS Auto-detection */}
+          <div className="space-y-2 p-3 rounded-2xl bg-white/5 border border-white/10">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-gray-300 font-bold flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-[#00FF87]" /> Гео-матрица (Локация & Район)
+              </span>
+              <button
+                type="button"
+                onClick={handleGPSDetect}
+                disabled={isDetectingGeo}
+                className="text-[11px] font-bold text-[#00FF87] hover:underline flex items-center gap-1 bg-[#00FF87]/10 px-2 py-1 rounded-lg border border-[#00FF87]/30"
               >
-                {activeHub.districts.map((d) => (
-                  <option key={d} value={d}>
-                    {d}
-                  </option>
-                ))}
-              </select>
+                <Navigation className={`w-3 h-3 ${isDetectingGeo ? 'animate-spin' : ''}`} />
+                <span>GPS Найти</span>
+              </button>
+            </div>
+
+            {geoStatusMsg && (
+              <p className="text-[10px] text-cyan-300 font-medium">{geoStatusMsg}</p>
+            )}
+
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              <div>
+                <label className="block text-gray-400 text-[10px] mb-1">Локация (Хаб)</label>
+                <select
+                  value={selectedHub}
+                  onChange={(e) => {
+                    const newH = e.target.value as HubId
+                    setSelectedHub(newH)
+                    const hd = HUBS.find((h) => h.id === newH)
+                    if (hd) setDistrict(hd.districts[0] || 'Center')
+                  }}
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-2.5 py-2 text-white focus:border-cyan-400 outline-none text-xs"
+                >
+                  {HUBS.map((h) => (
+                    <option key={h.id} value={h.id}>
+                      {h.flag} {h.nameRu}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-gray-400 text-[10px] mb-1">Район (District)</label>
+                <select
+                  value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-2.5 py-2 text-white focus:border-cyan-400 outline-none text-xs"
+                >
+                  {currentHubData.districts.map((d) => (
+                    <option key={d} value={d}>
+                      {d}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -229,7 +296,7 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
           {/* Submit button */}
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-600 text-black font-extrabold text-sm shadow-lg shadow-cyan-500/25 hover:brightness-110 active:scale-[0.98] transition-all"
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-600 text-black font-extrabold text-sm shadow-lg shadow-cyan-500/25 hover:brightness-110 active:scale-[0.98] transition-all"
           >
             Опубликовать заявку в аукцион
           </button>

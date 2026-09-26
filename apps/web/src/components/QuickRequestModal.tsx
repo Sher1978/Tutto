@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Sparkles, Zap, MapPin, Calendar, FileText, CheckCircle2, Edit3, ArrowRight, X, Info, Target, HelpCircle } from 'lucide-react'
+import { Sparkles, Zap, MapPin, Calendar, FileText, CheckCircle2, Edit3, ArrowRight, X, Info, Target, Navigation } from 'lucide-react'
 import { RequestItem } from '../types'
-import { triggerHapticFeedback } from '../lib/telegram'
+import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
+import { detectUserLocation } from '../lib/geo'
 
 interface QuickRequestModalProps {
   isOpen: boolean
@@ -24,19 +25,24 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
 }) => {
   const [step, setStep] = useState<FlowStep>('form')
   
-  // Quick Form State (pre-filled if provided)
+  // Quick Form State
+  const [hubName, setHubName] = useState(initialHub)
+  const [districtName, setDistrictName] = useState(initialDistrict)
   const [location, setLocation] = useState('')
   const [dateTime, setDateTime] = useState('Сегодня, в ближайшее время')
   const [serviceTitle, setServiceTitle] = useState('')
+  const [serviceDescription, setServiceDescription] = useState('')
   const [showTutorial, setShowTutorial] = useState(true)
+  const [isDetectingGeo, setIsDetectingGeo] = useState(false)
+  const [geoStatusMsg, setGeoStatusMsg] = useState('')
 
   // Generated AI Preview State
   const [aiPreviewData, setAiPreviewData] = useState({
     title: '',
     hub: 'BALI',
     district: 'Jimbaran',
-    categoryName: 'Жильё & Виллы',
-    budget: 350,
+    categoryName: 'Услуги',
+    budget: 250,
     description: '',
   })
 
@@ -44,36 +50,63 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
     if (isOpen) {
       setStep('form')
       const hubUpper = (initialHub || 'BALI').toUpperCase()
-      const districtName =
+      const dName = initialDistrict || (
         hubUpper === 'PHUKET' ? 'Patong' :
         hubUpper === 'BANGKOK' ? 'Thonglor' :
         hubUpper === 'SEOUL' ? 'Gangnam' :
-        hubUpper === 'TOKYO' ? 'Shibuya' : 'Jimbaran'
+        hubUpper === 'TOKYO' ? 'Shibuya' : 'Canggu'
+      )
 
-      setLocation(`${hubUpper}, ${initialDistrict || districtName}`)
-      setServiceTitle(initialServiceTitle || 'Аренда виллы / услуги')
+      setHubName(hubUpper)
+      setDistrictName(dName)
+      setLocation(`${hubUpper}, ${dName}`)
+      setServiceTitle(initialServiceTitle || 'Аренда байка / услуги')
+      setServiceDescription(`Быстрый заказ на "${initialServiceTitle || 'Услугу'}": нужная услуга, утреннее/вечернее время, место доставки ${dName}.`)
     }
   }, [isOpen, initialHub, initialServiceTitle, initialDistrict])
 
   if (!isOpen) return null
 
+  // GPS Geolocation auto-detection
+  const handleGPSDetect = async () => {
+    triggerHapticFeedback('medium')
+    setIsDetectingGeo(true)
+    setGeoStatusMsg('Определение GPS координаты...')
+    try {
+      const res = await detectUserLocation()
+      setHubName(res.hubNameRu.toUpperCase())
+      setDistrictName(res.district)
+      setLocation(`${res.hubNameRu.toUpperCase()}, ${res.district}`)
+      setGeoStatusMsg(`📍 Найдено: ${res.hubNameRu} (${res.district}), ~${res.distanceKm} км`)
+      triggerHapticFeedback('heavy')
+    } catch (err: any) {
+      setGeoStatusMsg(`⚠️ ${err.message || 'GPS не доступен'}`)
+      triggerNotificationFeedback('error')
+    } finally {
+      setIsDetectingGeo(false)
+    }
+  }
+
   const handleStartAiProcessing = () => {
     triggerHapticFeedback('medium')
     setStep('ai_processing')
 
-    // Simulate AI optimization & budget generation
+    const isCustom = serviceTitle.toLowerCase().includes('другое') || serviceTitle.toLowerCase().includes('свой')
+
     setTimeout(() => {
       setAiPreviewData({
         title: serviceTitle || 'Заявка на услугу',
-        hub: initialHub || 'BALI',
-        district: location.split(',')[1]?.trim() || initialDistrict || 'Jimbaran',
-        categoryName: serviceTitle.toLowerCase().includes('байк') || serviceTitle.toLowerCase().includes('авто')
-          ? 'Транспорт'
+        hub: hubName || 'BALI',
+        district: districtName || 'Canggu',
+        categoryName: isCustom
+          ? 'Другое'
+          : serviceTitle.toLowerCase().includes('байк') || serviceTitle.toLowerCase().includes('авто')
+          ? 'Прокат'
           : serviceTitle.toLowerCase().includes('тур')
           ? 'Туры'
-          : 'Жильё & Виллы',
-        budget: serviceTitle.toLowerCase().includes('байк') ? 15 : 320,
-        description: `ИИ Заявка: Заказ для "${serviceTitle}" в локации ${location}. Время: ${dateTime}. Нужны лучшие предложения от проверенных исполнителей!`,
+          : 'Услуги',
+        budget: serviceTitle.toLowerCase().includes('байк') ? 15 : isCustom ? 100 : 250,
+        description: serviceDescription || `ИИ Заявка: Заказ для "${serviceTitle}" в районе ${districtName}. Время: ${dateTime}. Нужны варианты от проверенных исполнителей!`,
       })
       triggerHapticFeedback('heavy')
       setStep('ai_preview')
@@ -120,10 +153,10 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
         </button>
       </div>
 
-      {/* Content Body — Fullscreen Scrollable */}
+      {/* Content Body */}
       <div className="p-6 space-y-6 overflow-y-auto no-scrollbar flex-1 max-w-2xl mx-auto w-full" style={{ fontFamily: "'Roboto', sans-serif" }}>
         
-        {/* FRIENDLY INTRO CARD: DIRECT ADDRESS & WARM INSTRUCTIONS */}
+        {/* FRIENDLY INTRO CARD */}
         <div className="p-4 rounded-2xl bg-gradient-to-br from-cyan-950/50 via-slate-900/80 to-emerald-950/40 border border-cyan-500/40 shadow-[0_8px_30px_rgba(0,0,0,0.4)] space-y-2.5">
           <div className="flex items-center gap-2 text-[#00FF87] font-bold text-[15px]">
             <Target className="w-5 h-5 text-[#00FF87]" />
@@ -133,14 +166,13 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
             <strong className="text-white font-semibold">Ваша заявка — ваши правила:</strong> Опишите, что вам нужно и укажите желаемую цену (или «Жду предложений»).
           </p>
           <p className="text-[13px] text-gray-300 leading-relaxed font-normal">
-            <strong className="text-[#00F2FE] font-semibold">Без лишней суеты:</strong> Больше не нужно искать контакты и писать в десятки чатов. Проверенные исполнители и ИИ-менеджеры сами пришлют вам лучшие предложения за 1 минуту. Вам останется только выбрать подходящее!
+            <strong className="text-[#00F2FE] font-semibold">Без лишней суеты:</strong> Проверенные исполнители и ИИ-менеджеры пришлют вам лучшие предложения за 1 минуту. Вам останется только выбрать подходящее!
           </p>
         </div>
 
         {/* STEP 1: QUICK FORM & TUTORIAL */}
         {step === 'form' && (
           <div className="space-y-6 animate-fadeIn">
-            {/* Tutorial Onboarding Tip */}
             {showTutorial && (
               <div className="p-4 rounded-2xl bg-slate-900/90 border border-white/20 text-[13px] text-gray-200 space-y-2.5 relative shadow-lg">
                 <button
@@ -154,21 +186,36 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
                   <span>3 простых шага для запуска:</span>
                 </div>
                 <ol className="list-decimal list-inside space-y-1.5 text-[13px] text-gray-300 font-normal">
-                  <li>Уточните ваш курорт и район доставки.</li>
-                  <li>Опишите услугу или выберите из шаблона.</li>
+                  <li>Уточните ваш курорт и район доставки (или используйте GPS).</li>
+                  <li>Проверьте описание услуги или заполните своё.</li>
                   <li>Нажмите <b>«Сгенерировать через ИИ»</b> для запуска аукциона!</li>
                 </ol>
               </div>
             )}
 
-            {/* Form Inputs with +2pt Font Size */}
             <div className="space-y-4">
-              {/* 1. Location */}
-              <div>
-                <label className="block text-[13px] font-bold text-gray-200 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4 text-[#00FF87]" />
-                  <span>Локация (Курорт & Район)</span>
-                </label>
+              {/* 1. Geo-Matrix Location + GPS button */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="block text-[13px] font-bold text-gray-200 uppercase tracking-wider flex items-center gap-1.5">
+                    <MapPin className="w-4 h-4 text-[#00FF87]" />
+                    <span>Локация (Курорт & Район)</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleGPSDetect}
+                    disabled={isDetectingGeo}
+                    className="text-[11px] font-bold text-[#00FF87] bg-[#00FF87]/15 px-2.5 py-1 rounded-lg border border-[#00FF87]/40 flex items-center gap-1 hover:bg-[#00FF87]/25"
+                  >
+                    <Navigation className={`w-3 h-3 ${isDetectingGeo ? 'animate-spin' : ''}`} />
+                    <span>GPS Найти</span>
+                  </button>
+                </div>
+
+                {geoStatusMsg && (
+                  <p className="text-[11px] text-cyan-300 font-medium">{geoStatusMsg}</p>
+                )}
+
                 <input
                   type="text"
                   value={location}
@@ -197,14 +244,21 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
               <div>
                 <label className="block text-[13px] font-bold text-gray-200 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                   <FileText className="w-4 h-4 text-amber-400" />
-                  <span>Какая услуга вам нужна?</span>
+                  <span>Название и требования к услуге</span>
                 </label>
-                <textarea
-                  rows={3}
+                <input
+                  type="text"
                   value={serviceTitle}
                   onChange={(e) => setServiceTitle(e.target.value)}
-                  placeholder="Опишите услугу (например: Нужен Honda PCX на 5 дней с доставкой)"
-                  className="w-full px-4 py-3 rounded-2xl bg-slate-900/90 border border-white/20 text-white font-semibold text-[14px] focus:outline-none focus:border-amber-400 transition-all resize-none shadow-inner"
+                  placeholder="Опишите услугу (например: Нужен NMAX 155 на 7 дней в Чангу)"
+                  className="w-full px-4 py-3 rounded-2xl bg-slate-900/90 border border-white/20 text-white font-semibold text-[14px] focus:outline-none focus:border-amber-400 transition-all shadow-inner mb-2"
+                />
+                <textarea
+                  rows={3}
+                  value={serviceDescription}
+                  onChange={(e) => setServiceDescription(e.target.value)}
+                  placeholder="Дополнительные детали: время доставки, пожелания, отсутствие залога..."
+                  className="w-full px-4 py-3 rounded-2xl bg-slate-900/90 border border-white/20 text-white font-normal text-[13px] focus:outline-none focus:border-amber-400 transition-all resize-none shadow-inner"
                 />
               </div>
             </div>
@@ -248,76 +302,60 @@ export const QuickRequestModal: React.FC<QuickRequestModalProps> = ({
             </div>
 
             {/* Editable Preview Card */}
-            <div className="p-5 rounded-2xl bg-slate-900/90 border border-white/20 space-y-4 shadow-inner">
-              <div>
-                <label className="text-[12px] font-bold text-gray-300 uppercase tracking-wider">Название заявки</label>
-                <input
-                  type="text"
-                  value={aiPreviewData.title}
-                  onChange={(e) => setAiPreviewData({ ...aiPreviewData, title: e.target.value })}
-                  className="w-full mt-1 px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/15 text-white font-bold text-[14px] focus:outline-none focus:border-cyan-400"
-                />
+            <div className="p-5 rounded-3xl bg-slate-900 border border-white/20 space-y-4 shadow-2xl">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <span className="text-[12px] font-extrabold text-[#00FF87] uppercase tracking-wider">
+                  {aiPreviewData.categoryName}
+                </span>
+                <span className="text-[12px] text-gray-400 font-semibold">
+                  📍 {aiPreviewData.hub}, {aiPreviewData.district}
+                </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-[12px] font-bold text-gray-300 uppercase tracking-wider">Категория</label>
+              <div>
+                <label className="text-[11px] font-bold text-gray-400 uppercase">Название карточки</label>
+                <div className="flex items-center gap-2 mt-1">
                   <input
                     type="text"
-                    value={aiPreviewData.categoryName}
-                    onChange={(e) => setAiPreviewData({ ...aiPreviewData, categoryName: e.target.value })}
-                    className="w-full mt-1 px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/15 text-white font-semibold text-[14px] focus:outline-none focus:border-cyan-400"
+                    value={aiPreviewData.title}
+                    onChange={(e) => setAiPreviewData({ ...aiPreviewData, title: e.target.value })}
+                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-3 py-2 text-white font-bold text-[14px] focus:outline-none focus:border-[#00FF87]"
                   />
+                  <Edit3 className="w-4 h-4 text-gray-400 shrink-0" />
                 </div>
-                <div>
-                  <label className="text-[12px] font-bold text-gray-300 uppercase tracking-wider">Бюджет ($ USD)</label>
+              </div>
+
+              <div>
+                <label className="text-[11px] font-bold text-gray-400 uppercase">Рекомендуемый бюджет (USD)</label>
+                <div className="flex items-center gap-2 mt-1">
                   <input
                     type="number"
                     value={aiPreviewData.budget}
-                    onChange={(e) => setAiPreviewData({ ...aiPreviewData, budget: Number(e.target.value) })}
-                    className="w-full mt-1 px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/15 text-[#00FF87] font-black text-[14px] focus:outline-none focus:border-[#00FF87]"
+                    onChange={(e) => setAiPreviewData({ ...aiPreviewData, budget: parseFloat(e.target.value) || 0 })}
+                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-3 py-2 text-[#00FF87] font-black text-lg focus:outline-none focus:border-[#00FF87]"
                   />
+                  <span className="text-gray-400 font-bold text-xs">$</span>
                 </div>
               </div>
 
               <div>
-                <label className="text-[12px] font-bold text-gray-300 uppercase tracking-wider">Район / Локация</label>
-                <input
-                  type="text"
-                  value={aiPreviewData.district}
-                  onChange={(e) => setAiPreviewData({ ...aiPreviewData, district: e.target.value })}
-                  className="w-full mt-1 px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/15 text-white font-semibold text-[14px] focus:outline-none focus:border-cyan-400"
-                />
-              </div>
-
-              <div>
-                <label className="text-[12px] font-bold text-gray-300 uppercase tracking-wider">Описание для исполнителей</label>
+                <label className="text-[11px] font-bold text-gray-400 uppercase">Текст заявки для аукциона</label>
                 <textarea
                   rows={3}
                   value={aiPreviewData.description}
                   onChange={(e) => setAiPreviewData({ ...aiPreviewData, description: e.target.value })}
-                  className="w-full mt-1 px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/15 text-gray-200 font-medium text-[14px] focus:outline-none focus:border-cyan-400 resize-none"
+                  className="w-full mt-1 bg-slate-800 border border-white/10 rounded-xl p-3 text-white text-[13px] leading-relaxed focus:outline-none focus:border-[#00FF87] resize-none"
                 />
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-3">
-              <button
-                onClick={() => setStep('form')}
-                className="flex-1 py-3.5 rounded-xl bg-slate-800 text-gray-200 font-bold text-[14px] hover:bg-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <Edit3 className="w-4 h-4" />
-                <span>Назад</span>
-              </button>
-              <button
-                onClick={handlePublishAuction}
-                className="flex-[2] py-3.5 rounded-xl bg-gradient-to-r from-[#00FF87] to-[#00F2FE] text-[#03100A] font-black text-[14px] uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_25px_rgba(0,255,135,0.4)] hover:brightness-110 active:scale-[0.98] transition-all"
-              >
-                <Zap className="w-5 h-5 fill-[#03100A]" />
-                <span>ОПУБЛИКОВАТЬ НА АУКЦИОН</span>
-              </button>
-            </div>
+            <button
+              onClick={handlePublishAuction}
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#00C2A8] via-[#00FF87] to-[#00F2FE] text-[#03100A] font-black text-[15px] uppercase tracking-wider flex items-center justify-center gap-2.5 cursor-pointer shadow-[0_0_35px_rgba(0,255,135,0.6)] hover:brightness-110 active:scale-[0.98] transition-all"
+            >
+              <Zap className="w-5 h-5 fill-[#03100A]" />
+              <span>ОПУБЛИКОВАТЬ ЗАЯВКУ В АУКЦИОН</span>
+            </button>
           </div>
         )}
       </div>
