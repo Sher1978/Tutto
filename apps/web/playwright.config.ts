@@ -24,6 +24,6 @@ export default defineConfig({
   webServer: {
     command: 'npm run preview -- --port 5173',
     url: 'http://localhost:5173',
-    reuseExistingServer: false,
+    reuseExistingServer: true,
   },
 });

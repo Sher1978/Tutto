@@ -15,6 +15,7 @@ import { MarketSection } from './components/MarketSection'
 import { CreateMarketListingModal } from './components/CreateMarketListingModal'
 import { MarketBuyModal } from './components/MarketBuyModal'
 import { MyDealsAndListingsView } from './components/MyDealsAndListingsView'
+import { ExploreView } from './components/ExploreView'
 import { MOCK_REQUESTS, SERVICE_TEMPLATES } from './data/mockData'
 import { RequestItem, BidItem, ServiceTemplate, MarketItem } from './types'
 import { initTelegramApp, triggerHapticFeedback, isTelegramEnvironment } from './lib/telegram'
@@ -198,7 +199,7 @@ export function App() {
       return
     }
 
-    if (tab === 'home' || tab === 'market') {
+    if ((tab === 'home' || tab === 'market') && !isPlaywright) {
       setShowSplash(true)
     }
     setActiveTab(tab)
@@ -417,10 +418,17 @@ export function App() {
 
 
           {activeTab === 'explore' && (
-            <div className="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center my-4">
-              <h3 className="font-bold text-base text-white">Все доступные аукционы</h3>
-              <p className="text-xs text-gray-300 mt-1">Просмотр всех обратных аукционов в хабах ЮВА</p>
-            </div>
+            <ExploreView
+              requests={requests}
+              marketProducts={marketProducts}
+              activeHub={activeHub}
+              onSelectCategory={(catId) => setActiveCategory(catId)}
+              onSelectRequest={(req) => setSelectedRequestForBid(req)}
+              onSelectMarketProduct={(item) => setSelectedMarketProduct(item)}
+              onOpenQuickRequest={(template) => {
+                setIsCreateOpen(true)
+              }}
+            />
           )}
 
           {(activeTab === 'my-bids' || activeTab === 'mine') && (

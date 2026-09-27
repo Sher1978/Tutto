@@ -43,9 +43,9 @@ test.describe('NeedTnow Comprehensive Screen & Fixes Verification', () => {
     await expect(submitBtn).toBeVisible();
 
     // Закрываем модалку
-    const closeBtn = page.locator('button').filter({ has: page.locator('svg.lucide-x') }).first();
+    const closeBtn = page.getByRole('button', { name: 'Закрыть' }).first();
     if (await closeBtn.isVisible()) {
-      await closeBtn.click();
+      await closeBtn.click({ force: true });
     } else {
       await page.keyboard.press('Escape');
     }

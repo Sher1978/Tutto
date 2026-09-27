@@ -89,7 +89,8 @@ export const BidModal: React.FC<BidModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white"
+            aria-label="Закрыть"
+            className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
