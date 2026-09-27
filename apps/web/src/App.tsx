@@ -501,6 +501,7 @@ export function App() {
           onClose={() => setIsCreateOpen(false)}
           currentHub={activeHub as any}
           onCreateRequest={handleCreateRequest}
+          currentLang={currentLang}
         />
 
         <AIAssistantModal
@@ -509,6 +510,7 @@ export function App() {
           currentHub={activeHub}
           currentDistrict="Равай" // Fallback district, could be dynamic
           onPublish={handleCreateRequest}
+          currentLang={currentLang}
         />
 
         <BidModal
@@ -536,6 +538,7 @@ export function App() {
         <AdminDisputePanel 
           isOpen={isAdminDisputeOpen} 
           onClose={() => setIsAdminDisputeOpen(false)} 
+          currentLang={currentLang}
         />
 
         <AuthModal
@@ -546,6 +549,7 @@ export function App() {
             setNotificationMsg('✅ Авторизация успешна!')
             setTimeout(() => setNotificationMsg(null), 3000)
           }}
+          currentLang={currentLang}
         />
 
         <CreateMarketListingModal
@@ -553,6 +557,7 @@ export function App() {
           onClose={() => setIsCreateMarketListingOpen(false)}
           currentHub={activeHub as any}
           onCreateListing={handleCreateMarketListing}
+          currentLang={currentLang}
         />
 
         <MarketBuyModal

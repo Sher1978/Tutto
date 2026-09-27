@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { X, Mic, Send, Bot, Sparkles, Loader2, Check } from 'lucide-react'
 import { analyzeRequestFlowWithAI, SmartAIResponse, ParsedRequest } from '../lib/gemini'
 import { triggerHapticFeedback } from '../lib/telegram'
+import { Language, detectDefaultLanguage, t } from '../lib/i18n'
 
 interface AIAssistantModalProps {
   isOpen: boolean
@@ -9,6 +10,7 @@ interface AIAssistantModalProps {
   onPublish: (request: any) => void
   currentHub: string
   currentDistrict: string
+  currentLang?: Language
 }
 
 type Message = { role: 'user' | 'model'; text: string }
@@ -18,8 +20,10 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
   onClose,
   onPublish,
   currentHub,
-  currentDistrict
+  currentDistrict,
+  currentLang,
 }) => {
+  const lang = currentLang || detectDefaultLanguage()
   const [messages, setMessages] = useState<Message[]>([])
   const [inputText, setInputText] = useState('')
   const [isRecording, setIsRecording] = useState(false)
@@ -108,8 +112,8 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
             <Bot className="w-5 h-5 text-cyan-400" />
           </div>
           <div>
-            <h2 className="text-[18px] font-bold text-white leading-tight">AI Ассистент</h2>
-            <p className="text-[13px] text-cyan-400">Поможет составить заявку</p>
+            <h2 className="text-[18px] font-bold text-white leading-tight">{t(lang, 'ai_assistant_title')}</h2>
+            <p className="text-[13px] text-cyan-400">{t(lang, 'ai_assistant_sub')}</p>
           </div>
         </div>
         <button onClick={onClose} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white">

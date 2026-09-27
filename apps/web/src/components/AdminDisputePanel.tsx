@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { X, Scale, AlertTriangle, MessageSquare, CheckCircle, Ban, ShieldAlert, DollarSign, BarChart3, TrendingUp, Activity, Users } from 'lucide-react'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
+import { Language, detectDefaultLanguage, t } from '../lib/i18n'
 
 interface AdminDisputePanelProps {
   isOpen: boolean
   onClose: () => void
+  currentLang?: Language
 }
 
 const MOCK_DISPUTES = [
@@ -35,7 +37,9 @@ const MOCK_DISPUTES = [
 export const AdminDisputePanel: React.FC<AdminDisputePanelProps> = ({
   isOpen,
   onClose,
+  currentLang,
 }) => {
+  const lang = currentLang || detectDefaultLanguage()
   if (!isOpen) return null
 
   const [adminTab, setAdminTab] = useState<'disputes' | 'analytics'>('disputes')
@@ -64,8 +68,8 @@ export const AdminDisputePanel: React.FC<AdminDisputePanelProps> = ({
               <Scale className="w-5 h-5 text-red-500" />
             </div>
             <div>
-              <h2 className="font-display font-black text-xl text-white tracking-wide">ADMIN PANEL</h2>
-              <p className="text-xs text-red-400 font-bold">Управление платформой</p>
+              <h2 className="font-display font-black text-xl text-white tracking-wide">{t(lang, 'admin_panel_title')}</h2>
+              <p className="text-xs text-red-400 font-bold">{t(lang, 'admin_panel_sub')}</p>
             </div>
           </div>
           <button
@@ -84,7 +88,7 @@ export const AdminDisputePanel: React.FC<AdminDisputePanelProps> = ({
               adminTab === 'disputes' ? 'border-red-500 text-red-500' : 'border-transparent text-gray-500 hover:text-gray-300'
             }`}
           >
-            Арбитраж
+            {t(lang, 'tab_disputes')}
           </button>
           <button 
             onClick={() => setAdminTab('analytics')}
@@ -92,7 +96,7 @@ export const AdminDisputePanel: React.FC<AdminDisputePanelProps> = ({
               adminTab === 'analytics' ? 'border-[#CCFF00] text-[#CCFF00]' : 'border-transparent text-gray-500 hover:text-gray-300'
             }`}
           >
-            Аналитика Маркета
+            {t(lang, 'tab_analytics')}
           </button>
         </div>
       </div>
@@ -241,20 +245,20 @@ export const AdminDisputePanel: React.FC<AdminDisputePanelProps> = ({
                     onClick={() => handleResolve('client')}
                     className="bg-[#00F2FE]/10 hover:bg-[#00F2FE]/20 border border-[#00F2FE]/30 text-[#00F2FE] rounded-xl py-3 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-all"
                   >
-                    <DollarSign className="w-4 h-4" /> В пользу Клиента
+                    <DollarSign className="w-4 h-4" /> {t(lang, 'btn_in_favor_client')}
                   </button>
                   <button 
                     onClick={() => handleResolve('provider')}
                     className="bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 rounded-xl py-3 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-all"
                   >
-                    <CheckCircle className="w-4 h-4" /> В пользу Бизнеса
+                    <CheckCircle className="w-4 h-4" /> {t(lang, 'btn_in_favor_provider')}
                   </button>
                 </div>
                 <button 
                   onClick={() => handleResolve('reject')}
                   className="w-full mt-2 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 rounded-xl py-3 text-xs font-bold flex items-center justify-center gap-1 transition-all"
                 >
-                  <Ban className="w-4 h-4" /> Отклонить апелляцию
+                  <Ban className="w-4 h-4" /> {t(lang, 'btn_reject_dispute')}
                 </button>
               </div>
             </div>

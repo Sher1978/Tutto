@@ -3,12 +3,14 @@ import { X, Flame, Tag, Clock, MapPin, DollarSign, Image as ImageIcon } from 'lu
 import { HubId, MarketItem } from '../types'
 import { HUBS } from '../data/mockData'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
+import { Language, detectDefaultLanguage, t } from '../lib/i18n'
 
 interface CreateMarketListingModalProps {
   isOpen: boolean
   onClose: () => void
   currentHub: HubId
   onCreateListing: (item: MarketItem) => void
+  currentLang?: Language
 }
 
 const MARKET_CATEGORIES = [
@@ -34,7 +36,9 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
   onClose,
   currentHub,
   onCreateListing,
+  currentLang,
 }) => {
+  const lang = currentLang || detectDefaultLanguage()
   const activeHubData = HUBS.find((h) => h.id === currentHub) || HUBS[0]
 
   const [title, setTitle] = useState('')
@@ -325,7 +329,7 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
           className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,242,254,0.4)] active:scale-[0.98] transition-all uppercase tracking-wider"
         >
           <Flame className="w-4 h-4 text-black fill-black" />
-          <span>🔥 Опубликовать лот во Flash Market</span>
+          <span>{t(lang, 'btn_publish_market')}</span>
         </button>
       </form>
     </div>

@@ -2,14 +2,17 @@ import React, { useState } from 'react'
 import { X, Mail, ArrowRight, Zap, ShieldCheck } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { triggerHapticFeedback, isTelegramEnvironment } from '../lib/telegram'
+import { Language, detectDefaultLanguage, t } from '../lib/i18n'
 
 interface AuthModalProps {
   isOpen: boolean
   onClose: () => void
   onSuccess: () => void
+  currentLang?: Language
 }
 
-export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
+export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, currentLang }) => {
+  const lang = currentLang || detectDefaultLanguage()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
@@ -92,10 +95,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           </div>
           
           <h2 className="text-2xl font-black text-white mb-2 font-display uppercase tracking-wide">
-            Вход в систему
+            {t(lang, 'auth_title')}
           </h2>
           <p className="text-sm text-gray-400 mb-8">
-            Войдите, чтобы создавать заявки, участвовать в аукционах и управлять профилем.
+            {t(lang, 'auth_sub')}
           </p>
 
           {/* Social Logins */}

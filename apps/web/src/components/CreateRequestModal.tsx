@@ -6,12 +6,14 @@ import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/teleg
 import { detectUserLocation, detectLocationFromCoords } from '../lib/geo'
 import { MapLocationPickerModal } from './MapLocationPickerModal'
 import { uploadUserPhoto } from '../lib/storage'
+import { Language, detectDefaultLanguage, t } from '../lib/i18n'
 
 interface CreateRequestModalProps {
   isOpen: boolean
   onClose: () => void
   currentHub: HubId
   onCreateRequest: (newReq: Partial<RequestItem>) => void
+  currentLang?: Language
 }
 
 export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
@@ -19,7 +21,9 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
   onClose,
   currentHub,
   onCreateRequest,
+  currentLang,
 }) => {
+  const lang = currentLang || detectDefaultLanguage()
   if (!isOpen) return null
 
   const activeHub = HUBS.find((h) => h.id === currentHub) || HUBS[0]
@@ -124,8 +128,8 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
               <Sparkles className="w-4 h-4 text-cyan-400" />
             </div>
             <div>
-              <h2 className="font-display font-bold text-lg text-white">Создать заказ</h2>
-              <p className="text-xs text-gray-400">Исполнители предложат лучшие цены</p>
+              <h2 className="font-display font-bold text-lg text-white">{t(lang, 'create_request_title')}</h2>
+              <p className="text-xs text-gray-400">{t(lang, 'create_request_sub')}</p>
             </div>
           </div>
           <button
@@ -373,7 +377,7 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
             type="submit"
             className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-600 text-black font-extrabold text-sm shadow-lg shadow-cyan-500/25 hover:brightness-110 active:scale-[0.98] transition-all"
           >
-            Опубликовать заявку в аукцион
+            {t(lang, 'btn_publish_auction')}
           </button>
         </form>
       </div>

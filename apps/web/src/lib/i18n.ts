@@ -98,6 +98,16 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     badge_ai_bids: 'Откликов ИИ',
     badge_budget: 'Бюджет',
     badge_discount: 'Скидка',
+
+    // Modals & Forms
+    create_request_title: 'Создать заказ',
+    create_request_sub: 'Исполнители предложат лучшие цены',
+    ai_assistant_title: 'AI Ассистент',
+    ai_assistant_sub: 'Поможет составить заявку',
+    auth_title: 'Вход в систему',
+    auth_sub: 'Войдите, чтобы создавать заявки, участвовать в аукционах и управлять профилем.',
+    btn_publish_auction: 'Опубликовать заявку в аукцион',
+    btn_publish_market: '🔥 Опубликовать лот во Flash Market',
   },
 
   en: {
@@ -184,6 +194,16 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     badge_ai_bids: 'AI Bids',
     badge_budget: 'Budget',
     badge_discount: 'Discount',
+
+    // Modals & Forms
+    create_request_title: 'Create Request',
+    create_request_sub: 'Providers will offer their best prices',
+    ai_assistant_title: 'AI Assistant',
+    ai_assistant_sub: 'Assists in creating requests',
+    auth_title: 'Account Login',
+    auth_sub: 'Log in to create requests, participate in auctions, and manage profile.',
+    btn_publish_auction: 'Publish Request to Auction',
+    btn_publish_market: '🔥 Publish to Flash Market',
   },
 
   th: {
@@ -270,6 +290,16 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     badge_ai_bids: 'การตอบกลับ AI',
     badge_budget: 'งบประมาณ',
     badge_discount: 'ส่วนลด',
+
+    // Modals & Forms
+    create_request_title: 'สร้างคำขอ',
+    create_request_sub: 'ผู้ให้บริการจะเสนอราคาที่ดีที่สุด',
+    ai_assistant_title: 'ผู้ช่วย AI',
+    ai_assistant_sub: 'ช่วยคุณสร้างคำขอ',
+    auth_title: 'เข้าสู่ระบบ',
+    auth_sub: 'เข้าสู่ระบบเพื่อสร้างคำขอ เข้าร่วมการประมูล และจัดการโปรไฟล์',
+    btn_publish_auction: 'เผยแพร่คำขอสู่การประมูล',
+    btn_publish_market: '🔥 เผยแพร่ไปยังตลาดด่วน',
   },
 
   zh: {
@@ -356,6 +386,16 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     badge_ai_bids: 'AI自动回复',
     badge_budget: '预算',
     badge_discount: '折扣',
+
+    // Modals & Forms
+    create_request_title: '发布需求',
+    create_request_sub: '服务商将提供最优惠的报价',
+    ai_assistant_title: 'AI 智能助手',
+    ai_assistant_sub: '协助您快捷生成需求',
+    auth_title: '账号登录',
+    auth_sub: '登录后即可发布需求、参与竞价并管理个人中心',
+    btn_publish_auction: '发布需求至拍卖',
+    btn_publish_market: '🔥 发布至闪购集市',
   },
 }
 
