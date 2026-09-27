@@ -309,14 +309,15 @@ export const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({ onOpen
       </div>
       
       {/* Dev / Admin Button */}
-      {onOpenAdmin && (
-        <button
-          onClick={onOpenAdmin}
-          className="w-full py-4 mt-6 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 font-bold tracking-wide flex items-center justify-center gap-2 hover:bg-red-500/20 transition-all"
-        >
-          <Shield className="w-5 h-5" /> ПАНЕЛЬ АДМИНИСТРАТОРА (DEV)
-        </button>
-      )}
+      <button
+        data-testid="admin-panel-btn"
+        onClick={() => {
+          if (onOpenAdmin) onOpenAdmin()
+        }}
+        className="w-full py-4 mt-6 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 font-bold tracking-wide flex items-center justify-center gap-2 hover:bg-red-500/20 transition-all cursor-pointer"
+      >
+        <Shield className="w-5 h-5" /> ПАНЕЛЬ АДМИНИСТРАТОРА (DEV)
+      </button>
     </div>
   )
 }

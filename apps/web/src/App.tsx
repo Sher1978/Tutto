@@ -474,7 +474,9 @@ export function App() {
             </div>
           )}
 
-          {activeTab === 'account' && <BusinessProfileView />}
+          {activeTab === 'account' && (
+            <BusinessProfileView onOpenAdmin={() => setIsAdminDisputeOpen(true)} />
+          )}
         </main>
 
         {/* Modals */}

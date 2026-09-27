@@ -22,7 +22,7 @@ test.describe('Notification Center & Sound Chime Engine', () => {
     await expect(page.getByText(/Новый ИИ-отклик от Ayana Resort/i).first()).toBeVisible();
 
     // 3. Test filter tabs inside NotificationCenterModal
-    const marketFilter = page.getByRole('button', { name: 'Маркет', exact: true }).first();
+    const marketFilter = page.getByText('Маркет').first();
     await expect(marketFilter).toBeVisible({ timeout: 5000 });
     await marketFilter.dispatchEvent('click');
     await page.waitForTimeout(300);

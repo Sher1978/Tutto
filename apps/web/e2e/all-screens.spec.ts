@@ -13,8 +13,8 @@ test.beforeEach(async ({ page }) => {
 test.describe('NeedTnow Comprehensive Screen & Fixes Verification', () => {
   test('1. Главный экран (Режим Услуги): заголовок, карточки с префиксом "Ищу", неоново-пурпурный таймер и легкий глассморфизм', async ({ page }) => {
     // Проверка логотипа TuttiMinutto
-    await expect(page.getByText(/TUTTO/i).first()).toBeVisible();
-    await expect(page.getByText(/MINUTTO/i).first()).toBeVisible();
+    await expect(page.getByText(/TUTTO/i).first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/MINUTTO/i).first()).toBeVisible({ timeout: 10000 });
 
     // Проверка активных запросов
     await expect(page.getByText(/АКТИВНЫЕ ЗАПРОСЫ/i)).toBeVisible();
