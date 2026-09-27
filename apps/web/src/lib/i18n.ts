@@ -43,6 +43,8 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     btn_search: 'Поиск',
     btn_reset: 'Сбросить',
     btn_apply_promo: 'Активировать',
+    btn_share: 'Поделиться',
+    btn_share_telegram: 'Поделиться в Telegram',
     
     // Feed & Headers
     header_active_requests: 'АКТИВНЫЕ ЗАПРОСЫ В ХАБЕ',
@@ -50,6 +52,37 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     header_search_explore: 'Поиск скутера, виллы, обмена...',
     header_quick_templates: 'Шаблоны в 1 клик',
     header_my_deals: 'Мои Сделки & Объявления',
+
+    // Notifications Center
+    modal_notifications_title: 'Центр Уведомлений',
+    modal_notifications_sub: 'Сигналы аукционов и P2P-активность в реальном времени',
+    filter_all: 'Все',
+    filter_bids: 'Отклики',
+    filter_market: 'Маркет',
+    filter_rewards: 'Монеты',
+    btn_mark_all_read: 'Прочитать всё',
+
+    // Admin & Dispute Panel
+    admin_panel_title: 'ADMIN PANEL',
+    admin_panel_sub: 'Управление платформой и арбитраж',
+    tab_disputes: 'Арбитраж',
+    tab_analytics: 'Аналитика Маркета',
+    btn_in_favor_client: 'В пользу Клиента',
+    btn_in_favor_provider: 'В пользу Бизнеса',
+    btn_reject_dispute: 'Отклонить апелляцию',
+
+    // Deals & Chat
+    deal_status_in_progress: 'В процессе',
+    deal_status_awaiting: 'Ждёт подтверждения',
+    deal_status_completed: 'Сделка закрыта',
+    deal_status_disputed: 'Апелляция / Спор',
+    btn_confirm_completion: '✅ ПОДТВЕРДИТЬ ВЫПОЛНЕНИЕ (+15 Coins)',
+    btn_open_dispute: 'Спор',
+
+    // Reviews & Karma
+    review_modal_title: 'Оценка качества сделки',
+    review_stars_label: 'Оцените работу исполнителя',
+    btn_publish_review: 'Опубликовать отзыв (+15 Coins)',
 
     // Categories
     cat_transport: 'Прокат & Байки',
@@ -96,6 +129,8 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     btn_search: 'Search',
     btn_reset: 'Reset',
     btn_apply_promo: 'Activate',
+    btn_share: 'Share',
+    btn_share_telegram: 'Share to Telegram',
     
     // Feed & Headers
     header_active_requests: 'ACTIVE HUB AUCTIONS',
@@ -103,6 +138,37 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     header_search_explore: 'Search bikes, villas, currency...',
     header_quick_templates: '1-Click Quick Templates',
     header_my_deals: 'My Deals & Listings',
+
+    // Notifications Center
+    modal_notifications_title: 'Notification Center',
+    modal_notifications_sub: 'Real-time auction signals & P2P activity',
+    filter_all: 'All',
+    filter_bids: 'Bids',
+    filter_market: 'Market',
+    filter_rewards: 'Coins',
+    btn_mark_all_read: 'Mark All Read',
+
+    // Admin & Dispute Panel
+    admin_panel_title: 'ADMIN PANEL',
+    admin_panel_sub: 'Platform Management & Dispute Resolution',
+    tab_disputes: 'Arbitration',
+    tab_analytics: 'Market Analytics',
+    btn_in_favor_client: 'In Favor of Client',
+    btn_in_favor_provider: 'In Favor of Provider',
+    btn_reject_dispute: 'Reject Appeal',
+
+    // Deals & Chat
+    deal_status_in_progress: 'In Progress',
+    deal_status_awaiting: 'Awaiting Confirmation',
+    deal_status_completed: 'Deal Completed',
+    deal_status_disputed: 'Disputed / Appeal',
+    btn_confirm_completion: '✅ CONFIRM COMPLETION (+15 Coins)',
+    btn_open_dispute: 'Dispute',
+
+    // Reviews & Karma
+    review_modal_title: 'Rate Deal Quality',
+    review_stars_label: 'Rate provider service',
+    btn_publish_review: 'Publish Review (+15 Coins)',
 
     // Categories
     cat_transport: 'Rentals & Bikes',
@@ -115,7 +181,7 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
 
     // Badges & Labels
     badge_urgent: 'MIN',
-    badge_ai_bids: 'AI Responses',
+    badge_ai_bids: 'AI Bids',
     badge_budget: 'Budget',
     badge_discount: 'Discount',
   },
@@ -149,6 +215,8 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     btn_search: 'ค้นหา',
     btn_reset: 'รีเซ็ต',
     btn_apply_promo: 'เปิดใช้งาน',
+    btn_share: 'แชร์',
+    btn_share_telegram: 'แชร์ไปยัง Telegram',
     
     // Feed & Headers
     header_active_requests: 'การประมูลที่เปิดอยู่',
@@ -156,6 +224,37 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     header_search_explore: 'ค้นหา มอเตอร์ไซค์ พูลวิลล่า แลกเงิน...',
     header_quick_templates: 'แม่แบบสร้างด่วนใน 1 คลิก',
     header_my_deals: 'ข้อตกลงและรายการของฉัน',
+
+    // Notifications Center
+    modal_notifications_title: 'ศูนย์การแจ้งเตือน',
+    modal_notifications_sub: 'สัญญาณการประมูลแบบเรียลไทม์',
+    filter_all: 'ทั้งหมด',
+    filter_bids: 'ข้อเสนอ',
+    filter_market: 'ตลาด',
+    filter_rewards: 'เหรียญ',
+    btn_mark_all_read: 'อ่านทั้งหมด',
+
+    // Admin & Dispute Panel
+    admin_panel_title: 'แผงผู้ดูแลระบบ',
+    admin_panel_sub: 'การจัดการแพลตฟอร์มและการแก้ข้อพิพาท',
+    tab_disputes: 'อนุญาโตตุลาการ',
+    tab_analytics: 'การวิเคราะห์ตลาด',
+    btn_in_favor_client: 'เข้าข้างลูกค้า',
+    btn_in_favor_provider: 'เข้าข้างผู้ให้บริการ',
+    btn_reject_dispute: 'ปฏิเสธการอุทธรณ์',
+
+    // Deals & Chat
+    deal_status_in_progress: 'กำลังดำเนินการ',
+    deal_status_awaiting: 'รอยืนยัน',
+    deal_status_completed: 'เสร็จสิ้นข้อตกลง',
+    deal_status_disputed: 'ข้อพิพาท / อุทธรณ์',
+    btn_confirm_completion: '✅ ยืนยันการทำงานเสร็จสิ้น (+15 เหรียญ)',
+    btn_open_dispute: 'ข้อพิพาท',
+
+    // Reviews & Karma
+    review_modal_title: 'ให้คะแนนคุณภาพดีล',
+    review_stars_label: 'ประเมินการบริการ',
+    btn_publish_review: 'เผยแพร่รีวิว (+15 เหรียญ)',
 
     // Categories
     cat_transport: 'เช่ารถและมอเตอร์ไซค์',
@@ -202,6 +301,8 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     btn_search: '搜索',
     btn_reset: '重置',
     btn_apply_promo: '激活',
+    btn_share: '分享',
+    btn_share_telegram: '分享至Telegram',
     
     // Feed & Headers
     header_active_requests: '进行中的服务拍卖',
@@ -209,6 +310,37 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     header_search_explore: '搜索摩托车、别墅、换汇...',
     header_quick_templates: '一键快捷模板',
     header_my_deals: '我的交易与列表',
+
+    // Notifications Center
+    modal_notifications_title: '通知中心',
+    modal_notifications_sub: '实时拍卖信号与P2P动态',
+    filter_all: '全部',
+    filter_bids: '竞价',
+    filter_market: '集市',
+    filter_rewards: '代币',
+    btn_mark_all_read: '全部已读',
+
+    // Admin & Dispute Panel
+    admin_panel_title: '管理面板',
+    admin_panel_sub: '平台管理与争议仲裁',
+    tab_disputes: '仲裁中心',
+    tab_analytics: '集市数据分析',
+    btn_in_favor_client: '判定客户胜诉',
+    btn_in_favor_provider: '判定商家胜诉',
+    btn_reject_dispute: '驳回上诉',
+
+    // Deals & Chat
+    deal_status_in_progress: '进行中',
+    deal_status_awaiting: '等待确认',
+    deal_status_completed: '交易已完成',
+    deal_status_disputed: '争议 / 上诉中',
+    btn_confirm_completion: '✅ 确认服务完成 (+15代币)',
+    btn_open_dispute: '申请仲裁',
+
+    // Reviews & Karma
+    review_modal_title: '评价交易质量',
+    review_stars_label: '请为商家服务评分',
+    btn_publish_review: '发布评价 (+15代币)',
 
     // Categories
     cat_transport: '车辆租赁',
