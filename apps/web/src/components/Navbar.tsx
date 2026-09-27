@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Coins, ChevronDown, MapPin, Globe } from 'lucide-react'
+import { Coins, ChevronDown, MapPin, Globe, Bell } from 'lucide-react'
 import { getTelegramUser, triggerHapticFeedback } from '../lib/telegram'
 import { TokenWalletModal } from './TokenWalletModal'
 import { LocationSelectorModal } from './LocationSelectorModal'
@@ -13,6 +13,8 @@ interface NavbarProps {
   onLanguageChange?: (lang: Language) => void
   onOpenQuickRequest?: () => void
   onLocationChange?: (hub: string, district: string) => void
+  onOpenNotifications?: () => void
+  unreadNotifCount?: number
   activeAuctionsCount?: number
   totalBidsCount?: number
   savedAmount?: number
@@ -26,6 +28,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLanguageChange,
   onOpenQuickRequest,
   onLocationChange,
+  onOpenNotifications,
+  unreadNotifCount = 2,
   activeAuctionsCount = 0,
   totalBidsCount = 0,
   savedAmount = 85,
@@ -86,6 +90,23 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           <div className="flex items-center gap-2 relative">
+            {/* Notifications Bell Button */}
+            <button
+              aria-label="Уведомления"
+              onClick={() => {
+                triggerHapticFeedback('light')
+                if (onOpenNotifications) onOpenNotifications()
+              }}
+              className="relative flex items-center justify-center bg-white/5 border border-white/10 rounded-full w-8 h-8 hover:bg-white/10 transition-colors cursor-pointer text-gray-300 hover:text-white"
+            >
+              <Bell className="w-4 h-4" />
+              {unreadNotifCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#00F2FE] text-[#050811] font-black text-[9px] flex items-center justify-center border border-black shadow-[0_0_8px_#00F2FE]">
+                  {unreadNotifCount}
+                </span>
+              )}
+            </button>
+
             {/* Language Switcher Pill */}
             <div className="relative">
               <button

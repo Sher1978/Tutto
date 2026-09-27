@@ -22,6 +22,8 @@ import { initTelegramApp, triggerHapticFeedback, isTelegramEnvironment } from '.
 import { CheckCircle2, Zap, Scale } from 'lucide-react'
 import { AdminDisputePanel } from './components/AdminDisputePanel'
 import { AuthModal } from './components/AuthModal'
+import { NotificationCenterModal } from './components/NotificationCenterModal'
+import { INITIAL_NOTIFICATIONS, NotificationItem } from './lib/notifications'
 import { supabase } from './lib/supabase'
 import { Session } from '@supabase/supabase-js'
 import { Language, detectDefaultLanguage, setSavedLanguage } from './lib/i18n'
@@ -165,8 +167,11 @@ export function App() {
   const [activeDealRequest, setActiveDealRequest] = useState<RequestItem | null>(null)
   const [activeDealBid, setActiveDealBid] = useState<BidItem | null>(null)
   const [isAdminDisputeOpen, setIsAdminDisputeOpen] = useState(false)
-
   const [notificationMsg, setNotificationMsg] = useState<string | null>(null)
+
+  // Notifications Center State
+  const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS)
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
 
   const [isAuthOpen, setIsAuthOpen] = useState(false)
   const [session, setSession] = useState<Session | null>(null)
@@ -379,6 +384,8 @@ export function App() {
             handleSelectHub(hub)
             // If you want to store district globally you can add it to state too
           }}
+          onOpenNotifications={() => setIsNotificationsOpen(true)}
+          unreadNotifCount={notifications.filter((n) => !n.isRead).length}
           activeAuctionsCount={requests.filter(r => r.status === 'open').length}
           totalBidsCount={requests.reduce((acc, r) => acc + r.bidsCount, 0)}
           userRole="client"
@@ -535,6 +542,24 @@ export function App() {
           item={selectedMarketProduct}
           onClose={() => setSelectedMarketProduct(null)}
           onContactSeller={handleContactSeller}
+        />
+
+        <NotificationCenterModal
+          isOpen={isNotificationsOpen}
+          notifications={notifications}
+          onClose={() => setIsNotificationsOpen(false)}
+          onMarkAllRead={() => {
+            setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
+          }}
+          onSelectNotification={(item) => {
+            setNotifications((prev) =>
+              prev.map((n) => (n.id === item.id ? { ...n, isRead: true } : n))
+            )
+            if (item.actionTab) {
+              handleSelectTab(item.actionTab as any)
+            }
+            setIsNotificationsOpen(false)
+          }}
         />
 
         {/* Bottom Tab Bar */}

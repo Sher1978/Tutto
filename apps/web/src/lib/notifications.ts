@@ -1,0 +1,80 @@
+export interface NotificationItem {
+  id: string
+  type: 'bid' | 'market' | 'reward' | 'urgent'
+  title: string
+  message: string
+  timestamp: string
+  isRead: boolean
+  actionTab?: string
+  actionData?: any
+}
+
+export const INITIAL_NOTIFICATIONS: NotificationItem[] = [
+  {
+    id: 'notif-1',
+    type: 'bid',
+    title: '🤖 Новый ИИ-отклик от Ayana Resort',
+    message: 'Предложение $220 USD на ваш запрос «НУЖЕН БАЙК NMAX» в районе Patong.',
+    timestamp: '2 мин назад',
+    isRead: false,
+    actionTab: 'my-bids',
+  },
+  {
+    id: 'notif-2',
+    type: 'urgent',
+    title: '⚡ Срочная заявка в вашем районе (Rawai)',
+    message: 'Клиент ищет Виллу с бассейном на 3 дня ($250/сут). Откликнитесь первыми!',
+    timestamp: '15 мин назад',
+    isRead: false,
+    actionTab: 'home',
+  },
+  {
+    id: 'notif-3',
+    type: 'reward',
+    title: '🪙 Начислено +15 TUTTO Coins',
+    message: 'Спасибо за ваш отзыв об исполнителе! Монеты зачислены на баланс кошелька.',
+    timestamp: '1 час назад',
+    isRead: true,
+  },
+  {
+    id: 'notif-4',
+    type: 'market',
+    title: '🔥 Hot Deal во Flash Market',
+    message: 'Скидка 40% на «Шлем Shoei Neotec II» в районе Chalong. Осталось 2 часа!',
+    timestamp: '3 часа назад',
+    isRead: true,
+    actionTab: 'market',
+  },
+]
+
+/**
+ * Web Audio Synthesizer chime sound helper for notification alerts
+ */
+export function playNotificationChime() {
+  try {
+    if (typeof window === 'undefined') return
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext
+    if (!AudioContextClass) return
+
+    const ctx = new AudioContextClass()
+    const now = ctx.currentTime
+
+    // Synth tone 1 (Futuristic chime)
+    const osc1 = ctx.createOscillator()
+    const gain1 = ctx.createGain()
+    osc1.type = 'sine'
+    osc1.frequency.setValueAtTime(587.33, now) // D5
+    osc1.frequency.exponentialRampToValueAtTime(880, now + 0.15) // A5
+
+    gain1.gain.setValueAtTime(0.15, now)
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35)
+
+    osc1.connect(gain1)
+    gain1.connect(ctx.destination)
+
+    osc1.start(now)
+    osc1.stop(now + 0.35)
+  } catch {
+    // Audio context fallback if muted by browser autoplay policy
+  }
+}
