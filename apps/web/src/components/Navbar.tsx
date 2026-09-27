@@ -109,14 +109,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="relative shrink-0 cursor-pointer hover:opacity-85 transition-opacity"
               title="Уведомления и профиль"
             >
-              <div
-                className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full blur-[90px] pointer-events-none transition-all duration-500 z-0 ${
-                  mode === 'services'
-                    ? 'bg-[#CCFF00]/40 shadow-[0_0_80px_rgba(204,255,0,0.5)]'
-                    : 'bg-[#00F2FE]/40 shadow-[0_0_80px_rgba(0,242,254,0.5)]'
-                }`}
-              />
-
               <img
                 src={avatarUrl}
                 alt="Profile"

@@ -381,14 +381,19 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center font-sans sm:py-6 selection:bg-[#00F2FE] selection:text-black relative overflow-hidden">
-      {/* Background Glow Sprites */}
-      <div className={`fixed top-[-5%] left-[-10%] w-[500px] h-[500px] rounded-full blur-[140px] pointer-events-none z-0 transition-colors duration-1000 ${
-        mode === 'services' ? 'bg-[#00F2FE]/15' : 'bg-[#CCFF00]/10'
-      }`} />
-      <div className={`fixed top-[-5%] right-[-15%] w-[400px] h-[400px] rounded-full blur-[100px] pointer-events-none z-0 transition-colors duration-1000 ${
-        mode === 'services' ? 'bg-[#00F2FE]/30' : 'bg-[#CCFF00]/30'
-      }`} />
-      <div className="fixed inset-0 bg-gradient-to-b from-transparent via-[#050811]/90 to-[#000000] pointer-events-none z-0" />
+      {/* Fixed Background Glow Sprites Engine (Anchored 100% fixed on viewport during scrolling) */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className={`absolute -top-24 -left-24 w-[500px] h-[500px] rounded-full blur-[140px] transition-colors duration-1000 ${
+          mode === 'services' ? 'bg-[#00F2FE]/20' : 'bg-[#CCFF00]/15'
+        }`} />
+        <div className={`absolute -top-24 -right-24 w-[450px] h-[450px] rounded-full blur-[120px] transition-colors duration-1000 ${
+          mode === 'services' ? 'bg-[#CCFF00]/15' : 'bg-[#00F2FE]/25'
+        }`} />
+        <div className={`absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full blur-[160px] opacity-40 transition-colors duration-1000 ${
+          mode === 'services' ? 'bg-[#00F2FE]/10' : 'bg-[#CCFF00]/10'
+        }`} />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050811]/90 to-[#000000]" />
+      </div>
 
       {/* Main Full-Width Application Container */}
       <div className="relative flex min-h-[100dvh] w-full flex-col overflow-x-hidden bg-transparent z-10">
