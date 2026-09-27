@@ -155,8 +155,8 @@ export const TokenWalletModal: React.FC<TokenWalletModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="w-full sm:max-w-lg glass-panel rounded-t-3xl sm:rounded-3xl border border-amber-400/30 flex flex-col max-h-[92vh] overflow-hidden safe-area-bottom relative">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn overflow-y-auto">
+      <div className="w-full sm:max-w-lg glass-panel rounded-3xl border border-amber-400/30 flex flex-col max-h-[85vh] overflow-hidden my-auto relative shadow-2xl">
         {/* Glow Background */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-amber-500/20 blur-[80px] rounded-full pointer-events-none" />
 
@@ -180,7 +180,7 @@ export const TokenWalletModal: React.FC<TokenWalletModalProps> = ({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-5 text-xs relative z-10">
+        <div className="flex-1 overflow-y-auto p-4 space-y-5 text-xs relative z-10 overscroll-contain">
           {/* Main Balance Card */}
           <div className="glass-card p-5 border-amber-400/40 text-center relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-amber-400/15 via-transparent to-purple-500/10 opacity-70" />

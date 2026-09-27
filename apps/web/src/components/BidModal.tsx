@@ -73,8 +73,8 @@ export const BidModal: React.FC<BidModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="w-full sm:max-w-md glass-panel rounded-t-3xl sm:rounded-3xl border border-white/10 p-5 pb-28 sm:pb-6 max-h-[90vh] overflow-y-auto safe-area-bottom">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn overflow-y-auto">
+      <div className="w-full sm:max-w-md glass-panel rounded-3xl border border-white/10 p-5 max-h-[85vh] overflow-y-auto my-auto shadow-2xl overscroll-contain">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
           <div className="flex items-center gap-2">
