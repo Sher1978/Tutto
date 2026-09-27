@@ -222,9 +222,13 @@ export function App() {
       return
     }
 
-    if ((tab === 'home' || tab === 'market') && !isPlaywright) {
-      setShowSplash(true)
+    if (tab === 'market') {
+      setMode('market')
+      setActiveCategory(null)
+    } else if (tab === 'home') {
+      setMode('services')
     }
+
     setActiveTab(tab)
   }
 
@@ -442,6 +446,7 @@ export function App() {
               onSelectCategory={setActiveCategory}
               onOpenQuickRequest={() => setIsAIAssistantOpen(true)}
               onSelectProduct={(product) => setSelectedMarketProduct(product)}
+              onOpenCreateListing={() => setIsCreateMarketListingOpen(true)}
             />
           )}
 

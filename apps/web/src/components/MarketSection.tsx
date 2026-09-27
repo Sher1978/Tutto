@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Mic, Flame, MapPin, Clock } from 'lucide-react'
+import { Mic, Flame, MapPin, Clock, Plus } from 'lucide-react'
 import { triggerHapticFeedback } from '../lib/telegram'
 import { MarketItem } from '../types'
 import { MarketFilterBar, MarketSortOption } from './MarketFilterBar'
@@ -10,6 +10,7 @@ interface MarketSectionProps {
   onSelectCategory: (cat: string | null) => void
   onOpenQuickRequest: (req: any) => void
   onSelectProduct: (product: MarketItem) => void
+  onOpenCreateListing?: () => void
 }
 
 const MARKET_CATEGORY_TILES = [
@@ -95,14 +96,15 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
   products = DEFAULT_PRODUCTS,
   onSelectCategory,
   onOpenQuickRequest,
-  onSelectProduct
+  onSelectProduct,
+  onOpenCreateListing,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<MarketSortOption>('discount')
   const [conditionFilter, setConditionFilter] = useState<string | null>(null)
 
   let processed = products.filter((p) => {
-    if (activeCategory && p.category !== activeCategory) return false
+    if (activeCategory && activeCategory.startsWith('mcat-') && p.category !== activeCategory) return false
     if (conditionFilter && p.condition !== conditionFilter) return false
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
@@ -177,7 +179,19 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
               ГОРЯЩИЕ ТОВАРЫ
             </h2>
           </div>
-          <span className="text-[11px] font-medium text-gray-400">Скинули цену</span>
+          {onOpenCreateListing && (
+            <button
+              type="button"
+              onClick={() => {
+                triggerHapticFeedback('heavy')
+                onOpenCreateListing()
+              }}
+              className="bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] hover:brightness-110 text-black text-[11px] font-black px-3 py-1.5 rounded-xl transition-all shadow-[0_0_15px_rgba(0,242,254,0.3)] flex items-center gap-1 active:scale-95"
+            >
+              <Plus className="w-3.5 h-3.5 stroke-[3]" />
+              <span>+ Разместить лот</span>
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-3">
