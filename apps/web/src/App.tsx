@@ -1,3 +1,4 @@
+// Vercel Deployment Trigger: 2026-09-27T18:36:00
 import React, { useState, useEffect } from 'react'
 import { Navbar } from './components/Navbar'
 import { MockupAuctionSection } from './components/MockupAuctionSection'
