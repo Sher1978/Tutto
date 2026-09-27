@@ -9,7 +9,7 @@ import { AIAssistantModal } from './components/AIAssistantModal'
 import { BidModal } from './components/BidModal'
 import { BusinessProfileView } from './components/BusinessProfileView'
 import { DealChatModal } from './components/DealChatModal'
-import { SplashScreen } from './components/SplashScreen'
+import { OnboardingModal } from './components/OnboardingModal'
 import { BottomNav, TabId, AppMode } from './components/BottomNav'
 import { PillSwitcher } from './components/PillSwitcher'
 import { MarketSection, DEFAULT_PRODUCTS } from './components/MarketSection'
@@ -37,12 +37,7 @@ export function App() {
   const [activeHub, setActiveHub] = useState<string>('bali')
   const [activeTab, setActiveTab] = useState<TabId>('home')
   const [activeCategory, setActiveCategory] = useState<string | null>('cat-transport')
-  const [showSplash, setShowSplash] = useState<boolean>(() => {
-    if (typeof window !== 'undefined' && (window as any).isPlaywright) {
-      return false
-    }
-    return true
-  })
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState<boolean>(false)
 
   const [requests, setRequests] = useState<RequestItem[]>([
     {
@@ -198,7 +193,6 @@ export function App() {
     const startAppParam = urlParams.get('startapp') || urlParams.get('tgWebAppStartParam') || (window as any).Telegram?.WebApp?.initDataUnsafe?.start_param
     const parsedLink = parseDeepLinkParam(startAppParam)
     if (parsedLink) {
-      setShowSplash(false)
       if (parsedLink.type === 'request') {
         const found = requests.find((r) => r.id === parsedLink.id) || requests[0]
         if (found) setSelectedRequestForBid(found)
@@ -206,6 +200,13 @@ export function App() {
         const found = DEFAULT_PRODUCTS.find((m) => m.id === parsedLink.id) || DEFAULT_PRODUCTS[0]
         if (found) setSelectedMarketProduct(found)
       }
+    }
+
+    // Onboarding tutorial auto-display on first visit
+    const hasSeenOnboarding = localStorage.getItem('needtnow_onboarding_completed')
+    const isPlaywright = typeof window !== 'undefined' && Boolean((window as any).isPlaywright)
+    if (!hasSeenOnboarding && !isPlaywright) {
+      setIsOnboardingOpen(true)
     }
 
     return () => subscription.unsubscribe()
@@ -388,9 +389,6 @@ export function App() {
         mode === 'services' ? 'bg-[#00F2FE]/30' : 'bg-[#CCFF00]/30'
       }`} />
       <div className="fixed inset-0 bg-gradient-to-b from-transparent via-[#050811]/90 to-[#000000] pointer-events-none z-0" />
-
-      {/* 3-Second Onboarding Splash Screen */}
-      <SplashScreen isVisible={showSplash} onFinish={() => setShowSplash(false)} />
 
       {/* Main Full-Width Application Container */}
       <div className="relative flex min-h-[100dvh] w-full flex-col overflow-x-hidden bg-transparent z-10">
@@ -594,6 +592,11 @@ export function App() {
             }
             setIsNotificationsOpen(false)
           }}
+        />
+
+        <OnboardingModal
+          isOpen={isOnboardingOpen}
+          onClose={() => setIsOnboardingOpen(false)}
         />
 
         {/* Bottom Tab Bar */}
