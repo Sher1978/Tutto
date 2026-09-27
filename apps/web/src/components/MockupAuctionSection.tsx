@@ -482,9 +482,21 @@ function AuctionRequestCard({ item, onOpenBidModal }: { item: RequestItem, onOpe
   const [progress, setProgress] = useState(100)
   const [isUrgent, setIsUrgent] = useState(false)
 
+  const getIntentBadge = (title: string, categoryId?: string) => {
+    const t = title.trim().toUpperCase()
+    if (t.startsWith('СНИМУ')) return { text: '🏠 СНИМУ', style: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-[0_0_8px_rgba(16,185,129,0.3)]' }
+    if (t.startsWith('КУПЛЮ')) return { text: '🛒 КУПЛЮ', style: 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-[0_0_8px_rgba(245,158,11,0.3)]' }
+    if (t.startsWith('ОБМЕНЯЮ') || t.includes('ОБМЕН')) return { text: '💵 ОБМЕНЯЮ', style: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-[0_0_8px_rgba(6,182,212,0.3)]' }
+    if (t.startsWith('ЗАКАЖУ')) return { text: '🛠️ ЗАКАЖУ', style: 'bg-purple-500/20 text-purple-300 border-purple-500/40 shadow-[0_0_8px_rgba(168,85,247,0.3)]' }
+    if (t.startsWith('ВЫЗОВУ')) return { text: '🩺 ВЫЗОВУ', style: 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-[0_0_8px_rgba(244,63,94,0.3)]' }
+    if (t.startsWith('ОФОРМЛЮ')) return { text: '📄 ОФОРМЛЮ', style: 'bg-blue-500/20 text-blue-300 border-blue-500/40 shadow-[0_0_8px_rgba(59,130,246,0.3)]' }
+    return { text: '🔍 ИЩУ', style: 'bg-[#00F2FE]/20 text-[#00F2FE] border-[#00F2FE]/40 shadow-[0_0_8px_rgba(0,242,254,0.3)]' }
+  }
+
+  const intentBadge = getIntentBadge(item.title, item.categoryL1Id)
+
   useEffect(() => {
     // Generate a pseudo-random end time for the mockup, anywhere between 1 min and 60 mins from now
-    // We will use the item.id to seed so it doesn't jump around on re-renders if possible, or just generate once.
     const now = new Date().getTime()
     const mockDurationMs = (Math.random() * 59 + 1) * 60 * 1000 // 1 to 60 mins
     const endTime = now + mockDurationMs
@@ -538,7 +550,13 @@ function AuctionRequestCard({ item, onOpenBidModal }: { item: RequestItem, onOpe
             {item.title}
           </h3>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Intent Badge */}
+            <span className={`inline-flex shrink-0 border px-2.5 py-1 rounded-full items-center gap-1 font-black text-[10px] uppercase tracking-wider ${intentBadge.style}`}>
+              {intentBadge.text}
+            </span>
+
+            {/* Timer Badge */}
             <div className={`inline-flex shrink-0 border px-2.5 py-1 rounded-full items-center gap-1.5 shadow-sm transition-colors ${
               isUrgent ? 'bg-[#D946EF]/15 border-[#D946EF]/40 shadow-[0_0_10px_rgba(217,70,239,0.3)]' : 'bg-[#CCFF00]/10 border-[#CCFF00]/30 shadow-[0_0_10px_rgba(204,255,0,0.2)]'
             }`}>

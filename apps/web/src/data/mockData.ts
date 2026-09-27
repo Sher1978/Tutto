@@ -165,7 +165,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-nmax',
     categoryL1Id: 'cat-transport',
-    title: 'Ищу Yamaha NMAX 155cc / Honda PCX 160 (1-14 дней)',
+    title: 'СНИМУ В АРЕНДУ Yamaha NMAX 155cc / Honda PCX 160',
     description: 'Свежие скутеры (2023-2024 года) с бесплатной доставкой в отель, 2 чистоплотными шлемами и страховкой без залога паспорта.',
     defaultBudget: 220,
     currency: 'USD',
@@ -174,7 +174,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-car-compact',
     categoryL1Id: 'cat-transport',
-    title: 'Ищу Компактный авто (Honda City / Toyota Yaris)',
+    title: 'СНИМУ В АРЕНДУ Компактный авто (Honda City / Toyota Yaris)',
     description: 'Автомобиль с кондиционером, полной страховкой и доставкой к отелю. Оплата без оригиналов документов в залог.',
     defaultBudget: 380,
     currency: 'USD',
@@ -183,7 +183,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-alphard-transfer',
     categoryL1Id: 'cat-transport',
-    title: 'Ищу VIP Трансфер из аэропорта на Toyota Alphard',
+    title: 'ЗАКАЖУ VIP Трансфер из аэропорта на Toyota Alphard',
     description: 'Комфортабельный минивен бизнес-класса с личным водителем, детским креслом, водой и быстрым Wi-Fi.',
     defaultBudget: 45,
     currency: 'USD',
@@ -192,7 +192,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-enduro-bike',
     categoryL1Id: 'cat-transport',
-    title: 'Ищу Эндуро / Кроссовый байк Kawasaki KLX 250',
+    title: 'СНИМУ В АРЕНДУ Эндуро / Кроссовый байк Kawasaki KLX 250',
     description: 'Мощный байк для поездок по горным серпантинам и джунглям. Экипировка и шлем включены.',
     defaultBudget: 35,
     currency: 'USD',
@@ -203,7 +203,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-villa-pool',
     categoryL1Id: 'cat-housing',
-    title: 'Приватная 2-спальная вилла с бассейном',
+    title: 'СНИМУ Приватную 2-спальную виллу с бассейном',
     description: 'Вилла с приватным бассейном, кухней, быстрым Wi-Fi от 100 Мбит в тихом районе (Чангу / Раваи / Банг Тао).',
     defaultBudget: 1800,
     currency: 'USD',
@@ -212,7 +212,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-condo-sea',
     categoryL1Id: 'cat-housing',
-    title: 'Апартаменты в Кондо у пляжа (Студия 45m²)',
+    title: 'СНИМУ Апартаменты в Кондо у пляжа (Студия 45m²)',
     description: 'Свежий кондоминиум с бассейном на крыше, фитнес-залом, охраной 24/7 и балконом с видом на океан.',
     defaultBudget: 750,
     currency: 'USD',
@@ -221,7 +221,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-luxury-villa',
     categoryL1Id: 'cat-housing',
-    title: 'Люкс Вилла 4 спальни на 1-й линии с персоналом',
+    title: 'СНИМУ Люкс Виллу 4 спальни на 1-й линии с персоналом',
     description: 'Панорамный инфинити-бассейн, шеф-повар, хаус-кипинг и закатный вид на море для компании или семьи.',
     defaultBudget: 4200,
     currency: 'USD',
@@ -230,7 +230,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-cozy-bungalow',
     categoryL1Id: 'cat-housing',
-    title: 'Уютный бунгало в тропическом саду',
+    title: 'СНИМУ Уютный бунгало в тропическом саду',
     description: 'Уединенный домик с гамаком, террасой, рабочим столом и зеленью вокруг для спокойной жизни.',
     defaultBudget: 500,
     currency: 'USD',
@@ -241,7 +241,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-cash-baht',
     categoryL1Id: 'cat-finance',
-    title: 'Экспресс-доставка наличных батов/рупий в отель',
+    title: 'КУПЛЮ НАЛИЧНЫЕ баты / рупии (Доставка в отель за RUB/USDT)',
     description: 'Курьер привезет наличную валюту прямо на ресепшен вашего отеля. Оплата Рублями по СБП или USDT без комиссии.',
     defaultBudget: null,
     currency: 'USD',
@@ -250,7 +250,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-crypto-usdt',
     categoryL1Id: 'cat-finance',
-    title: 'Обмен USDT ⇄ Наличные USD / BHT / IDR',
+    title: 'ОБМЕНЯЮ USDT ⇄ Наличные USD / BHT / IDR',
     description: 'Быстрый обмен криптовалюты на наличные деньги с безопасной выездной инкассацией по лучшим курсам.',
     defaultBudget: null,
     currency: 'USD',
@@ -259,7 +259,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-bank-account',
     categoryL1Id: 'cat-finance',
-    title: 'Открытие личного счета в местном банке за 1 день',
+    title: 'ОФОРМЛЮ личный счет в местном банке за 1 день',
     description: 'Помощь в открытии банковской карты Visa/Mastercard без рабочей визы под ключ с мобильным банком.',
     defaultBudget: 250,
     currency: 'USD',
@@ -268,7 +268,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-swift-transfer',
     categoryL1Id: 'cat-finance',
-    title: 'Международные переводы SWIFT / SEPA для аренды',
+    title: 'ОТПРАВЛЮ международный перевод SWIFT / SEPA',
     description: 'Безопасная оплата контрактов аренды, депозитов за виллы и коммерческих инвойсов по всему миру.',
     defaultBudget: null,
     currency: 'USD',
@@ -279,7 +279,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-visarun-van',
     categoryL1Id: 'cat-services',
-    title: 'Визаран / Бордер-ран на VIP минивене',
+    title: 'ЗАКАЖУ Визаран / Бордер-ран на VIP минивене',
     description: 'Поездка за штампом на 60 дней на комфортабельном автобусе с питанием, напитками и содействием на границе.',
     defaultBudget: 90,
     currency: 'USD',
@@ -288,7 +288,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-visa-extension',
     categoryL1Id: 'cat-services',
-    title: 'Продление туристической визы без очередей',
+    title: 'ОФОРМЛЮ продление туристической визы без очередей',
     description: 'Сопровождение в иммиграционном офисе, заполнение всех анкет и быстрая выдача за 30 минут.',
     defaultBudget: 110,
     currency: 'USD',
@@ -297,7 +297,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-kitas-consult',
     categoryL1Id: 'cat-services',
-    title: 'Оформление рабочей визы KITAS / LTR под ключ',
+    title: 'ОФОРМЛЮ рабочую визу KITAS / LTR под ключ',
     description: 'Юридический консалтинг, сбор пакета документов, регистрация компании (PT PMA) и налоговое сопровождение.',
     defaultBudget: 650,
     currency: 'USD',
@@ -306,7 +306,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-bike-insurance',
     categoryL1Id: 'cat-services',
-    title: 'Медицинская страховка с покрытием управления скутером',
+    title: 'КУПЛЮ медицинскую страховку с покрытием скутера',
     description: 'Полис от ведущих ассистансов, покрывающий госпиталь, лечение и травмы при езде на двух колесах.',
     defaultBudget: 40,
     currency: 'USD',
@@ -317,7 +317,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-chef-seafood',
     categoryL1Id: 'cat-food',
-    title: 'Персональный Шеф-Повар на виллу (Seafood & BBQ)',
+    title: 'ЗАКАЖУ персонального Шеф-Повара на виллу (Seafood & BBQ)',
     description: 'Шеф сам закупит свежие лобстеры, креветки и рыбу на рынке, приготовит ужин и идеально засервирует стол.',
     defaultBudget: 120,
     currency: 'USD',
@@ -326,7 +326,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-meal-prep',
     categoryL1Id: 'cat-food',
-    title: 'Доставка 3-разового рациона здорового питания на неделю',
+    title: 'ЗАКАЖУ доставку 3-разового рациона здорового питания на неделю',
     description: 'Каждое утро курьер привозит термосумку с балансированным меню из свежих ингредиентов без сахара.',
     defaultBudget: 150,
     currency: 'USD',
@@ -335,7 +335,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-party-catering',
     categoryL1Id: 'cat-food',
-    title: 'Кейтеринг и фуршет для вечеринки / Дня Рождения',
+    title: 'ЗАКАЖУ кейтеринг и фуршет для вечеринки / Дня Рождения',
     description: 'Закуски, тапасы, авторский бармен с коктейльной картой, официанты и уборка посуды после мероприятия.',
     defaultBudget: 300,
     currency: 'USD',
@@ -344,7 +344,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-fruit-box',
     categoryL1Id: 'cat-food',
-    title: 'Коробка 10кг тропических фруктов с доставкой',
+    title: 'КУПЛЮ коробку 10кг тропических фруктов с доставкой',
     description: 'Спелые манго, драгонфрут, папайя, маракуйя и ананасы со старых плантаций с доставкой до двери.',
     defaultBudget: 35,
     currency: 'USD',
@@ -355,7 +355,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-villa-deep-clean',
     categoryL1Id: 'cat-cleaning',
-    title: 'Генеральная уборка виллы / апартаментов',
+    title: 'ЗАКАЖУ генеральную уборку виллы / апартаментов',
     description: 'Клинеры со своими эко-средствами вымоют окна, сантехнику, балкон, кухню и поменяют постельное белье.',
     defaultBudget: 40,
     currency: 'USD',
@@ -364,7 +364,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-pool-maintenance',
     categoryL1Id: 'cat-cleaning',
-    title: 'Обслуживание и чистка бассейна (2 раза в неделю)',
+    title: 'ЗАКАЖУ обслуживание и чистку бассейна (2 раза в неделю)',
     description: 'Профессиональная чистка стенок, пылесос дна, замер уровня pH и внесение щадящих реагентов.',
     defaultBudget: 80,
     currency: 'USD',
@@ -373,7 +373,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-laundry-express',
     categoryL1Id: 'cat-cleaning',
-    title: 'Экспресс-прачечная: стирка, сушка, глажка с доставкой',
+    title: 'ЗАКАЖУ экспресс-прачечную: стирка, сушка, глажка с доставкой',
     description: 'Забор вещей из вашего отеля и возврат аккуратно сложенного и выглаженного белья через 24 часа.',
     defaultBudget: 15,
     currency: 'USD',
@@ -382,7 +382,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-sofa-cleaning',
     categoryL1Id: 'cat-cleaning',
-    title: 'Глубокая химчистка диванов и матрасов на дому',
+    title: 'ЗАКАЖУ химчистку диванов и матрасов на дому',
     description: 'Удаление въевшихся пятен, разводов и пылевых клещей экстракторным методом с быстросохнущим средством.',
     defaultBudget: 50,
     currency: 'USD',
@@ -393,7 +393,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-massage-home',
     categoryL1Id: 'cat-beauty',
-    title: 'Традиционный Тайский / Балийский массаж на виллу',
+    title: 'ИЩУ мастера тайского / балийского массажа на виллу',
     description: 'Сертифицированный мастер со своим массажным столом, музыкой и арома-маслами приедет прямо к вам.',
     defaultBudget: 35,
     currency: 'USD',
@@ -402,7 +402,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-manicure-pedicure',
     categoryL1Id: 'cat-beauty',
-    title: 'Маникюр & Педикюр с выездом мастера на дом',
+    title: 'ИЩУ мастера маникюра & педикюра с выездом на дом',
     description: 'Стерильный инструментарий, гелевое покрытие Luxio, аппаратный уход в комфортных условиях вашей виллы.',
     defaultBudget: 45,
     currency: 'USD',
@@ -411,7 +411,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-barber-haircut',
     categoryL1Id: 'cat-beauty',
-    title: 'Выездной Барбер: мужская стрижка & борода',
+    title: 'ИЩУ выездного барбера (мужская стрижка & борода)',
     description: 'Топ-барбер приедет со всем оборудованием: модельная стрижка, распаривание, бритье опасной бритвой.',
     defaultBudget: 30,
     currency: 'USD',
@@ -420,7 +420,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-makeup-hairstyling',
     categoryL1Id: 'cat-beauty',
-    title: 'Вечерний макияж и укладка для закатной фотосессии',
+    title: 'ИЩУ визажиста-стилиста для закатной фотосессии',
     description: 'Выезд визажиста-стилиста: стойкий мейкап для жаркого климата и эстетичная укладка волос.',
     defaultBudget: 70,
     currency: 'USD',
@@ -431,7 +431,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-nanny-pro',
     categoryL1Id: 'cat-kids',
-    title: 'Проверенная англо/русскоязычная няня для ребенка',
+    title: 'ИЩУ проверенную няню для ребенка',
     description: 'Няня с педагогическим образованием, навыками первой помощи и отличными отзывами от экспат-семей.',
     defaultBudget: 12,
     currency: 'USD',
@@ -440,7 +440,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-stroller-rent',
     categoryL1Id: 'cat-kids',
-    title: 'Аренда детской коляски Yoyo / автокресла',
+    title: 'СНИМУ В АРЕНДУ детскую коляску Yoyo / автокресло',
     description: 'Идеально чистые, дезинфицированные премиум-коляски и автокресла с доставкой до вашего отеля.',
     defaultBudget: 30,
     currency: 'USD',
@@ -449,7 +449,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-kids-animator',
     categoryL1Id: 'cat-kids',
-    title: 'Детский праздник: Аниматоры, шоу пузырей & аквагрим',
+    title: 'ЗАКАЖУ аниматоров и шоу на детский праздник',
     description: 'Яркая 2-часовая программа на вилле или в ресторане: любимые герои, квесты и поздравление.',
     defaultBudget: 100,
     currency: 'USD',
@@ -458,7 +458,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-kindergarten-select',
     categoryL1Id: 'cat-kids',
-    title: 'Подбор детского сада / международного лагеря',
+    title: 'ИЩУ помощь в подборе детского сада / лагеря',
     description: 'Организация ознакомительных визитов в лучшие англоязычные сады и школы с мягкой адаптацией.',
     defaultBudget: 50,
     currency: 'USD',
@@ -469,7 +469,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-yacht-similan',
     categoryL1Id: 'cat-tours',
-    title: 'Индивидуальный чартер сноркелинг-бота на Симиланы',
+    title: 'ЗАКАЖУ индивидуальный чартер бота на Симиланы',
     description: 'Комфортный катер с капитаном и русскоязычным гидом на весь день. Включен обед, фрукты, снаряжение.',
     defaultBudget: 850,
     currency: 'USD',
@@ -478,7 +478,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-phiphi-sunrise',
     categoryL1Id: 'cat-tours',
-    title: 'Однодневный авторский тур: острова Пхи-Пхи & Майя Бэй',
+    title: 'ЗАКАЖУ авторский тур на острова Пхи-Пхи & Майя Бэй',
     description: 'Морское путешествие на зари к заливу Майя Бэй, острову Бамбу и смотровым площадкам без толп туристов.',
     defaultBudget: 140,
     currency: 'USD',
@@ -487,7 +487,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-surf-lesson',
     categoryL1Id: 'cat-tours',
-    title: 'Индивидуальный урок сёрфинга с видеоразбором',
+    title: 'ЗАКАЖУ индивидуальный урок сёрфинга с видеоразбором',
     description: 'Персональное занятие с опытным инструктором: теория на берегу, постановка на доску и разбор ошибок.',
     defaultBudget: 50,
     currency: 'USD',
@@ -496,7 +496,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-helicopter-tour',
     categoryL1Id: 'cat-tours',
-    title: 'Полет на вертолете над островами Пханг Нга',
+    title: 'ЗАКАЖУ полет на вертолете над островами Пханг Нга',
     description: 'Завораживающая незабываемая воздушная экскурсия над известняковыми скалами и бирюзовым морем.',
     defaultBudget: 350,
     currency: 'USD',
@@ -507,7 +507,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-doctor-home-visit',
     categoryL1Id: 'cat-health',
-    title: 'Вызов терапевта / педиатра на виллу 24/7',
+    title: 'ВЫЗОВУ терапевта / педиатра на виллу 24/7',
     description: 'Выезд квалифицированного врача с аптечкой: осмотр, замер сатурации, назначения и рецептурные бланки.',
     defaultBudget: 90,
     currency: 'USD',
@@ -516,7 +516,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-iv-drip-detox',
     categoryL1Id: 'cat-health',
-    title: 'IV-капельница Detox / Recovery Boost на дом',
+    title: 'ЗАКАЖУ IV-капельницу Detox / Recovery Boost на дом',
     description: 'Восстановительная капельница с витамином C, глутатионом и электролитами от медсестры.',
     defaultBudget: 80,
     currency: 'USD',
@@ -525,7 +525,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-blood-test-home',
     categoryL1Id: 'cat-health',
-    title: 'Забор анализов на дому с результатами в Telegram',
+    title: 'ЗАКАЖУ забор анализов на дому с результатом в Telegram',
     description: 'Медсестра возьмет кровь на вилле, доставит в лабораторию и пришлет готовые результаты на следующий день.',
     defaultBudget: 60,
     currency: 'USD',
@@ -534,7 +534,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-pharmacy-delivery',
     categoryL1Id: 'cat-health',
-    title: 'Срочный выкуп и доставка лекарств из аптеки',
+    title: 'ЗАКАЖУ срочный выкуп и доставку лекарств из аптеки',
     description: 'Курьер подберет необходимые медикаменты по вашему рецепту или названию и привезет в течение часа.',
     defaultBudget: 20,
     currency: 'USD',
@@ -545,7 +545,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-courier-express',
     categoryL1Id: 'cat-courier',
-    title: 'Срочная мото-доставка документов за 45 минут',
+    title: 'ИЩУ курьера: срочная мото-доставка документов за 45 минут',
     description: 'Курьер заберет ключи, паспорта или мелкие посылки и мгновенно доставит в любой район города.',
     defaultBudget: 15,
     currency: 'USD',
@@ -554,7 +554,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-mall-shopping',
     categoryL1Id: 'cat-courier',
-    title: 'Выкуп и доставка товаров из торгового центра',
+    title: 'ЗАКАЖУ выкуп и доставку товаров из торгового центра',
     description: 'Персональный шопер выкупит нужные вещи или технику в Central / Beachwalk и привезет вам на виллу.',
     defaultBudget: 25,
     currency: 'USD',
@@ -563,7 +563,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-laptop-delivery',
     categoryL1Id: 'cat-courier',
-    title: 'Безопасная транспортировка техники в термосумке',
+    title: 'ИЩУ курьера: безопасная доставка техники в термосумке',
     description: 'Бережная перевозка ноутбуков, камер и хрупких ценных вещей с полной материальной ответственностью.',
     defaultBudget: 20,
     currency: 'USD',
@@ -572,7 +572,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-airport-meet',
     categoryL1Id: 'cat-courier',
-    title: 'Встреча в терминале аэропорта и передача сим-карт/ключей',
+    title: 'ИЩУ курьера: встреча в аэропорту и передача ключей',
     description: 'Курьер встретит прилетающих гостей в зоне прилета и передаст ключи от апартаментов и локальную симку.',
     defaultBudget: 30,
     currency: 'USD',
@@ -583,7 +583,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-photoshoot-sunset',
     categoryL1Id: 'cat-events',
-    title: 'Персональная закатная фотосессия на пляже',
+    title: 'ЗАКАЖУ персональную закатную фотосессию на пляже',
     description: 'Профессиональный фотограф: 100+ ретушированных кадров, помощь с позированием и подбор локации.',
     defaultBudget: 120,
     currency: 'USD',
@@ -592,7 +592,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-romantic-dinner',
     categoryL1Id: 'cat-events',
-    title: 'Романтический ужин при свечах у океана',
+    title: 'ЗАКАЖУ романтический ужин при свечах у океана',
     description: 'Шатер на песке, декор свечами, музыкант с гитарой, шампанское и ужин из морепродуктов.',
     defaultBudget: 250,
     currency: 'USD',
@@ -601,7 +601,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-dj-sound-set',
     categoryL1Id: 'cat-events',
-    title: 'DJ с комплект звука и света на приватную виллу',
+    title: 'ЗАКАЖУ DJ с комплектом звука на приватную виллу',
     description: '4-часовой DJ-сет (House, Afro-House, Techno), линейный массив акустики 2кВт и светомузыка.',
     defaultBudget: 300,
     currency: 'USD',
@@ -610,7 +610,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-sup-board-rent',
     categoryL1Id: 'cat-events',
-    title: 'Аренда светодиодных SUP-бордов на закат',
+    title: 'СНИМУ В АРЕНДУ светодиодные SUP-борды на закат',
     description: 'Доставка 4 светящихся сапбордов на пляж для плавания в вечернем море с неоновой подсветкой.',
     defaultBudget: 40,
     currency: 'USD',
@@ -621,7 +621,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-tantra-breathwork',
     categoryL1Id: 'cat-spirit',
-    title: 'Тантра & Дыхательные практики (Womb & Breathwork)',
+    title: 'ИЩУ проводника: Тантра & Дыхательные практики',
     description: 'Глубокие дыхательные сессии, проработка энергетических блоков, тантрические практики и гармонизация состояния.',
     defaultBudget: 80,
     currency: 'USD',
@@ -630,7 +630,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-taro-astrology',
     categoryL1Id: 'cat-spirit',
-    title: 'Разбор Таро & Натальная карта (Маги / Астрологи / Гадалки)',
+    title: 'ИЩУ таролога / астролога (Разбор Таро & Натальная карта)',
     description: 'Персональный расклад ситуаций, астрологический прогноз, матрица судьбы и нумерология от проверенного практика.',
     defaultBudget: 60,
     currency: 'USD',
@@ -639,7 +639,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-yoga-sound-healing',
     categoryL1Id: 'cat-spirit',
-    title: 'Йога, Поющие чаши (Sound Healing) & Гвозди Садху',
+    title: 'ИЩУ инструктора: Йога, Поющие чаши & Гвозди Садху',
     description: 'Персональная Хатха/Кундалини йога на вилле, звуковая терапия поющими чашами и практическое стояние на гвоздях.',
     defaultBudget: 50,
     currency: 'USD',
@@ -648,7 +648,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-bachata-dance',
     categoryL1Id: 'cat-spirit',
-    title: 'Урок Бачаты / Танцевальный экстатик (Ecstatic Dance)',
+    title: 'ИЩУ хореографа: Урок Бачаты / Экстатик Данс',
     description: 'Обучение чувственным парным танцам, бачата/сальса с выездом хореографа или проводник в экстатик-сессию.',
     defaultBudget: 40,
     currency: 'USD',
@@ -657,7 +657,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-group-yoga',
     categoryL1Id: 'cat-spirit',
-    title: 'Групповые занятия Йоги, Медитации & Садху-группы',
+    title: 'ИЩУ групповые занятия Йоги & Медитации',
     description: 'Регулярные групповые практики йоги на открытом воздухе, групповые медитации с чашами и гвоздестояние в комьюнити.',
     defaultBudget: 15,
     currency: 'USD',
@@ -666,7 +666,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-group-bachata',
     categoryL1Id: 'cat-spirit',
-    title: 'Групповая Бачата, Сальса & Вечеринки Open-Air',
+    title: 'ИЩУ групповую Бачату / Сальсу Open-Air',
     description: 'Групповые танцевальные мастер-классы, опен-эйр вечеринки бачаты на пляже и комьюнити-вечера для всех уровней.',
     defaultBudget: 15,
     currency: 'USD',
@@ -677,7 +677,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-personal-assistant',
     categoryL1Id: 'cat-other',
-    title: 'Персональный ассистент & Переводчик на день',
+    title: 'ИЩУ персонального ассистента & переводчика',
     description: 'Сопровождение в госорганах, банках, переговоры с местными жителями и бытовые поручения.',
     defaultBudget: 100,
     currency: 'USD',
@@ -686,7 +686,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-pet-sitting',
     categoryL1Id: 'cat-other',
-    title: 'Выгул и присмотр за собакой / кошкой (Pet Sitting)',
+    title: 'ИЩУ ситтера для выгула и присмотра за питомцем',
     description: 'Заботливый ситтер погуляет с вашей собакой, покормит кота и пришлет фото/видео отчет.',
     defaultBudget: 15,
     currency: 'USD',
@@ -695,7 +695,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-relocation-moving',
     categoryL1Id: 'cat-other',
-    title: 'Квартирный переезд между виллами под ключ',
+    title: 'ЗАКАЖУ квартирный переезд между виллами',
     description: 'Грузчики бережно упакуют чемоданы, коробки и технику, погрузят в грузовик и разгрузят на новом месте.',
     defaultBudget: 150,
     currency: 'USD',
@@ -704,7 +704,7 @@ export const SERVICE_TEMPLATES: ServiceTemplate[] = [
   {
     id: 'tmpl-bike-inspection',
     categoryL1Id: 'cat-other',
-    title: 'Выездная диагностика б/у байка перед покупкой',
+    title: 'ЗАКАЖУ диагностику б/у байка перед покупкой',
     description: 'Проверка компрессии, тормозов, геометрии рамы и документов автомехаником перед вашей покупкой.',
     defaultBudget: 50,
     currency: 'USD',
@@ -723,7 +723,7 @@ export const MOCK_REQUESTS: RequestItem[] = [
     district: 'Rawai',
     categoryL1Id: 'cat-transport',
     categoryL1Name: 'Аренда байков & авто',
-    title: 'Нужен Yamaha NMAX 155cc на 14 дней в Раваи',
+    title: 'СНИМУ В АРЕНДУ Yamaha NMAX 155cc на 14 дней в Раваи',
     description: 'Ищу свежий байк (2023-2024 года), обязательно с 2 шлемами. Доставка к отелю Rawai Palm Beach Resort. Бюджет фиксированный.',
     budget: 220,
     currency: 'USD',
@@ -745,7 +745,7 @@ export const MOCK_REQUESTS: RequestItem[] = [
     district: 'Canggu',
     categoryL1Id: 'cat-realestate',
     categoryL1Name: 'Виллы & Апартаменты',
-    title: 'Ищем 2-спальную виллу в Чангу с 1 октября на 1 месяц',
+    title: 'СНИМУ 2-спальную виллу в Чангу с 1 октября на 1 месяц',
     description: 'Тихий район, хороший Wi-Fi для работы (от 100 Мбит), приватный бассейн. Рассматриваем варианты до $2200.',
     budget: null,
     currency: 'USD',
