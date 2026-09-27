@@ -361,20 +361,6 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
         </defs>
       </svg>
       
-      {/* 1. SEARCH & VOICE BAR (inDrive style) */}
-      <div 
-        onClick={() => onOpenQuickRequest(heroSliderItems[0])}
-        className="w-full bg-white/[0.08] backdrop-blur-xl border border-white/15 rounded-2xl p-3 flex items-center gap-3 shadow-lg cursor-text hover:bg-white/[0.12] hover:border-cyan-400/30 transition-all"
-      >
-        <div className="w-10 h-10 rounded-full bg-[#00F2FE]/15 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,242,254,0.3)]">
-          <Mic className="w-5 h-5 text-[#00F2FE]" />
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[16px] font-bold text-white tracking-wide">Что вам нужно?</span>
-          <span className="text-[13px] text-gray-300 font-medium">Зажмите или введите текст...</span>
-        </div>
-      </div>
-
       {/* 2. CHIP CATEGORIES (Horizontal Scroll) */}
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-2 px-2">
         {ALL_CATEGORY_TILES.map((cat) => {
@@ -521,7 +507,15 @@ function AuctionRequestCard({ item, onOpenBidModal }: { item: RequestItem, onOpe
               💰 ${item.budget}
             </span>
           )}
-          <button className="relative overflow-hidden hover:opacity-90 transition-all rounded-xl shadow-[0_0_15px_rgba(0,242,254,0.4)] bg-[#161B22]">
+          <button 
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              triggerHapticFeedback('heavy')
+              onOpenBidModal(item)
+            }}
+            className="relative overflow-hidden hover:opacity-90 transition-all rounded-xl shadow-[0_0_15px_rgba(0,242,254,0.4)] bg-[#161B22] cursor-pointer"
+          >
             <div 
               className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] transition-all duration-1000 ease-linear"
               style={{ width: `${progress}%` }}

@@ -29,6 +29,7 @@ import { supabase } from './lib/supabase'
 import { Session } from '@supabase/supabase-js'
 import { Language, detectDefaultLanguage, setSavedLanguage } from './lib/i18n'
 import { parseDeepLinkParam } from './lib/deeplink'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
 export function App() {
   const [currentLang, setCurrentLang] = useState<Language>(() => detectDefaultLanguage())
@@ -517,6 +518,10 @@ export function App() {
           currentDistrict="Равай" // Fallback district, could be dynamic
           onPublish={handleCreateRequest}
           currentLang={currentLang}
+          onSkipToManual={() => {
+            setIsAIAssistantOpen(false)
+            setIsCreateOpen(true)
+          }}
         />
 
         <BidModal
@@ -599,7 +604,8 @@ export function App() {
           currentLang={currentLang}
           onCentralAction={() => {
             if (mode === 'services') {
-              setIsCreateOpen(true)
+              triggerHapticFeedback('heavy')
+              setIsAIAssistantOpen(true)
             } else {
               triggerHapticFeedback('heavy')
               setIsCreateMarketListingOpen(true)
@@ -612,4 +618,10 @@ export function App() {
   )
 }
 
-export default App
+export default function AppWithErrorBoundary() {
+  return (
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  )
+}

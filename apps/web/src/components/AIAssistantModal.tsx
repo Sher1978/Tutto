@@ -11,6 +11,7 @@ interface AIAssistantModalProps {
   currentHub: string
   currentDistrict: string
   currentLang?: Language
+  onSkipToManual?: () => void
 }
 
 type Message = { role: 'user' | 'model'; text: string }
@@ -22,6 +23,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
   currentHub,
   currentDistrict,
   currentLang,
+  onSkipToManual,
 }) => {
   const lang = currentLang || detectDefaultLanguage()
   const [messages, setMessages] = useState<Message[]>([])
@@ -116,9 +118,23 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
             <p className="text-[13px] text-cyan-400">{t(lang, 'ai_assistant_sub')}</p>
           </div>
         </div>
-        <button onClick={onClose} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white">
-          <X className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-2">
+          {onSkipToManual && (
+            <button
+              onClick={() => {
+                triggerHapticFeedback('light')
+                onClose()
+                onSkipToManual()
+              }}
+              className="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-xs text-cyan-300 font-extrabold flex items-center gap-1 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,242,254,0.2)]"
+            >
+              <span>Skip ➔</span>
+            </button>
+          )}
+          <button onClick={onClose} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {/* Chat Area */}
@@ -174,7 +190,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
 
       {/* Input Area */}
       {!finalCard && (
-        <div className="p-4 bg-[#0A101D] border-t border-white/10 safe-area-bottom">
+        <div className="p-4 bg-[#0A101D] border-t border-white/10 safe-area-bottom space-y-2">
           <div className="flex items-end gap-2">
             <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-1 flex items-center focus-within:border-cyan-500/50 transition-colors">
               <textarea
@@ -199,6 +215,19 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
               )}
             </div>
           </div>
+
+          {onSkipToManual && (
+            <button
+              onClick={() => {
+                triggerHapticFeedback('light')
+                onClose()
+                onSkipToManual()
+              }}
+              className="w-full py-2 rounded-xl text-xs text-gray-400 hover:text-cyan-300 font-semibold transition-colors flex items-center justify-center gap-1"
+            >
+              <span>Пропустить ИИ (заполнить вручную) ➔</span>
+            </button>
+          )}
         </div>
       )}
     </div>

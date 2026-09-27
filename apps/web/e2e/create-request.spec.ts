@@ -14,7 +14,12 @@ test.describe('Создание заявки (Quick Request Flow)', () => {
     await expect(fabButton).toBeVisible();
     await fabButton.click({ force: true });
 
-    // 2. Проверяем, что открылась модалка формы
+    // 2. Открывается ИИ-Ассистент, нажимаем кнопку "Skip" (Пропустить к ручному вводу)
+    const skipButton = page.getByText('Skip ➔').first();
+    await expect(skipButton).toBeVisible({ timeout: 5000 });
+    await skipButton.click({ force: true });
+
+    // 3. Проверяем, что открылась модалка формы ручного ввода
     await expect(page.getByText('Создать заказ')).toBeVisible({ timeout: 5000 });
 
     // 3. Заполняем форму
