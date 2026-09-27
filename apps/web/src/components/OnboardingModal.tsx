@@ -98,7 +98,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
       {stepData.pointerPos === 'top-mode' && (
         <div className="relative z-30 w-full max-w-lg mx-auto pointer-events-none">
           {/* Arrow pointing DOWN directly at PillSwitcher */}
-          <div className="fixed top-[88px] left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce text-[#00F2FE] z-40">
+          <div className="fixed top-[175px] left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce text-[#00F2FE] z-40">
             <span className="text-[11px] font-black uppercase tracking-wider bg-[#00F2FE] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(0,242,254,0.8)] mb-1">
               {stepData.targetLabel}
             </span>
@@ -106,14 +106,14 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
           </div>
 
           {/* Glowing Neon Box encircling the PillSwitcher block */}
-          <div className="fixed top-[138px] left-4 right-4 h-[50px] rounded-2xl border-2 border-[#00F2FE] shadow-[0_0_35px_rgba(0,242,254,0.9)] pointer-events-none z-30 animate-pulse bg-[#00F2FE]/10" />
+          <div className="fixed top-[236px] left-4 right-4 h-[52px] rounded-2xl border-2 border-[#00F2FE] shadow-[0_0_35px_rgba(0,242,254,0.9)] pointer-events-none z-30 animate-pulse bg-[#00F2FE]/15" />
         </div>
       )}
 
       {/* Step 2 Spotlight: Location Selector */}
       {stepData.pointerPos === 'top-location' && (
         <div className="relative z-30 w-full max-w-lg mx-auto pointer-events-none">
-          <div className="fixed top-[48px] left-4 flex flex-col items-start animate-bounce text-[#CCFF00] z-40">
+          <div className="fixed top-[110px] left-4 flex flex-col items-start animate-bounce text-[#CCFF00] z-40">
             <span className="text-[11px] font-black uppercase tracking-wider bg-[#CCFF00] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(204,255,0,0.8)] mb-1">
               {stepData.targetLabel}
             </span>
@@ -121,14 +121,14 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
           </div>
 
           {/* Glowing ring encircling the location pill */}
-          <div className="fixed top-[92px] left-4 w-[165px] h-[32px] rounded-full border-2 border-[#CCFF00] shadow-[0_0_30px_rgba(204,255,0,0.9)] pointer-events-none z-30 animate-pulse bg-[#CCFF00]/10" />
+          <div className="fixed top-[170px] left-4 w-[165px] h-[34px] rounded-full border-2 border-[#CCFF00] shadow-[0_0_30px_rgba(204,255,0,0.9)] pointer-events-none z-30 animate-pulse bg-[#CCFF00]/15" />
         </div>
       )}
 
       {/* Step 4 Spotlight: Flash Market Tab */}
       {stepData.pointerPos === 'top-market' && (
         <div className="relative z-30 w-full max-w-lg mx-auto pointer-events-none">
-          <div className="fixed top-[88px] right-6 flex flex-col items-end animate-bounce text-[#00F2FE] z-40">
+          <div className="fixed top-[175px] right-6 flex flex-col items-end animate-bounce text-[#00F2FE] z-40">
             <span className="text-[11px] font-black uppercase tracking-wider bg-[#00F2FE] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(0,242,254,0.8)] mb-1">
               {stepData.targetLabel}
             </span>
@@ -136,7 +136,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
           </div>
 
           {/* Glowing box encircling Flash Market tab inside PillSwitcher */}
-          <div className="fixed top-[138px] right-4 w-[48%] h-[50px] rounded-2xl border-2 border-[#00F2FE] shadow-[0_0_35px_rgba(0,242,254,0.9)] pointer-events-none z-30 animate-pulse bg-[#00F2FE]/10" />
+          <div className="fixed top-[236px] right-4 w-[48%] h-[52px] rounded-2xl border-2 border-[#00F2FE] shadow-[0_0_35px_rgba(0,242,254,0.9)] pointer-events-none z-30 animate-pulse bg-[#00F2FE]/15" />
         </div>
       )}
 
@@ -192,7 +192,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
       {/* Step 3 Spotlight: Bottom Central Creation (+) Button */}
       {stepData.pointerPos === 'bottom-plus' && (
         <div className="relative z-30 w-full max-w-lg mx-auto pointer-events-none">
-          <div className="fixed bottom-[95px] left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce text-[#CCFF00] z-40">
+          <div className="fixed bottom-[100px] left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce text-[#CCFF00] z-40">
             <span className="text-[11px] font-black uppercase tracking-wider bg-[#CCFF00] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(204,255,0,0.8)] mb-1.5">
               {stepData.targetLabel}
             </span>
@@ -200,7 +200,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
           </div>
 
           {/* Glowing ring encircling the central floating (+) button */}
-          <div className="fixed bottom-[18px] left-1/2 -translate-x-1/2 w-[70px] h-[70px] rounded-full border-2 border-[#CCFF00] shadow-[0_0_35px_rgba(204,255,0,1)] pointer-events-none z-30 animate-pulse bg-[#CCFF00]/15" />
+          <div className="fixed bottom-[20px] left-1/2 -translate-x-1/2 w-[72px] h-[72px] rounded-full border-2 border-[#CCFF00] shadow-[0_0_35px_rgba(204,255,0,1)] pointer-events-none z-30 animate-pulse bg-[#CCFF00]/20" />
         </div>
       )}
 
