@@ -11,7 +11,7 @@ import { DealChatModal } from './components/DealChatModal'
 import { SplashScreen } from './components/SplashScreen'
 import { BottomNav, TabId, AppMode } from './components/BottomNav'
 import { PillSwitcher } from './components/PillSwitcher'
-import { MarketSection } from './components/MarketSection'
+import { MarketSection, DEFAULT_PRODUCTS } from './components/MarketSection'
 import { CreateMarketListingModal } from './components/CreateMarketListingModal'
 import { MarketBuyModal } from './components/MarketBuyModal'
 import { MyDealsAndListingsView } from './components/MyDealsAndListingsView'
@@ -27,6 +27,7 @@ import { INITIAL_NOTIFICATIONS, NotificationItem } from './lib/notifications'
 import { supabase } from './lib/supabase'
 import { Session } from '@supabase/supabase-js'
 import { Language, detectDefaultLanguage, setSavedLanguage } from './lib/i18n'
+import { parseDeepLinkParam } from './lib/deeplink'
 
 export function App() {
   const [currentLang, setCurrentLang] = useState<Language>(() => detectDefaultLanguage())
@@ -161,7 +162,7 @@ export function App() {
   // Flash Market State
   const [isCreateMarketListingOpen, setIsCreateMarketListingOpen] = useState(false)
   const [selectedMarketProduct, setSelectedMarketProduct] = useState<MarketItem | null>(null)
-  const [marketProducts, setMarketProducts] = useState<MarketItem[]>([])
+  const [marketProducts, setMarketProducts] = useState<MarketItem[]>(DEFAULT_PRODUCTS)
 
   // In-App Deal Chat State
   const [activeDealRequest, setActiveDealRequest] = useState<RequestItem | null>(null)
@@ -189,6 +190,21 @@ export function App() {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
     })
+
+    // Deep Linking: Check Telegram startapp parameter (e.g. ?startapp=req_req-bike)
+    const urlParams = new URLSearchParams(window.location.search)
+    const startAppParam = urlParams.get('startapp') || urlParams.get('tgWebAppStartParam') || (window as any).Telegram?.WebApp?.initDataUnsafe?.start_param
+    const parsedLink = parseDeepLinkParam(startAppParam)
+    if (parsedLink) {
+      setShowSplash(false)
+      if (parsedLink.type === 'request') {
+        const found = requests.find((r) => r.id === parsedLink.id) || requests[0]
+        if (found) setSelectedRequestForBid(found)
+      } else if (parsedLink.type === 'market') {
+        const found = DEFAULT_PRODUCTS.find((m) => m.id === parsedLink.id) || DEFAULT_PRODUCTS[0]
+        if (found) setSelectedMarketProduct(found)
+      }
+    }
 
     return () => subscription.unsubscribe()
   }, [])

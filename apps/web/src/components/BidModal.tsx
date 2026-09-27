@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { X, Zap, DollarSign, Bot, ShieldCheck } from 'lucide-react'
+import { X, Zap, DollarSign, Bot, ShieldCheck, Share2 } from 'lucide-react'
 import { RequestItem } from '../types'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
+import { shareToTelegram } from '../lib/deeplink'
 
 interface BidModalProps {
   request: RequestItem | null
@@ -181,23 +182,39 @@ export const BidModal: React.FC<BidModalProps> = ({
               {isClarifying ? 'Отправить запрос клиенту' : 'Отправить встречное предложение'}
             </button>
 
-            {!isClarifying ? (
+            <div className="flex gap-2">
               <button
                 type="button"
-                onClick={() => setIsClarifying(true)}
-                className="w-full py-2.5 rounded-xl border border-white/10 text-gray-400 font-semibold text-xs hover:bg-white/5 transition-all"
+                onClick={() => {
+                  const res = shareToTelegram('request', request.id, request.title)
+                  if (res.copied) {
+                    alert('🔗 Прямая ссылка скопирована! Поделитесь в Telegram.')
+                  }
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-cyan-500/20 transition-all cursor-pointer"
               >
-                Не хватает информации? Уточнить
+                <Share2 className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Поделиться</span>
               </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setIsClarifying(false)}
-                className="w-full py-2.5 rounded-xl border border-white/10 text-gray-400 font-semibold text-xs hover:bg-white/5 transition-all"
-              >
-                Вернуться к ставке
-              </button>
-            )}
+
+              {!isClarifying ? (
+                <button
+                  type="button"
+                  onClick={() => setIsClarifying(true)}
+                  className="flex-1 py-2.5 rounded-xl border border-white/10 text-gray-400 font-semibold text-xs hover:bg-white/5 transition-all cursor-pointer"
+                >
+                  Уточнить детали
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsClarifying(false)}
+                  className="flex-1 py-2.5 rounded-xl border border-white/10 text-gray-400 font-semibold text-xs hover:bg-white/5 transition-all cursor-pointer"
+                >
+                  Вернуться
+                </button>
+              )}
+            </div>
           </div>
         </form>
       </div>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { X, Flame, MapPin, Clock, ShieldCheck, Truck, UserCheck, MessageSquare, Award } from 'lucide-react'
+import { X, Flame, MapPin, Clock, ShieldCheck, Truck, UserCheck, MessageSquare, Award, Share2 } from 'lucide-react'
 import { MarketItem } from '../types'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
+import { shareToTelegram } from '../lib/deeplink'
 
 interface MarketBuyModalProps {
   isOpen: boolean
@@ -158,15 +159,31 @@ export const MarketBuyModal: React.FC<MarketBuyModalProps> = ({
           </div>
         </div>
 
-        {/* Action Button */}
-        <button
-          type="button"
-          onClick={handleConfirmOrder}
-          className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,242,254,0.4)] hover:brightness-110 active:scale-[0.98] transition-all uppercase tracking-wider"
-        >
-          <MessageSquare className="w-4 h-4 text-black fill-black" />
-          <span>🔥 ЗАБРОНИРОВАТЬ И НАПИСАТЬ ПРОДАВЦУ (${item.price})</span>
-        </button>
+        {/* Action Button & Share */}
+        <div className="space-y-2 pt-1">
+          <button
+            type="button"
+            onClick={handleConfirmOrder}
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,242,254,0.4)] hover:brightness-110 active:scale-[0.98] transition-all uppercase tracking-wider cursor-pointer"
+          >
+            <MessageSquare className="w-4 h-4 text-black fill-black" />
+            <span>🔥 ЗАБРОНИРОВАТЬ И НАПИСАТЬ ПРОДАВЦУ (${item.price})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              const res = shareToTelegram('market', item.id, item.title)
+              if (res.copied) {
+                alert('🔗 Ссылка на лот скопирована! Поделитесь в Telegram.')
+              }
+            }}
+            className="w-full py-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-cyan-500/20 transition-all cursor-pointer"
+          >
+            <Share2 className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Поделиться лотом в Telegram</span>
+          </button>
+        </div>
       </div>
     </div>
   )

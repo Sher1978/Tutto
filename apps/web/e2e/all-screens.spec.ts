@@ -38,7 +38,7 @@ test.describe('NeedTnow Comprehensive Screen & Fixes Verification', () => {
     await firstCard.click({ force: true });
 
     // Модалка отклика должна появиться без падений
-    const modalTitle = page.getByText(/Сделать оффер|Уточнить детали/i);
+    const modalTitle = page.getByText(/Сделать оффер|Уточнить детали/i).first();
     await expect(modalTitle).toBeVisible({ timeout: 5000 });
 
     // Проверяем наличие кнопки отправить

@@ -23,7 +23,7 @@ const MARKET_CATEGORY_TILES = [
   { id: 'mcat-other', label: 'ДРУГОЕ', icon: '📦' },
 ]
 
-const DEFAULT_PRODUCTS: MarketItem[] = [
+export const DEFAULT_PRODUCTS: MarketItem[] = [
   {
     id: 'prod-1',
     sellerId: 'seller-1',
