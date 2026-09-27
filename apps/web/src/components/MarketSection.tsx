@@ -203,8 +203,26 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
                 triggerHapticFeedback('medium')
                 onSelectProduct(item)
               }}
-              className="glass-card border border-[#00F2FE]/20 rounded-2xl overflow-hidden flex flex-col hover:border-[#00F2FE]/50 transition-all cursor-pointer group"
+              className="bg-[#121824]/90 backdrop-blur-xl border border-[#CCFF00]/25 rounded-2xl overflow-hidden flex flex-col hover:border-[#CCFF00]/70 transition-all duration-300 cursor-pointer group shadow-xl hover:shadow-[0_0_20px_rgba(204,255,0,0.2)]"
             >
+              {/* Seller Header Row */}
+              <div className="p-2.5 pb-1.5 flex items-center justify-between border-b border-white/10 bg-white/[0.03]">
+                <div className="flex items-center gap-1.5 overflow-hidden">
+                  <img
+                    src={item.sellerAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80'}
+                    alt={item.sellerName}
+                    className="w-5 h-5 rounded-full object-cover border border-[#CCFF00]/50"
+                  />
+                  <span className="text-[10px] font-bold text-gray-200 truncate max-w-[85px]">
+                    {item.sellerName}
+                  </span>
+                </div>
+                <div className="flex items-center gap-0.5 text-[9px] font-black text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded-full border border-amber-400/30">
+                  <span>★</span>
+                  <span>{item.sellerRating || '5.0'}</span>
+                </div>
+              </div>
+
               {/* Product Image with Overlays */}
               <div className="relative aspect-square w-full bg-black/40">
                 {(() => {
@@ -222,23 +240,23 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0D1117] via-transparent to-transparent opacity-80" />
                       
                       {/* Condition Badge */}
-                      <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[9px] font-bold text-white uppercase tracking-wider border border-white/10 flex items-center gap-1">
+                      <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-md px-2 py-0.5 rounded-md text-[9px] font-extrabold text-white uppercase tracking-wider border border-white/15 flex items-center gap-1">
                         <span>{item.condition}</span>
                         {isBWCover && <span className="text-[7px] text-gray-300 bg-white/20 px-1 py-0.2 rounded font-black">Ч/Б</span>}
                       </div>
 
                       {/* Photo Count Badge (if multiple photos) */}
                       {photosCount > 1 && (
-                        <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-md px-1.5 py-0.5 rounded text-[9px] font-bold text-cyan-300 border border-cyan-500/30 flex items-center gap-1">
+                        <div className="absolute top-2 right-2 bg-black/75 backdrop-blur-md px-1.5 py-0.5 rounded-md text-[9px] font-extrabold text-[#CCFF00] border border-[#CCFF00]/30 flex items-center gap-1">
                           <span>📷</span>
                           <span>{photosCount}</span>
                         </div>
                       )}
 
                       {/* Expiration Timer Badge */}
-                      <div className="absolute bottom-2 right-2 bg-[#CCFF00] text-black px-1.5 py-0.5 rounded flex items-center gap-1 shadow-[0_0_10px_rgba(204,255,0,0.5)]">
-                        <Clock className="w-2.5 h-2.5" />
-                        <span className="text-[10px] font-black uppercase tracking-wider">{item.expiresIn}</span>
+                      <div className="absolute bottom-2 right-2 bg-[#CCFF00] text-black px-2 py-0.5 rounded-md flex items-center gap-1 shadow-[0_0_12px_rgba(204,255,0,0.6)]">
+                        <Clock className="w-2.5 h-2.5 stroke-[3]" />
+                        <span className="text-[10px] font-black uppercase tracking-wider font-mono">{item.expiresIn}</span>
                       </div>
                     </>
                   )
@@ -246,22 +264,24 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
               </div>
 
               {/* Product Info */}
-              <div className="p-3 flex flex-col flex-1">
-                <h3 className="text-[13px] font-bold text-white leading-snug line-clamp-2 mb-1">
-                  {item.title}
-                </h3>
-                <div className="flex items-center gap-1 text-[10px] text-gray-400 font-medium mb-3 mt-auto">
-                  <MapPin className="w-3 h-3 text-[#00F2FE]" />
-                  <span className="truncate">{item.district}</span>
+              <div className="p-3 flex flex-col flex-1 justify-between space-y-2">
+                <div>
+                  <h3 className="text-[12px] sm:text-[13px] font-black text-white font-display leading-snug line-clamp-2 mb-1 group-hover:text-[#CCFF00] transition-colors">
+                    {item.title}
+                  </h3>
+                  <div className="flex items-center gap-1 text-[10px] text-gray-400 font-medium">
+                    <MapPin className="w-3 h-3 text-[#CCFF00]" />
+                    <span className="truncate">{item.district}</span>
+                  </div>
                 </div>
 
-                {/* Price Row */}
-                <div className="flex items-end justify-between pt-2 border-t border-white/10">
+                {/* Price & Action Button Row */}
+                <div className="pt-2 border-t border-white/10 flex items-end justify-between gap-1 mt-auto">
                   <div className="flex flex-col">
                     <span className="text-[10px] text-gray-500 line-through font-semibold leading-none mb-0.5">
                       ${item.oldPrice}
                     </span>
-                    <span className="text-[15px] font-black text-[#00F2FE] leading-none">
+                    <span className="text-[16px] font-black text-[#CCFF00] font-display leading-none glow-price-market">
                       ${item.price}
                     </span>
                   </div>
@@ -272,9 +292,9 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
                       triggerHapticFeedback('heavy')
                       onSelectProduct(item)
                     }}
-                    className="bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] hover:brightness-110 text-black text-[11px] font-black px-3 py-1.5 rounded-xl transition-all shadow-[0_0_15px_rgba(0,242,254,0.3)]"
+                    className="bg-gradient-to-r from-[#B8E600] to-[#CCFF00] hover:brightness-110 text-black text-[10px] font-black px-2.5 py-1.5 rounded-xl transition-all shadow-[0_0_12px_rgba(204,255,0,0.35)] active:scale-95 cursor-pointer uppercase tracking-wider"
                   >
-                    В корзину
+                    Купить P2P
                   </button>
                 </div>
               </div>

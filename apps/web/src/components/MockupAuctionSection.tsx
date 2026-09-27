@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Sparkles, Zap, ArrowRight, ShieldCheck, Heart, MapPin, Mic, Clock, Car, Home, Wallet, Wrench, Package } from 'lucide-react'
+import { Sparkles, Zap, ArrowRight, ShieldCheck, Heart, MapPin, Mic, Clock, Car, Home, Wallet, Wrench, Package, Search, ArrowUpDown } from 'lucide-react'
 import { RequestItem } from '../types'
 import { SERVICE_TEMPLATES, CATEGORIES } from '../data/mockData'
 import { triggerHapticFeedback } from '../lib/telegram'
@@ -206,6 +206,8 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
   requests,
 }) => {
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState<'urgent' | 'budget' | 'newest'>('urgent')
   const timerRef = useRef<any>(null)
 
   const hubsList = [
@@ -346,8 +348,23 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
     return [...cards, customOtherCard]
   }
 
-  // Hero Main Slider Items
-  const heroSliderItems = makeSliderItems(activeCategory || undefined, 'hero')
+  // Hero Main Slider Items filtered and sorted
+  const rawHeroItems = makeSliderItems(activeCategory || undefined, 'hero')
+  let displayAuctionItems = rawHeroItems.filter((item) => {
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
+      const matchTitle = item.title.toLowerCase().includes(q)
+      const matchDesc = item.description.toLowerCase().includes(q)
+      if (!matchTitle && !matchDesc) return false
+    }
+    return true
+  })
+
+  if (sortBy === 'budget') {
+    displayAuctionItems = [...displayAuctionItems].sort((a, b) => (b.budget || 0) - (a.budget || 0))
+  } else if (sortBy === 'urgent') {
+    displayAuctionItems = [...displayAuctionItems].sort((a, b) => (a.auctionEndsAt || '').localeCompare(b.auctionEndsAt || ''))
+  }
 
   return (
     <div className="w-full space-y-5 pb-6">
@@ -384,6 +401,63 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
         })}
       </div>
 
+      {/* 2.5 SEARCH & SORTING WIDGET (Directly under Category Chips) */}
+      <div className="w-full space-y-2.5 bg-[#121824] p-3 rounded-2xl border border-white/10 shadow-lg">
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="w-4 h-4 text-[#00F2FE] absolute left-3 top-2.5" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Поиск по названию или описанию услуги..."
+            className="w-full bg-[#070B12] border border-white/15 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-gray-500 focus:border-[#00F2FE] outline-none"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-2 text-xs text-gray-400 hover:text-white"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
+        {/* Sorting Controls */}
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs">
+          <span className="text-[10px] font-bold text-gray-400 uppercase mr-1 shrink-0 flex items-center gap-1">
+            <ArrowUpDown className="w-3 h-3 text-[#00F2FE]" />
+            Сорт:
+          </span>
+
+          {[
+            { id: 'urgent', label: '🔥 Срочные' },
+            { id: 'budget', label: '💰 По бюджету' },
+            { id: 'newest', label: '⏱️ Новые' },
+          ].map((sortItem) => {
+            const isSelected = sortBy === sortItem.id
+            return (
+              <button
+                key={sortItem.id}
+                type="button"
+                onClick={() => {
+                  triggerHapticFeedback('light')
+                  setSortBy(sortItem.id as any)
+                }}
+                className={`px-2.5 py-1 rounded-lg text-[10px] font-extrabold shrink-0 transition-all ${
+                  isSelected
+                    ? 'bg-[#00F2FE] text-black shadow-[0_0_10px_rgba(0,242,254,0.4)]'
+                    : 'bg-white/5 text-gray-300 hover:bg-white/10'
+                }`}
+              >
+                {sortItem.label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
       {/* 3. LIVE FEED (Fragment.com Style Cards) */}
       <div className="space-y-4 pt-2">
         <div className="flex items-center gap-2 mb-1 px-1">
@@ -394,7 +468,7 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
         </div>
 
         <div className="flex flex-col gap-4">
-          {heroSliderItems.slice(0, 10).map((item) => (
+          {displayAuctionItems.slice(0, 10).map((item) => (
             <AuctionRequestCard key={item.id} item={item} onOpenBidModal={onOpenBidModal} />
           ))}
         </div>
