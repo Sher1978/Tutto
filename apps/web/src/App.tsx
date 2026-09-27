@@ -24,8 +24,10 @@ import { AdminDisputePanel } from './components/AdminDisputePanel'
 import { AuthModal } from './components/AuthModal'
 import { supabase } from './lib/supabase'
 import { Session } from '@supabase/supabase-js'
+import { Language, detectDefaultLanguage, setSavedLanguage } from './lib/i18n'
 
 export function App() {
+  const [currentLang, setCurrentLang] = useState<Language>(() => detectDefaultLanguage())
   const [mode, setMode] = useState<AppMode>('services')
   const [activeHub, setActiveHub] = useState<string>('bali')
   const [activeTab, setActiveTab] = useState<TabId>('home')
@@ -367,6 +369,11 @@ export function App() {
       <div className="relative flex min-h-[100dvh] w-full flex-col overflow-x-hidden bg-transparent z-10">
         {/* Header */}
         <Navbar
+          currentLang={currentLang}
+          onLanguageChange={(lang) => {
+            setCurrentLang(lang)
+            setSavedLanguage(lang)
+          }}
           onOpenQuickRequest={() => setIsAIAssistantOpen(true)}
           onLocationChange={(hub, district) => {
             handleSelectHub(hub)
@@ -380,7 +387,7 @@ export function App() {
         />
 
         {(activeTab === 'home' || activeTab === 'market') && (
-          <PillSwitcher mode={mode} onModeChange={handleModeChange} />
+          <PillSwitcher mode={mode} onModeChange={handleModeChange} currentLang={currentLang} />
         )}
 
         {/* Notification Toast */}
@@ -535,6 +542,7 @@ export function App() {
           activeTab={activeTab}
           onSelectTab={handleSelectTab}
           mode={mode}
+          currentLang={currentLang}
           onCentralAction={() => {
             if (mode === 'services') {
               setIsCreateOpen(true)

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { triggerHapticFeedback } from '../lib/telegram'
 import { Home, Star, MessageSquare, User, Search, Package, Flame, Plus } from 'lucide-react'
+import { Language, t } from '../lib/i18n'
 
 export type TabId = 'home' | 'my-bids' | 'explore' | 'chat' | 'account' | 'market' | 'mine'
 export type AppMode = 'services' | 'market'
@@ -10,13 +11,15 @@ interface BottomNavProps {
   onSelectTab: (tab: TabId) => void
   mode: AppMode
   onCentralAction?: () => void
+  currentLang?: Language
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({
   activeTab,
   onSelectTab,
   mode,
-  onCentralAction
+  onCentralAction,
+  currentLang = 'ru',
 }) => {
   const [isFabClicked, setIsFabClicked] = useState(false)
 
@@ -31,18 +34,18 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     onSelectTab(tab)
   }
 
-  const servicesItems: { id: TabId; label: string; icon: React.ElementType }[] = [
-    { id: 'home', label: 'ГЛАВНАЯ', icon: Home },
-    { id: 'my-bids', label: 'ОТКЛИКИ', icon: Star },
-    { id: 'chat', label: 'ЧАТ', icon: MessageSquare },
-    { id: 'account', label: 'КАБИНЕТ', icon: User },
+  const servicesItems: { id: TabId; labelKey: string; icon: React.ElementType }[] = [
+    { id: 'home', labelKey: 'tab_home', icon: Home },
+    { id: 'my-bids', labelKey: 'tab_my_bids', icon: Star },
+    { id: 'chat', labelKey: 'tab_chat', icon: MessageSquare },
+    { id: 'account', labelKey: 'tab_account', icon: User },
   ]
 
-  const marketItems: { id: TabId; label: string; icon: React.ElementType }[] = [
-    { id: 'market', label: 'МАРКЕТ', icon: Flame },
-    { id: 'explore', label: 'ПОИСК', icon: Search },
-    { id: 'mine', label: 'МОЁ', icon: Package },
-    { id: 'account', label: 'КАБИНЕТ', icon: User },
+  const marketItems: { id: TabId; labelKey: string; icon: React.ElementType }[] = [
+    { id: 'market', labelKey: 'tab_market', icon: Flame },
+    { id: 'explore', labelKey: 'tab_explore', icon: Search },
+    { id: 'mine', labelKey: 'tab_mine', icon: Package },
+    { id: 'account', labelKey: 'tab_account', icon: User },
   ]
 
   const currentItems = mode === 'services' ? servicesItems : marketItems
@@ -101,7 +104,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
                       : 'font-black text-[#CCFF00] drop-shadow-[0_0_8px_rgba(204,255,0,0.6)]')
                   : 'font-semibold text-white/90'
               }`}>
-                {item.label}
+                {t(currentLang, item.labelKey)}
               </span>
             </button>
           </React.Fragment>

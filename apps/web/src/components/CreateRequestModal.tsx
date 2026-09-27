@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { X, Sparkles, MapPin, DollarSign, CheckCircle, Navigation } from 'lucide-react'
+import { X, Sparkles, MapPin, DollarSign, CheckCircle, Navigation, Image as ImageIcon, Trash2, Loader2 } from 'lucide-react'
 import { CATEGORIES, HUBS } from '../data/mockData'
 import { HubId, RequestItem } from '../types'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
 import { detectUserLocation, detectLocationFromCoords } from '../lib/geo'
 import { MapLocationPickerModal } from './MapLocationPickerModal'
+import { uploadUserPhoto } from '../lib/storage'
 
 interface CreateRequestModalProps {
   isOpen: boolean
@@ -35,6 +36,8 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
   const [isDetectingGeo, setIsDetectingGeo] = useState(false)
   const [geoStatusMsg, setGeoStatusMsg] = useState('')
   const [isMapOpen, setIsMapOpen] = useState(false)
+  const [mediaUrls, setMediaUrls] = useState<string[]>([])
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false)
 
   const handleCategoryChange = (catId: string) => {
     setCategoryL1Id(catId)
@@ -82,6 +85,7 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
       district,
       budget: budgetType === 'fixed' ? parseFloat(budgetValue) || 0 : null,
       currency: 'USD',
+      mediaUrls: mediaUrls.length > 0 ? mediaUrls : undefined,
       isFeatured,
       auctionEndsAt: new Date(Date.now() + parseInt(durationMinutes) * 60 * 1000).toISOString(),
     }
@@ -90,6 +94,22 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
     triggerNotificationFeedback('success')
     onCreateRequest(newRequest)
     onClose()
+  }
+
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    setIsUploadingPhoto(true)
+    triggerHapticFeedback('light')
+
+    for (let i = 0; i < files.length; i++) {
+      const { url } = await uploadUserPhoto(files[i], 'requests')
+      if (url) {
+        setMediaUrls((prev) => [...prev, url])
+      }
+    }
+    setIsUploadingPhoto(false)
   }
 
   const currentHubData = HUBS.find((h) => h.id === selectedHub) || HUBS[0]
@@ -225,6 +245,48 @@ export const CreateRequestModal: React.FC<CreateRequestModalProps> = ({
               onChange={(e) => setDescription(e.target.value)}
               className="w-full bg-slate-900/90 border border-white/10 rounded-xl p-3 text-white placeholder-gray-500 focus:border-cyan-400 outline-none resize-none"
             />
+          </div>
+
+          {/* Photo Upload (Supabase Storage with 30-Day Retention) */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-gray-300 font-semibold text-xs flex items-center gap-1.5">
+                <ImageIcon className="w-3.5 h-3.5 text-[#00F2FE]" />
+                <span>Фото / Скриншоты (До 30 дней хранения)</span>
+              </label>
+              {isUploadingPhoto && (
+                <span className="text-[10px] text-[#00F2FE] flex items-center gap-1 animate-pulse font-bold">
+                  <Loader2 className="w-3 h-3 animate-spin" /> Загрузка в Cloud...
+                </span>
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-2 items-center">
+              {mediaUrls.map((url, index) => (
+                <div key={index} className="relative w-16 h-16 rounded-xl overflow-hidden border border-white/20 group">
+                  <img src={url} alt={`Upload ${index}`} className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setMediaUrls(prev => prev.filter((_, i) => i !== index))}
+                    className="absolute top-1 right-1 p-1 bg-black/70 rounded-full text-red-400 hover:text-red-300 transition-colors"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+
+              <label className="w-16 h-16 rounded-xl border border-dashed border-white/20 bg-white/5 hover:bg-white/10 transition-colors flex flex-col items-center justify-center cursor-pointer text-gray-400 hover:text-white">
+                <ImageIcon className="w-5 h-5 text-gray-400 mb-0.5" />
+                <span className="text-[9px] font-bold">+ Фото</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handlePhotoSelect}
+                  className="hidden"
+                />
+              </label>
+            </div>
           </div>
 
           {/* Budget Switcher */}

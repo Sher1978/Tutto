@@ -1,13 +1,15 @@
 import React from 'react'
 import { triggerHapticFeedback } from '../lib/telegram'
 import { AppMode } from './BottomNav'
+import { Language, t } from '../lib/i18n'
 
 interface PillSwitcherProps {
   mode: AppMode
   onModeChange: (mode: AppMode) => void
+  currentLang?: Language
 }
 
-export const PillSwitcher: React.FC<PillSwitcherProps> = ({ mode, onModeChange }) => {
+export const PillSwitcher: React.FC<PillSwitcherProps> = ({ mode, onModeChange, currentLang = 'ru' }) => {
   const handleSwitch = (newMode: AppMode) => {
     if (mode !== newMode) {
       triggerHapticFeedback('medium')
@@ -25,7 +27,7 @@ export const PillSwitcher: React.FC<PillSwitcherProps> = ({ mode, onModeChange }
             : 'bg-transparent text-[#8B949E]'
         }`}
       >
-        🛠 УСЛУГИ И АРЕНДА
+        {t(currentLang, 'mode_services')}
       </button>
       
       <button
@@ -36,8 +38,9 @@ export const PillSwitcher: React.FC<PillSwitcherProps> = ({ mode, onModeChange }
             : 'bg-transparent text-[#8B949E]'
         }`}
       >
-        🏷 FLASH MARKET
+        {t(currentLang, 'mode_market')}
       </button>
     </div>
   )
 }
+
