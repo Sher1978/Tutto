@@ -348,9 +348,14 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
     return [...cards, customOtherCard]
   }
 
-  // Hero Main Slider Items filtered and sorted
+  // Hero Main Slider Items filtered and sorted with user created requests at the top
   const rawHeroItems = makeSliderItems(activeCategory || undefined, 'hero')
-  let displayAuctionItems = rawHeroItems.filter((item) => {
+  const combinedItems = [...requests, ...rawHeroItems]
+
+  let displayAuctionItems = combinedItems.filter((item) => {
+    if (activeCategory && item.categoryL1Id && !item.id.includes('hero-')) {
+      if (item.categoryL1Id !== activeCategory) return false
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
       const matchTitle = item.title.toLowerCase().includes(q)

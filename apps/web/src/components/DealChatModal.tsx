@@ -175,11 +175,14 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
     setShowReviewModal(true)
   }
 
-  // Client Action: Dispute/Appeals
+  const [showDisputeConfirm, setShowDisputeConfirm] = useState(false)
+
+  // Client Action: Confirm Dispute/Appeals after modal approval
   const handleDispute = () => {
     triggerHapticFeedback('heavy')
     triggerNotificationFeedback('warning')
     setDealStatus('disputed')
+    setShowDisputeConfirm(false)
 
     setMessages((prev) => [
       ...prev,
@@ -363,16 +366,21 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
             {simulatedRole === 'client' && (dealStatus === 'in_progress' || dealStatus === 'awaiting_confirmation') && (
               <div className="flex gap-2">
                 <button
-                  onClick={handleDispute}
-                  className="px-3 py-2.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-red-500/25 transition-colors shrink-0"
+                  type="button"
+                  onClick={() => {
+                    triggerHapticFeedback('light')
+                    setShowDisputeConfirm(true)
+                  }}
+                  className="px-3 py-2.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-red-500/25 transition-colors shrink-0 cursor-pointer"
                 >
                   <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
                   <span>Спор</span>
                 </button>
 
                 <button
+                  type="button"
                   onClick={handleClientConfirm}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,242,254,0.4)] hover:brightness-110 active:scale-[0.98] transition-all"
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,242,254,0.4)] hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer"
                 >
                   <Award className="w-4 h-4 text-black fill-black" />
                   <span>✅ ПОДТВЕРДИТЬ ВЫПОЛНЕНИЕ (+15 Coins)</span>
@@ -408,6 +416,44 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Dispute Confirmation Modal */}
+      {showDisputeConfirm && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="w-full max-w-sm bg-[#0D1117] border border-red-500/40 rounded-3xl p-5 shadow-2xl relative text-white space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 shrink-0">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-base text-white">Открыть спор по сделке?</h3>
+                <p className="text-[11px] text-gray-400">Переписка будет зафиксирована для арбитража</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-gray-300 leading-relaxed bg-white/5 p-3 rounded-2xl border border-white/10">
+              Вы уверены, что хотите передать дело модератору? Это подключит команду Sherlock для проверки претензий.
+            </p>
+
+            <div className="flex gap-2.5 pt-1">
+              <button
+                type="button"
+                onClick={() => setShowDisputeConfirm(false)}
+                className="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-gray-300 font-bold text-xs transition-colors cursor-pointer"
+              >
+                Отмена
+              </button>
+              <button
+                type="button"
+                onClick={handleDispute}
+                className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-extrabold text-xs shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all cursor-pointer"
+              >
+                Да, открыть спор
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Post-Deal Review Modal */}
       <ReviewModal
