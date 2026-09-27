@@ -203,7 +203,7 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
                 triggerHapticFeedback('medium')
                 onSelectProduct(item)
               }}
-              className="bg-[#121824]/90 backdrop-blur-xl border border-[#CCFF00]/25 rounded-2xl overflow-hidden flex flex-col hover:border-[#CCFF00]/70 transition-all duration-300 cursor-pointer group shadow-xl hover:shadow-[0_0_20px_rgba(204,255,0,0.2)]"
+              className="glass-card bg-[#121824]/90 backdrop-blur-xl border border-[#CCFF00]/25 rounded-2xl overflow-hidden flex flex-col hover:border-[#CCFF00]/70 transition-all duration-300 cursor-pointer group shadow-xl hover:shadow-[0_0_20px_rgba(204,255,0,0.2)]"
             >
               {/* Seller Header Row */}
               <div className="p-2.5 pb-1.5 flex items-center justify-between border-b border-white/10 bg-white/[0.03]">

@@ -31,7 +31,7 @@ test.describe('Flash Market Creation & Purchase Flow', () => {
     await submitListingBtn.click({ force: true });
 
     // 5. Лот появляется в ленте маркета
-    const newLotCard = page.locator('div.glass-card', { hasText: 'Yamaha TMAX 560cc 2024' }).first();
+    const newLotCard = page.getByText('Yamaha TMAX 560cc 2024').first();
     await expect(newLotCard).toBeVisible({ timeout: 5000 });
 
     // 6. Кликаем на созданный лот для открытия деталей покупки (MarketBuyModal)
