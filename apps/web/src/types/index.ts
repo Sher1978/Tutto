@@ -116,6 +116,8 @@ export interface MarketItem {
   district: string
   expiresIn: string
   image: string
+  images?: string[]
+  isCustomPhoto?: boolean
   condition: 'Б/У' | 'Новое' | 'На запчасти'
   category: string
 }

@@ -205,24 +205,43 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
               className="glass-card border border-[#00F2FE]/20 rounded-2xl overflow-hidden flex flex-col hover:border-[#00F2FE]/50 transition-all cursor-pointer group"
             >
               {/* Product Image with Overlays */}
-              <div className="relative aspect-square w-full">
-                <img 
-                  src={item.image} 
-                  alt={item.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0D1117] via-transparent to-transparent opacity-80" />
-                
-                {/* Condition Badge */}
-                <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[9px] font-bold text-white uppercase tracking-wider border border-white/10">
-                  {item.condition}
-                </div>
+              <div className="relative aspect-square w-full bg-black/40">
+                {(() => {
+                  const isBWCover = !item.isCustomPhoto && (item.image.includes('sat=-100') || !item.images || item.images.length === 0)
+                  const photosCount = item.images ? item.images.length : 1
+                  return (
+                    <>
+                      <img 
+                        src={item.image} 
+                        alt={item.title} 
+                        className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                          isBWCover ? 'grayscale contrast-125 brightness-90' : ''
+                        }`}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0D1117] via-transparent to-transparent opacity-80" />
+                      
+                      {/* Condition Badge */}
+                      <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[9px] font-bold text-white uppercase tracking-wider border border-white/10 flex items-center gap-1">
+                        <span>{item.condition}</span>
+                        {isBWCover && <span className="text-[7px] text-gray-300 bg-white/20 px-1 py-0.2 rounded font-black">Ч/Б</span>}
+                      </div>
 
-                {/* Expiration Timer Badge */}
-                <div className="absolute bottom-2 right-2 bg-[#CCFF00] text-black px-1.5 py-0.5 rounded flex items-center gap-1 shadow-[0_0_10px_rgba(204,255,0,0.5)]">
-                  <Clock className="w-2.5 h-2.5" />
-                  <span className="text-[10px] font-black uppercase tracking-wider">{item.expiresIn}</span>
-                </div>
+                      {/* Photo Count Badge (if multiple photos) */}
+                      {photosCount > 1 && (
+                        <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-md px-1.5 py-0.5 rounded text-[9px] font-bold text-cyan-300 border border-cyan-500/30 flex items-center gap-1">
+                          <span>📷</span>
+                          <span>{photosCount}</span>
+                        </div>
+                      )}
+
+                      {/* Expiration Timer Badge */}
+                      <div className="absolute bottom-2 right-2 bg-[#CCFF00] text-black px-1.5 py-0.5 rounded flex items-center gap-1 shadow-[0_0_10px_rgba(204,255,0,0.5)]">
+                        <Clock className="w-2.5 h-2.5" />
+                        <span className="text-[10px] font-black uppercase tracking-wider">{item.expiresIn}</span>
+                      </div>
+                    </>
+                  )
+                })()}
               </div>
 
               {/* Product Info */}

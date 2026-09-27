@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
-import { X, Flame, Tag, Clock, MapPin, DollarSign, Image as ImageIcon } from 'lucide-react'
+import React, { useState, useRef } from 'react'
+import { X, Flame, Clock, MapPin, Image as ImageIcon, Upload, Loader2, Star, Check } from 'lucide-react'
 import { HubId, MarketItem } from '../types'
 import { HUBS } from '../data/mockData'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
 import { Language, detectDefaultLanguage, t } from '../lib/i18n'
+import { getCategoryBWCover, compressImageFile } from '../lib/imageCompressor'
 
 interface CreateMarketListingModalProps {
   isOpen: boolean
@@ -24,13 +25,6 @@ const MARKET_CATEGORIES = [
   { id: 'mcat-other', label: 'ДРУГОЕ', icon: '📦' },
 ]
 
-const IMAGE_PRESETS = [
-  { name: 'Байк / Мото', url: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400&q=80' },
-  { name: 'Ноутбук', url: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80' },
-  { name: 'Билеты', url: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80' },
-  { name: 'Сёрфборд', url: 'https://images.unsplash.com/photo-1531722569936-825d3dd91b15?w=400&q=80' },
-]
-
 export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> = ({
   isOpen,
   onClose,
@@ -40,6 +34,7 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
 }) => {
   const lang = currentLang || detectDefaultLanguage()
   const activeHubData = HUBS.find((h) => h.id === currentHub) || HUBS[0]
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -49,7 +44,10 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
   const [price, setPrice] = useState('210')
   const [district, setDistrict] = useState(activeHubData.districts[0] || 'Patong')
   const [expiresHours, setExpiresHours] = useState('6')
-  const [imageUrl, setImageUrl] = useState(IMAGE_PRESETS[0].url)
+  
+  // Custom Photos & Compression State
+  const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([])
+  const [isCompressing, setIsCompressing] = useState(false)
 
   if (!isOpen) return null
 
@@ -58,6 +56,55 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
   const discountPercent = numOldPrice > 0 && numPrice < numOldPrice 
     ? Math.round(((numOldPrice - numPrice) / numOldPrice) * 100) 
     : 0
+
+  const activeCategoryObj = MARKET_CATEGORIES.find((c) => c.id === category) || MARKET_CATEGORIES[0]
+  const bwFallbackCover = getCategoryBWCover(category)
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    const remainingSlots = 10 - uploadedPhotos.length
+    if (remainingSlots <= 0) {
+      triggerNotificationFeedback('error')
+      alert('Вы уже добавили максимально допустимое количество фото (10 шт).')
+      return
+    }
+
+    const filesToCompress = Array.from(files).slice(0, remainingSlots)
+    setIsCompressing(true)
+    triggerHapticFeedback('medium')
+
+    try {
+      const compressedResults = await Promise.all(
+        filesToCompress.map((file) => compressImageFile(file, 1200, 1200, 0.75))
+      )
+      setUploadedPhotos((prev) => [...prev, ...compressedResults])
+      triggerNotificationFeedback('success')
+    } catch (err) {
+      console.error('Error compressing image:', err)
+      triggerNotificationFeedback('error')
+      alert('Не удалось обработать одно или несколько фото.')
+    } finally {
+      setIsCompressing(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
+  const handleRemovePhoto = (indexToRemove: number) => {
+    triggerHapticFeedback('light')
+    setUploadedPhotos((prev) => prev.filter((_, idx) => idx !== indexToRemove))
+  }
+
+  const handleMakeCover = (indexToPromote: number) => {
+    if (indexToPromote === 0) return
+    triggerHapticFeedback('medium')
+    setUploadedPhotos((prev) => {
+      const copy = [...prev]
+      const [promoted] = copy.splice(indexToPromote, 1)
+      return [promoted, ...copy]
+    })
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -74,6 +121,11 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
       return
     }
 
+    // Main cover & images logic
+    const hasCustomPhotos = uploadedPhotos.length > 0
+    const mainImage = hasCustomPhotos ? uploadedPhotos[0] : bwFallbackCover
+    const allImages = hasCustomPhotos ? uploadedPhotos : [bwFallbackCover]
+
     const newItem: MarketItem = {
       id: `prod-${Date.now()}`,
       sellerId: 'user-me',
@@ -86,7 +138,9 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
       oldPrice: numOldPrice > numPrice ? numOldPrice : numPrice,
       district,
       expiresIn: `${expiresHours}:00`,
-      image: imageUrl,
+      image: mainImage,
+      images: allImages,
+      isCustomPhoto: hasCustomPhotos,
       condition,
       category,
     }
@@ -101,9 +155,9 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
     <div className="fixed inset-0 z-[95] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
       <form 
         onSubmit={handleSubmit}
-        className="w-full sm:max-w-lg glass-panel rounded-t-3xl sm:rounded-3xl border border-[#00F2FE]/40 p-5 space-y-4 overflow-y-auto max-h-[90vh] safe-area-bottom shadow-[0_0_50px_rgba(0,242,254,0.15)] relative"
+        className="w-full sm:max-w-lg glass-panel rounded-t-3xl sm:rounded-3xl border border-[#00F2FE]/40 p-5 space-y-4 overflow-y-auto max-h-[85vh] overscroll-contain safe-area-bottom shadow-[0_0_50px_rgba(0,242,254,0.15)] relative"
       >
-        {/* Glow Sprite */}
+        {/* Glow Background */}
         <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#00F2FE]/15 rounded-full blur-3xl pointer-events-none" />
 
         {/* Header */}
@@ -117,13 +171,13 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
                 <span>Продать во Flash Market</span>
                 <span className="text-[10px] bg-[#00F2FE]/20 text-[#00F2FE] px-1.5 py-0.5 rounded font-bold border border-[#00F2FE]/40">HOT</span>
               </h3>
-              <p className="text-[11px] text-gray-400 font-medium">Разместите лот с горящей скидкой</p>
+              <p className="text-[11px] text-gray-400 font-medium">Добавьте до 10 фото и укажите скидку</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+            className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -160,7 +214,7 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
                     triggerHapticFeedback('light')
                     setCategory(cat.id)
                   }}
-                  className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all flex items-center gap-1 ${
+                  className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
                     isSelected
                       ? 'bg-[#00F2FE]/20 text-[#00F2FE] border border-[#00F2FE]/60 shadow-[0_0_12px_rgba(0,242,254,0.3)]'
                       : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
@@ -188,7 +242,7 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
                   triggerHapticFeedback('light')
                   setCondition(cond)
                 }}
-                className={`py-2 rounded-xl text-xs font-bold text-center transition-all ${
+                className={`py-2 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
                   condition === cond
                     ? 'bg-[#CCFF00] text-black font-extrabold shadow-[0_0_15px_rgba(204,255,0,0.4)]'
                     : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
@@ -279,34 +333,118 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
           </div>
         </div>
 
-        {/* Photo Selection Presets */}
-        <div>
-          <label className="block text-gray-300 text-xs mb-1.5 font-bold uppercase tracking-wider flex items-center gap-1">
-            <ImageIcon className="w-3.5 h-3.5 text-[#00F2FE]" />
-            <span>Обложка товара</span>
-          </label>
-          <div className="grid grid-cols-4 gap-2 mb-2">
-            {IMAGE_PRESETS.map((preset) => (
+        {/* CUSTOM PHOTO UPLOADER (Up to 10 photos + Compression + B&W Fallback) */}
+        <div className="space-y-2 bg-[#070B12]/80 p-3.5 rounded-2xl border border-white/10">
+          <div className="flex items-center justify-between">
+            <label className="text-gray-200 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <ImageIcon className="w-4 h-4 text-[#00F2FE]" />
+              <span>Фото товара</span>
+              <span className="text-[10px] text-gray-400 lowercase font-normal">(до 10 шт, сжатие под web)</span>
+            </label>
+            <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-md ${
+              uploadedPhotos.length > 0 ? 'bg-[#00F2FE]/20 text-[#00F2FE] border border-[#00F2FE]/30' : 'bg-white/5 text-gray-400'
+            }`}>
+              {uploadedPhotos.length} / 10
+            </span>
+          </div>
+
+          {/* Hidden File Input */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            multiple
+            accept="image/*"
+            onChange={handlePhotoUpload}
+            className="hidden"
+          />
+
+          {/* Upload Grid */}
+          <div className="grid grid-cols-4 gap-2">
+            {/* Uploaded Photos List */}
+            {uploadedPhotos.map((photoUrl, idx) => {
+              const isMainCover = idx === 0
+              return (
+                <div
+                  key={idx}
+                  onClick={() => handleMakeCover(idx)}
+                  className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer group ${
+                    isMainCover
+                      ? 'border-[#00F2FE] shadow-[0_0_15px_rgba(0,242,254,0.4)] scale-[1.02]'
+                      : 'border-white/15 hover:border-white/40 opacity-85 hover:opacity-100'
+                  }`}
+                >
+                  <img src={photoUrl} alt={`Uploaded ${idx + 1}`} className="w-full h-full object-cover" />
+                  
+                  {/* Cover Badge */}
+                  {isMainCover ? (
+                    <span className="absolute top-1 left-1 bg-[#00F2FE] text-black text-[8px] font-black px-1.5 py-0.5 rounded flex items-center gap-0.5 shadow-md">
+                      <Star className="w-2.5 h-2.5 fill-black text-black" />
+                      <span>ОБЛОЖКА</span>
+                    </span>
+                  ) : (
+                    <span className="absolute top-1 left-1 bg-black/70 text-gray-300 text-[8px] font-bold px-1 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                      Сделать обложкой
+                    </span>
+                  )}
+
+                  {/* Remove Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleRemovePhoto(idx)
+                    }}
+                    className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-600/90 hover:bg-red-500 text-white flex items-center justify-center transition-transform active:scale-95 shadow-md"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )
+            })}
+
+            {/* Upload Add Button Slot */}
+            {uploadedPhotos.length < 10 && (
               <button
-                key={preset.url}
                 type="button"
-                onClick={() => {
-                  triggerHapticFeedback('light')
-                  setImageUrl(preset.url)
-                }}
-                className={`relative rounded-xl overflow-hidden aspect-square border-2 transition-all ${
-                  imageUrl === preset.url
-                    ? 'border-[#00F2FE] shadow-[0_0_12px_rgba(0,242,254,0.5)] scale-105'
-                    : 'border-white/10 opacity-60 hover:opacity-100'
-                }`}
+                disabled={isCompressing}
+                onClick={() => fileInputRef.current?.click()}
+                className="aspect-square rounded-xl border-2 border-dashed border-[#00F2FE]/40 hover:border-[#00F2FE] bg-[#00F2FE]/5 hover:bg-[#00F2FE]/10 flex flex-col items-center justify-center text-center p-2 transition-all cursor-pointer group"
               >
-                <img src={preset.url} alt={preset.name} className="w-full h-full object-cover" />
-                <span className="absolute bottom-0 inset-x-0 bg-black/70 text-[8px] font-bold text-white text-center py-0.5 truncate px-0.5">
-                  {preset.name}
+                {isCompressing ? (
+                  <Loader2 className="w-5 h-5 text-[#00F2FE] animate-spin mb-1" />
+                ) : (
+                  <Upload className="w-5 h-5 text-[#00F2FE] group-hover:scale-110 transition-transform mb-1" />
+                )}
+                <span className="text-[10px] font-bold text-gray-300 group-hover:text-white leading-tight">
+                  {isCompressing ? 'Сжатие...' : '+ Загрузить'}
                 </span>
               </button>
-            ))}
+            )}
           </div>
+
+          {/* B&W Category Cover Fallback Banner if 0 photos uploaded */}
+          {uploadedPhotos.length === 0 && (
+            <div className="mt-2.5 p-2.5 bg-black/60 rounded-xl border border-white/10 flex items-center gap-3">
+              <div className="relative w-14 h-14 rounded-lg overflow-hidden border border-white/20 shrink-0">
+                <img
+                  src={bwFallbackCover}
+                  alt={activeCategoryObj.label}
+                  className="w-full h-full object-cover grayscale contrast-125 brightness-90"
+                />
+                <span className="absolute inset-0 bg-black/30 flex items-center justify-center text-[9px] font-black text-white uppercase">
+                  Ч/Б
+                </span>
+              </div>
+              <div className="text-[11px] leading-tight">
+                <div className="text-gray-300 font-bold flex items-center gap-1">
+                  <span>Стандартная Ч/Б обложка для «{activeCategoryObj.label}»</span>
+                </div>
+                <p className="text-gray-400 text-[10px] mt-0.5">
+                  Если вы не загрузили фото, автоматически подставляется черно-белое изображение категории.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Description Textarea */}
@@ -326,7 +464,7 @@ export const CreateMarketListingModal: React.FC<CreateMarketListingModalProps> =
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,242,254,0.4)] active:scale-[0.98] transition-all uppercase tracking-wider"
+          className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,242,254,0.4)] active:scale-[0.98] transition-all uppercase tracking-wider cursor-pointer"
         >
           <Flame className="w-4 h-4 text-black fill-black" />
           <span>{t(lang, 'btn_publish_market')}</span>

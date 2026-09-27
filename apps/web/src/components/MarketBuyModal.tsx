@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { X, Flame, MapPin, Clock, ShieldCheck, Truck, UserCheck, MessageSquare, Award, Share2 } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { X, Flame, MapPin, Clock, ShieldCheck, Truck, UserCheck, MessageSquare, Share2 } from 'lucide-react'
 import { MarketItem } from '../types'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
 import { shareToTelegram } from '../lib/deeplink'
@@ -18,12 +18,22 @@ export const MarketBuyModal: React.FC<MarketBuyModalProps> = ({
   onContactSeller,
 }) => {
   const [deliveryMethod, setDeliveryMethod] = useState<'meetup' | 'courier'>('meetup')
+  const [activePhotoIdx, setActivePhotoIdx] = useState(0)
+
+  useEffect(() => {
+    setActivePhotoIdx(0)
+  }, [item])
 
   if (!isOpen || !item) return null
+
   const discountAmount = item.oldPrice > item.price ? item.oldPrice - item.price : 0
   const discountPercent = item.oldPrice > item.price 
     ? Math.round((discountAmount / item.oldPrice) * 100) 
     : 0
+
+  const allPhotos = item.images && item.images.length > 0 ? item.images : [item.image]
+  const currentDisplayPhoto = allPhotos[activePhotoIdx] || item.image
+  const isBWFallback = !item.isCustomPhoto && allPhotos.length === 1 && currentDisplayPhoto.includes('sat=-100')
 
   const handleConfirmOrder = () => {
     triggerHapticFeedback('heavy')
@@ -34,7 +44,7 @@ export const MarketBuyModal: React.FC<MarketBuyModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="w-full sm:max-w-md glass-panel rounded-t-3xl sm:rounded-3xl border border-[#00F2FE]/40 p-5 space-y-4 overflow-y-auto max-h-[90vh] safe-area-bottom shadow-[0_0_50px_rgba(0,242,254,0.15)] relative">
+      <div className="w-full sm:max-w-md glass-panel rounded-t-3xl sm:rounded-3xl border border-[#00F2FE]/40 p-5 space-y-4 overflow-y-auto max-h-[85vh] overscroll-contain safe-area-bottom shadow-[0_0_50px_rgba(0,242,254,0.15)] relative">
         {/* Glow Sprite */}
         <div className="absolute -top-10 -left-10 w-36 h-36 bg-[#00F2FE]/20 rounded-full blur-3xl pointer-events-none" />
 
@@ -54,19 +64,28 @@ export const MarketBuyModal: React.FC<MarketBuyModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+            className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Product Cover & Badges */}
-        <div className="relative rounded-2xl overflow-hidden aspect-video border border-white/10">
-          <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+        {/* Main Product Photo Preview */}
+        <div className="relative rounded-2xl overflow-hidden aspect-video border border-white/10 bg-black/50">
+          <img
+            src={currentDisplayPhoto}
+            alt={item.title}
+            className={`w-full h-full object-cover transition-all duration-300 ${
+              isBWFallback ? 'grayscale contrast-125 brightness-90' : ''
+            }`}
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
           
-          <div className="absolute top-2.5 left-2.5 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-black text-white uppercase tracking-wider border border-white/10">
-            {item.condition}
+          <div className="absolute top-2.5 left-2.5 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-black text-white uppercase tracking-wider border border-white/10 flex items-center gap-1.5">
+            <span>{item.condition}</span>
+            {isBWFallback && (
+              <span className="bg-white/20 text-gray-200 text-[8px] px-1 py-0.2 rounded border border-white/30">Ч/Б Обложка</span>
+            )}
           </div>
 
           <div className="absolute top-2.5 right-2.5 bg-[#CCFF00] text-black px-2 py-0.5 rounded-lg flex items-center gap-1 font-black text-[10px] shadow-[0_0_10px_rgba(204,255,0,0.5)]">
@@ -88,6 +107,32 @@ export const MarketBuyModal: React.FC<MarketBuyModalProps> = ({
             )}
           </div>
         </div>
+
+        {/* Multiple Photos Thumbnail Strip (if more than 1 photo) */}
+        {allPhotos.length > 1 && (
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+            {allPhotos.map((photo, pIdx) => {
+              const isActive = pIdx === activePhotoIdx
+              return (
+                <button
+                  key={pIdx}
+                  type="button"
+                  onClick={() => {
+                    triggerHapticFeedback('light')
+                    setActivePhotoIdx(pIdx)
+                  }}
+                  className={`relative w-14 h-14 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
+                    isActive
+                      ? 'border-[#00F2FE] shadow-[0_0_10px_rgba(0,242,254,0.5)] scale-105'
+                      : 'border-white/10 opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <img src={photo} alt={`Photo ${pIdx + 1}`} className="w-full h-full object-cover" />
+                </button>
+              )
+            })}
+          </div>
+        )}
 
         {/* Item Title & Description */}
         <div className="space-y-1">
@@ -131,7 +176,7 @@ export const MarketBuyModal: React.FC<MarketBuyModalProps> = ({
                 triggerHapticFeedback('light')
                 setDeliveryMethod('meetup')
               }}
-              className={`p-2.5 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all ${
+              className={`p-2.5 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
                 deliveryMethod === 'meetup'
                   ? 'bg-[#00F2FE]/20 text-[#00F2FE] border-[#00F2FE]/60 shadow-[0_0_15px_rgba(0,242,254,0.2)]'
                   : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
@@ -147,7 +192,7 @@ export const MarketBuyModal: React.FC<MarketBuyModalProps> = ({
                 triggerHapticFeedback('light')
                 setDeliveryMethod('courier')
               }}
-              className={`p-2.5 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all ${
+              className={`p-2.5 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all cursor-pointer ${
                 deliveryMethod === 'courier'
                   ? 'bg-[#00F2FE]/20 text-[#00F2FE] border-[#00F2FE]/60 shadow-[0_0_15px_rgba(0,242,254,0.2)]'
                   : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'
