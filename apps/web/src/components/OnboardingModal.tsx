@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Sparkles, ArrowDown, X, ChevronRight, ChevronLeft, Check, Compass } from 'lucide-react'
+import { Sparkles, ArrowDown, X, Check, Compass } from 'lucide-react'
 import { triggerHapticFeedback } from '../lib/telegram'
 
 interface OnboardingModalProps {
@@ -63,19 +63,18 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
     }
   }
 
-  const handlePrev = () => {
-    triggerHapticFeedback('light')
-    if (currentStep > 0) setCurrentStep((prev) => prev - 1)
-  }
-
-  const handleSkip = () => {
+  const handleSkip = (e: React.MouseEvent) => {
+    e.stopPropagation()
     triggerHapticFeedback('medium')
     localStorage.setItem('needtnow_onboarding_completed', 'true')
     onClose()
   }
 
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col justify-between p-5 bg-black/65 backdrop-blur-[6px] animate-fadeIn select-none">
+    <div
+      onClick={handleNext}
+      className="fixed inset-0 z-[9999] flex flex-col justify-between p-5 bg-black/65 backdrop-blur-[6px] animate-fadeIn select-none cursor-pointer"
+    >
       {/* Header bar: Step Counter & Skip Button directly on blurred backdrop */}
       <div className="flex items-center justify-between pt-[max(env(safe-area-inset-top),16px)] px-1 relative z-20">
         <div className="flex items-center gap-2 bg-[#00F2FE]/20 text-[#00F2FE] border border-[#00F2FE]/40 px-3.5 py-1.5 rounded-full text-xs font-black shadow-[0_0_20px_rgba(0,242,254,0.3)]">
@@ -97,7 +96,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
 
       {/* Step 1 Spotlight: Mode Switcher */}
       {stepData.pointerPos === 'top-mode' && (
-        <div className="relative z-30 w-full max-w-lg mx-auto">
+        <div className="relative z-30 w-full max-w-lg mx-auto pointer-events-none">
           {/* Arrow pointing DOWN directly at PillSwitcher */}
           <div className="fixed top-[88px] left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce text-[#00F2FE] z-40">
             <span className="text-[11px] font-black uppercase tracking-wider bg-[#00F2FE] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(0,242,254,0.8)] mb-1">
@@ -113,7 +112,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
 
       {/* Step 2 Spotlight: Location Selector */}
       {stepData.pointerPos === 'top-location' && (
-        <div className="relative z-30 w-full max-w-lg mx-auto">
+        <div className="relative z-30 w-full max-w-lg mx-auto pointer-events-none">
           <div className="fixed top-[48px] left-4 flex flex-col items-start animate-bounce text-[#CCFF00] z-40">
             <span className="text-[11px] font-black uppercase tracking-wider bg-[#CCFF00] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(204,255,0,0.8)] mb-1">
               {stepData.targetLabel}
@@ -128,7 +127,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
 
       {/* Step 4 Spotlight: Flash Market Tab */}
       {stepData.pointerPos === 'top-market' && (
-        <div className="relative z-30 w-full max-w-lg mx-auto">
+        <div className="relative z-30 w-full max-w-lg mx-auto pointer-events-none">
           <div className="fixed top-[88px] right-6 flex flex-col items-end animate-bounce text-[#00F2FE] z-40">
             <span className="text-[11px] font-black uppercase tracking-wider bg-[#00F2FE] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(0,242,254,0.8)] mb-1">
               {stepData.targetLabel}
@@ -143,7 +142,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
 
       {/* Step 5 Spotlight: Finish Celebration */}
       {stepData.pointerPos === 'center-finish' && (
-        <div className="flex flex-col items-center justify-center pt-6 relative z-20">
+        <div className="flex flex-col items-center justify-center pt-6 relative z-20 pointer-events-none">
           <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#00F2FE] to-[#CCFF00] flex items-center justify-center shadow-[0_0_40px_rgba(0,242,254,0.6)] animate-pulse">
             <Sparkles className="w-9 h-9 text-black stroke-[2.5]" />
           </div>
@@ -160,30 +159,39 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
           {stepData.description}
         </p>
 
-        {/* Step Indicator Dots */}
-        <div className="flex items-center justify-center sm:justify-start gap-2 pt-2">
-          {ONBOARDING_STEPS.map((_, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => {
-                triggerHapticFeedback('light')
-                setCurrentStep(idx)
-              }}
-              className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                idx === currentStep
-                  ? 'w-8 bg-gradient-to-r from-[#00F2FE] to-[#CCFF00] shadow-[0_0_12px_rgba(0,242,254,0.8)]'
-                  : 'w-2.5 bg-white/30 hover:bg-white/60'
-              }`}
-              aria-label={`Перейти к шагу ${idx + 1}`}
-            />
-          ))}
+        {/* Step Indicator Dots & Tap hint */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+          <div className="flex items-center gap-2">
+            {ONBOARDING_STEPS.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  triggerHapticFeedback('light')
+                  setCurrentStep(idx)
+                }}
+                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  idx === currentStep
+                    ? 'w-8 bg-gradient-to-r from-[#00F2FE] to-[#CCFF00] shadow-[0_0_12px_rgba(0,242,254,0.8)]'
+                    : 'w-2.5 bg-white/30 hover:bg-white/60'
+                }`}
+                aria-label={`Перейти к шагу ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          {!isLastStep && (
+            <span className="text-[11px] font-bold text-[#00F2FE] tracking-wide animate-pulse">
+              Коснитесь экрана для продолжения →
+            </span>
+          )}
         </div>
       </div>
 
       {/* Step 3 Spotlight: Bottom Central Creation (+) Button */}
       {stepData.pointerPos === 'bottom-plus' && (
-        <div className="relative z-30 w-full max-w-lg mx-auto">
+        <div className="relative z-30 w-full max-w-lg mx-auto pointer-events-none">
           <div className="fixed bottom-[95px] left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce text-[#CCFF00] z-40">
             <span className="text-[11px] font-black uppercase tracking-wider bg-[#CCFF00] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(204,255,0,0.8)] mb-1.5">
               {stepData.targetLabel}
@@ -196,28 +204,21 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
         </div>
       )}
 
-      {/* Bottom Action Controls Bar: Sleek frameless buttons directly on blurred backdrop */}
-      <div className="flex items-center justify-between w-full max-w-lg mx-auto pb-4 px-1 relative z-20 gap-3">
-        {currentStep > 0 ? (
+      {/* Bottom Area: Show CTA ONLY on the final step so central (+) button is never overlapped on steps 1-4 */}
+      {isLastStep ? (
+        <div className="w-full max-w-lg mx-auto pb-4 px-1 relative z-20">
           <button
             type="button"
-            onClick={handlePrev}
-            className="px-4 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1 transition-all cursor-pointer border border-white/20 backdrop-blur-md active:scale-95"
+            onClick={handleNext}
+            className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_35px_rgba(0,242,254,0.6)] hover:brightness-110 active:scale-95 transition-all uppercase tracking-wider cursor-pointer"
           >
-            <ChevronLeft className="w-4 h-4" />
-            <span>Назад</span>
+            <span>Начать пользование</span>
+            <Check className="w-4 h-4 stroke-[3]" />
           </button>
-        ) : <div />}
-
-        <button
-          type="button"
-          onClick={handleNext}
-          className="flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_35px_rgba(0,242,254,0.6)] hover:brightness-110 active:scale-95 transition-all uppercase tracking-wider cursor-pointer"
-        >
-          <span>{isLastStep ? 'Начать пользование' : 'Далее'}</span>
-          {isLastStep ? <Check className="w-4 h-4 stroke-[3]" /> : <ChevronRight className="w-4 h-4 stroke-[3]" />}
-        </button>
-      </div>
+        </div>
+      ) : (
+        <div className="pb-6" />
+      )}
     </div>
   )
 }
