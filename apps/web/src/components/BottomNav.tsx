@@ -100,9 +100,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({
                     }`} 
                     strokeWidth={isActive ? 2.5 : 2}
                   />
-                  {/* Unread Chat Messages Badge on the Chat icon */}
-                  {item.id === 'chat' && unreadChatCount > 0 && (
-                    <span className="absolute -top-1.5 -right-2 min-w-[17px] h-[17px] px-1 rounded-full bg-[#00F2FE] text-[#050811] font-black text-[9px] flex items-center justify-center border border-black shadow-[0_0_10px_#00F2FE] animate-pulse">
+                  {/* Unread Chat Messages Badge on the Chat / Deals icon */}
+                  {(item.id === 'chat' || item.id === 'mine') && unreadChatCount > 0 && (
+                    <span className="absolute -top-1.5 -right-2.5 min-w-[18px] h-[18px] px-1 rounded-full bg-gradient-to-r from-[#00F2FE] to-[#00DFEA] text-[#050811] font-black text-[10px] flex items-center justify-center border-2 border-[#0A101D] shadow-[0_0_12px_#00F2FE] animate-pulse">
                       {unreadChatCount}
                     </span>
                   )}

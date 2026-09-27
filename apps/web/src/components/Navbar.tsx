@@ -121,7 +121,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               {/* Notification Badge directly on user avatar */}
               {unreadNotifCount > 0 && (
-                <span className="absolute -top-1 -right-1 z-30 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#00F2FE] text-[#050811] font-black text-[10px] border-2 border-[#0A101D] shadow-[0_0_10px_#00F2FE] animate-pulse">
+                <span className="absolute -top-1 -right-1 z-30 flex items-center justify-center min-w-[20px] h-[20px] px-1 rounded-full bg-gradient-to-tr from-[#FF2A6D] to-[#00F2FE] text-white font-black text-[10px] border-2 border-[#0A101D] shadow-[0_0_15px_#FF2A6D] animate-pulse">
                   {unreadNotifCount}
                 </span>
               )}
