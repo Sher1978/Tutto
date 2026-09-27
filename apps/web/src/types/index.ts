@@ -119,3 +119,17 @@ export interface MarketItem {
   condition: 'Б/У' | 'Новое' | 'На запчасти'
   category: string
 }
+
+export interface ReviewItem {
+  id: string
+  dealId: string
+  authorName: string
+  authorAvatar?: string
+  targetName: string
+  rating: number
+  tags: string[]
+  comment: string
+  createdAt: string
+  rewardCoins: number
+}
+

@@ -215,6 +215,69 @@ export const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({ onOpen
         </div>
       </div>
 
+      {/* Verified Customer Reviews & Ratings Section */}
+      <div className="glass-card p-5 border-amber-400/30 space-y-4">
+        <div className="flex items-center justify-between border-b border-white/10 pb-3">
+          <div className="flex items-center gap-2">
+            <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
+            <div>
+              <h4 className="font-display font-bold text-sm text-white flex items-center gap-2">
+                <span>Отзывы клиентов</span>
+                <span className="text-xs bg-amber-400/20 text-amber-400 px-2 py-0.5 rounded-full border border-amber-400/40">4.98 ★ (48)</span>
+              </h4>
+              <p className="text-[11px] text-gray-400">Подтвержденные P2P-сделки с гарантией отзивов</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {[
+            {
+              id: 'rev-1',
+              authorName: 'Михаил К.',
+              authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120',
+              rating: 5,
+              tags: ['⚡ Быстрый выезд', '💎 Идеальное состояние'],
+              comment: 'Арендовали байк NMAX на 10 дней. Привезли прямо в отель, шлемы новые. Сервис супер!',
+              createdAt: 'Вчера, 18:40',
+            },
+            {
+              id: 'rev-2',
+              authorName: 'Елена С.',
+              authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120',
+              rating: 5,
+              tags: ['🤝 Честная цена', '💬 Вежливый сервис'],
+              comment: 'Обмен прошел отлично, курс был лучший на Раваи. Доставили наличку за 15 минут.',
+              createdAt: '3 дня назад',
+            },
+          ].map((rev) => (
+            <div key={rev.id} className="p-3.5 rounded-2xl bg-slate-950/70 border border-white/10 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <img src={rev.authorAvatar} alt={rev.authorName} className="w-7 h-7 rounded-full object-cover border border-amber-400/50" />
+                  <span className="font-bold text-white text-xs">{rev.authorName}</span>
+                </div>
+                <div className="flex items-center gap-1 text-amber-400 text-xs font-black">
+                  <span>{rev.rating}.0</span>
+                  <Star className="w-3.5 h-3.5 fill-amber-400" />
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-1">
+                {rev.tags.map((tag, i) => (
+                  <span key={i} className="text-[10px] bg-white/5 border border-white/10 text-cyan-300 px-2 py-0.5 rounded-md">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <p className="text-gray-300 text-xs leading-relaxed">{rev.comment}</p>
+              <div className="text-[10px] text-gray-500 text-right">{rev.createdAt}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Partner Referral Link Card */}
       <div className="glass-card p-4 border-amber-400/30">
         <div className="flex items-center justify-between mb-2">

@@ -372,7 +372,7 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
 
                 <button
                   onClick={handleClientConfirm}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,242,254,0.4)] hover:brightness-110 active:scale-[0.98] transition-all animate-pulse"
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,242,254,0.4)] hover:brightness-110 active:scale-[0.98] transition-all"
                 >
                   <Award className="w-4 h-4 text-black fill-black" />
                   <span>✅ ПОДТВЕРДИТЬ ВЫПОЛНЕНИЕ (+15 Coins)</span>
@@ -412,9 +412,8 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
       {/* Post-Deal Review Modal */}
       <ReviewModal
         isOpen={showReviewModal}
-        providerName={bid.providerName}
-        providerAvatar={bid.providerAvatar}
-        serviceTitle={request.title}
+        dealId={request.id}
+        targetName={bid.providerName}
         onClose={() => {
           setShowReviewModal(false)
           setDealStatus('completed')

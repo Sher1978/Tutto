@@ -2,6 +2,9 @@ import { test, expect } from '@playwright/test';
 import { injectTelegramMock } from './mocks/telegram';
 
 test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    (window as any).isPlaywright = true;
+  });
   await injectTelegramMock(page);
   await page.goto('/');
   await page.waitForLoadState('domcontentloaded');
