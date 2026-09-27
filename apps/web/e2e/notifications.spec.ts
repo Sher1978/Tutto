@@ -12,10 +12,10 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('Notification Center & Sound Chime Engine', () => {
   test('1. Should display bell icon with unread badge and open NotificationCenterModal', async ({ page }) => {
-    // 1. Locate bell button in Navbar
-    const bellBtn = page.locator('button[aria-label="Уведомления"]').first();
-    await expect(bellBtn).toBeVisible({ timeout: 5000 });
-    await bellBtn.dispatchEvent('click');
+    // 1. Locate user avatar notifications badge in Navbar
+    const notifBtn = page.locator('div[title="Уведомления и профиль"]').first();
+    await expect(notifBtn).toBeVisible({ timeout: 5000 });
+    await notifBtn.dispatchEvent('click');
 
     // 2. Verify modal opened
     await expect(page.getByText('Центр Уведомлений').first()).toBeVisible({ timeout: 5000 });

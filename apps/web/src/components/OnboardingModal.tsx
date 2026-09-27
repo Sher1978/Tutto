@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Sparkles, ArrowUp, ArrowDown, X, ChevronRight, ChevronLeft, Check, Compass } from 'lucide-react'
+import { Sparkles, ArrowDown, X, ChevronRight, ChevronLeft, Check, Compass } from 'lucide-react'
 import { triggerHapticFeedback } from '../lib/telegram'
 
 interface OnboardingModalProps {
@@ -13,7 +13,7 @@ const ONBOARDING_STEPS = [
     title: '1. Аукцион Услуг & Маркетплейс',
     description: `В TuttoMinutto есть два удобных формата:\n\n• Обратный Аукцион Услуг — вы публикуете запрос, а исполнители сами предлагают наилучшую цену.\n• Flash Market — горячий маркетплейс товаров с быстрыми скидками и P2P-сделками.`,
     pointerPos: 'top-mode',
-    targetLabel: 'Переключатель Режимов (Аукцион / Маркет)',
+    targetLabel: 'Переключатель Режимов',
   },
   {
     step: 2,
@@ -34,11 +34,11 @@ const ONBOARDING_STEPS = [
     title: '4. Объявление о Продаже',
     description: `Хотите быстро продать байк, гаджет или билеты?\n\nПереключитесь на Flash Market и нажмите «+ Разместить лот». Добавляйте до 10 фотографий с мгновенным автоматическим сжатием!`,
     pointerPos: 'top-market',
-    targetLabel: 'Кнопка Размещения Лота',
+    targetLabel: 'Режим Flash Market',
   },
   {
     step: 5,
-    title: '5. Легких и выгодаых сделок!',
+    title: '5. Легких и выгодных сделок!',
     description: `Платформа полностью готова к использованию.\n\nНаходите надёжных исполнителей, экономьте бюджет и заключайте безопасные сделки в один клик. Удачи на TuttoMinutto!`,
     pointerPos: 'center-finish',
     targetLabel: 'Всё готово!',
@@ -93,34 +93,55 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
         </button>
       </div>
 
-      {/* Dynamic Visual Pointer Arrow pointing directly at target UI element */}
+      {/* 🎯 SPOTLIGHT HIGHLIGHT RINGS & DOWNWARD POINTER ARROWS */}
+
+      {/* Step 1 Spotlight: Mode Switcher */}
       {stepData.pointerPos === 'top-mode' && (
-        <div className="flex flex-col items-center pt-10 animate-bounce text-[#00F2FE] relative z-20">
-          <ArrowUp className="w-9 h-9 stroke-[3.5] drop-shadow-[0_0_15px_#00F2FE]" />
-          <span className="text-[11px] font-black uppercase tracking-wider bg-[#00F2FE] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(0,242,254,0.6)]">
-            {stepData.targetLabel}
-          </span>
+        <div className="relative z-30 w-full max-w-lg mx-auto">
+          {/* Arrow pointing DOWN directly at PillSwitcher */}
+          <div className="fixed top-[88px] left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce text-[#00F2FE] z-40">
+            <span className="text-[11px] font-black uppercase tracking-wider bg-[#00F2FE] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(0,242,254,0.8)] mb-1">
+              {stepData.targetLabel}
+            </span>
+            <ArrowDown className="w-8 h-8 stroke-[3.5] drop-shadow-[0_0_15px_#00F2FE]" />
+          </div>
+
+          {/* Glowing Neon Box encircling the PillSwitcher block */}
+          <div className="fixed top-[138px] left-4 right-4 h-[50px] rounded-2xl border-2 border-[#00F2FE] shadow-[0_0_35px_rgba(0,242,254,0.9)] pointer-events-none z-30 animate-pulse bg-[#00F2FE]/10" />
         </div>
       )}
 
+      {/* Step 2 Spotlight: Location Selector */}
       {stepData.pointerPos === 'top-location' && (
-        <div className="flex flex-col items-start pl-4 pt-16 animate-bounce text-[#CCFF00] relative z-20">
-          <ArrowUp className="w-9 h-9 stroke-[3.5] drop-shadow-[0_0_15px_#CCFF00]" />
-          <span className="text-[11px] font-black uppercase tracking-wider bg-[#CCFF00] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(204,255,0,0.6)]">
-            {stepData.targetLabel}
-          </span>
+        <div className="relative z-30 w-full max-w-lg mx-auto">
+          <div className="fixed top-[48px] left-4 flex flex-col items-start animate-bounce text-[#CCFF00] z-40">
+            <span className="text-[11px] font-black uppercase tracking-wider bg-[#CCFF00] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(204,255,0,0.8)] mb-1">
+              {stepData.targetLabel}
+            </span>
+            <ArrowDown className="w-8 h-8 stroke-[3.5] drop-shadow-[0_0_15px_#CCFF00]" />
+          </div>
+
+          {/* Glowing ring encircling the location pill */}
+          <div className="fixed top-[92px] left-4 w-[165px] h-[32px] rounded-full border-2 border-[#CCFF00] shadow-[0_0_30px_rgba(204,255,0,0.9)] pointer-events-none z-30 animate-pulse bg-[#CCFF00]/10" />
         </div>
       )}
 
+      {/* Step 4 Spotlight: Flash Market Tab */}
       {stepData.pointerPos === 'top-market' && (
-        <div className="flex flex-col items-end pr-6 pt-20 animate-bounce text-[#00F2FE] relative z-20">
-          <ArrowUp className="w-9 h-9 stroke-[3.5] drop-shadow-[0_0_15px_#00F2FE]" />
-          <span className="text-[11px] font-black uppercase tracking-wider bg-[#00F2FE] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(0,242,254,0.6)]">
-            {stepData.targetLabel}
-          </span>
+        <div className="relative z-30 w-full max-w-lg mx-auto">
+          <div className="fixed top-[88px] right-6 flex flex-col items-end animate-bounce text-[#00F2FE] z-40">
+            <span className="text-[11px] font-black uppercase tracking-wider bg-[#00F2FE] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(0,242,254,0.8)] mb-1">
+              {stepData.targetLabel}
+            </span>
+            <ArrowDown className="w-8 h-8 stroke-[3.5] drop-shadow-[0_0_15px_#00F2FE]" />
+          </div>
+
+          {/* Glowing box encircling Flash Market tab inside PillSwitcher */}
+          <div className="fixed top-[138px] right-4 w-[48%] h-[50px] rounded-2xl border-2 border-[#00F2FE] shadow-[0_0_35px_rgba(0,242,254,0.9)] pointer-events-none z-30 animate-pulse bg-[#00F2FE]/10" />
         </div>
       )}
 
+      {/* Step 5 Spotlight: Finish Celebration */}
       {stepData.pointerPos === 'center-finish' && (
         <div className="flex flex-col items-center justify-center pt-6 relative z-20">
           <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#00F2FE] to-[#CCFF00] flex items-center justify-center shadow-[0_0_40px_rgba(0,242,254,0.6)] animate-pulse">
@@ -160,13 +181,18 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
         </div>
       </div>
 
-      {/* Pointer arrow for bottom central creation (+) button */}
+      {/* Step 3 Spotlight: Bottom Central Creation (+) Button */}
       {stepData.pointerPos === 'bottom-plus' && (
-        <div className="flex flex-col items-center pb-20 animate-bounce text-[#CCFF00] relative z-20">
-          <span className="text-[11px] font-black uppercase tracking-wider bg-[#CCFF00] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(204,255,0,0.6)] mb-1.5">
-            {stepData.targetLabel}
-          </span>
-          <ArrowDown className="w-9 h-9 stroke-[3.5] drop-shadow-[0_0_15px_#CCFF00]" />
+        <div className="relative z-30 w-full max-w-lg mx-auto">
+          <div className="fixed bottom-[95px] left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce text-[#CCFF00] z-40">
+            <span className="text-[11px] font-black uppercase tracking-wider bg-[#CCFF00] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(204,255,0,0.8)] mb-1.5">
+              {stepData.targetLabel}
+            </span>
+            <ArrowDown className="w-8 h-8 stroke-[3.5] drop-shadow-[0_0_15px_#CCFF00]" />
+          </div>
+
+          {/* Glowing ring encircling the central floating (+) button */}
+          <div className="fixed bottom-[18px] left-1/2 -translate-x-1/2 w-[70px] h-[70px] rounded-full border-2 border-[#CCFF00] shadow-[0_0_35px_rgba(204,255,0,1)] pointer-events-none z-30 animate-pulse bg-[#CCFF00]/15" />
         </div>
       )}
 
