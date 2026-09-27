@@ -134,7 +134,34 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
   return (
     <div className="w-full space-y-4 pb-28">
       
-      {/* 1. INTERACTIVE FILTER & SEARCH BAR */}
+      {/* 1. CHIP CATEGORIES (Horizontal Scroll - Identical style to Services) */}
+      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-2 px-2">
+        {MARKET_CATEGORY_TILES.map((cat) => {
+          const isActive = activeCategory === cat.id
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => {
+                triggerHapticFeedback('light')
+                onSelectCategory(isActive ? null : cat.id)
+              }}
+              className={`shrink-0 rounded-full flex items-center gap-1.5 px-3.5 py-2 cursor-pointer transition-all duration-200 border ${
+                isActive
+                  ? 'bg-[#CCFF00]/20 backdrop-blur-xl border-[#CCFF00]/60 text-[#CCFF00] shadow-[0_0_15px_rgba(204,255,0,0.3)]'
+                  : 'bg-white/[0.08] backdrop-blur-xl border-white/15 text-gray-200 hover:bg-white/[0.12] hover:border-white/25'
+              }`}
+            >
+              <span className="text-[16px] leading-none">{cat.icon}</span>
+              <span className="text-[13px] font-bold tracking-wide uppercase">
+                {cat.label}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+
+      {/* 2. INTERACTIVE FILTER & SEARCH BAR (Positioned directly UNDER category chips) */}
       <MarketFilterBar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -143,32 +170,6 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
         conditionFilter={conditionFilter}
         onConditionChange={setConditionFilter}
       />
-
-      {/* 2. CHIP CATEGORIES (Horizontal Scroll) */}
-      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-2 px-2">
-        {MARKET_CATEGORY_TILES.map((cat) => {
-          const isActive = activeCategory === cat.id
-          return (
-            <button
-              key={cat.id}
-              onClick={() => {
-                triggerHapticFeedback('light')
-                onSelectCategory(isActive ? null : cat.id)
-              }}
-              className={`shrink-0 rounded-full flex items-center gap-1.5 px-3.5 py-2 cursor-pointer transition-all duration-200 border ${
-                isActive
-                  ? 'bg-[#00F2FE]/20 border-[#00F2FE]/60 text-[#00F2FE] shadow-[0_0_15px_rgba(0,242,254,0.2)]'
-                  : 'bg-[#0D1117] border-[#222222] text-gray-300 hover:bg-[#161B22]'
-              }`}
-            >
-              <span className="text-[14px] leading-none">{cat.icon}</span>
-              <span className="text-[11px] font-bold tracking-wide uppercase">
-                {cat.label}
-              </span>
-            </button>
-          )
-        })}
-      </div>
 
       {/* 3. FLASH MARKET GRID (Pinterest Style 2-Columns) */}
       <div className="space-y-4 pt-2">

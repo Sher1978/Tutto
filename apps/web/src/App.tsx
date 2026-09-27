@@ -605,6 +605,7 @@ export function App() {
           onSelectTab={handleSelectTab}
           mode={mode}
           currentLang={currentLang}
+          unreadChatCount={2}
           onCentralAction={() => {
             if (mode === 'services') {
               triggerHapticFeedback('heavy')

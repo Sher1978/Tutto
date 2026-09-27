@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Coins, ChevronDown, MapPin, Globe, Bell } from 'lucide-react'
+import { Coins, ChevronDown, MapPin, Globe } from 'lucide-react'
 import { getTelegramUser, triggerHapticFeedback } from '../lib/telegram'
 import { TokenWalletModal } from './TokenWalletModal'
 import { LocationSelectorModal } from './LocationSelectorModal'
@@ -77,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       <header className="w-full pt-[max(env(safe-area-inset-top),60px)] pb-2 px-4 flex flex-col gap-3 relative z-10">
-        {/* Top Row: Title, Slogan, Language & Profile */}
+        {/* Top Row: Title, Slogan, Wallet & User Avatar (with Unread Notification Badge) */}
         <div className="flex items-center justify-between w-full">
           <div className="flex flex-col pt-1">
             <h1 className="font-display text-[28px] font-black tracking-wider leading-none flex items-center gap-1.5">
@@ -89,77 +89,26 @@ export const Navbar: React.FC<NavbarProps> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-2 relative">
-            {/* Notifications Bell Button */}
-            <button
-              aria-label="Уведомления"
-              onClick={() => {
-                triggerHapticFeedback('light')
-                if (onOpenNotifications) onOpenNotifications()
-              }}
-              className="relative flex items-center justify-center bg-white/5 border border-white/10 rounded-full w-8 h-8 hover:bg-white/10 transition-colors cursor-pointer text-gray-300 hover:text-white"
-            >
-              <Bell className="w-4 h-4" />
-              {unreadNotifCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#00F2FE] text-[#050811] font-black text-[9px] flex items-center justify-center border border-black shadow-[0_0_8px_#00F2FE]">
-                  {unreadNotifCount}
-                </span>
-              )}
-            </button>
-
-            {/* Language Switcher Pill */}
-            <div className="relative">
-              <button
-                aria-label="Переключить язык"
-                onClick={() => {
-                  triggerHapticFeedback('light')
-                  setIsLangOpen(!isLangOpen)
-                }}
-                className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-full px-2.5 py-1 hover:bg-white/10 transition-colors text-xs font-bold text-white cursor-pointer"
-              >
-                <span>{activeLangOption.flag}</span>
-                <span className="uppercase">{activeLangOption.code}</span>
-                <ChevronDown className="w-3 h-3 text-gray-400" />
-              </button>
-
-              {/* Language Dropdown Menu */}
-              {isLangOpen && (
-                <div className="absolute top-full right-0 mt-2 w-32 bg-slate-900 border border-white/15 rounded-2xl p-1.5 shadow-2xl z-50 animate-fadeIn space-y-0.5">
-                  {LANGUAGES.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        triggerHapticFeedback('medium')
-                        if (onLanguageChange) onLanguageChange(lang.code)
-                        setIsLangOpen(false)
-                      }}
-                      className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                        currentLang === lang.code
-                          ? 'bg-gradient-to-r from-[#00F2FE]/20 to-[#CCFF00]/20 text-[#00F2FE] border border-[#00F2FE]/30'
-                          : 'text-gray-300 hover:bg-white/10'
-                      }`}
-                    >
-                      <span className="flex items-center gap-1.5">
-                        <span>{lang.flag}</span>
-                        <span>{lang.label}</span>
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
+          <div className="flex items-center gap-2.5 relative">
             {/* Wallet Balance Pill */}
             <button
+              type="button"
               onClick={handleOpenWallet}
-              className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-2.5 py-1 hover:bg-white/10 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 hover:bg-white/10 transition-colors cursor-pointer"
             >
               <Coins className="w-3.5 h-3.5 text-amber-400" />
               <span className="text-[12px] font-bold text-white">{tokenBalance}</span>
             </button>
 
-            {/* User Avatar */}
-            <div className="relative shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
+            {/* User Avatar Picto with Notification Badge */}
+            <div
+              onClick={() => {
+                triggerHapticFeedback('light')
+                if (onOpenNotifications) onOpenNotifications()
+              }}
+              className="relative shrink-0 cursor-pointer hover:opacity-85 transition-opacity"
+              title="Уведомления и профиль"
+            >
               <div
                 className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full blur-[90px] pointer-events-none transition-all duration-500 z-0 ${
                   mode === 'services'
@@ -171,12 +120,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               <img
                 src={avatarUrl}
                 alt="Profile"
-                className={`w-12 h-12 rounded-full border-[2.5px] object-cover transition-all duration-300 relative z-10 ${
+                className={`w-11 h-11 rounded-full border-[2.5px] object-cover transition-all duration-300 relative z-10 ${
                   mode === 'services'
                     ? 'border-[#CCFF00] shadow-[0_0_18px_rgba(204,255,0,0.85)]'
                     : 'border-[#00F2FE] shadow-[0_0_18px_rgba(0,242,254,0.85)]'
                 }`}
               />
+
+              {/* Notification Badge directly on user avatar */}
+              {unreadNotifCount > 0 && (
+                <span className="absolute -top-1 -right-1 z-30 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#00F2FE] text-[#050811] font-black text-[10px] border-2 border-[#0A101D] shadow-[0_0_10px_#00F2FE] animate-pulse">
+                  {unreadNotifCount}
+                </span>
+              )}
+
               <span
                 className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-[#0A101D] transition-colors duration-300 z-20 ${
                   mode === 'services' ? 'bg-[#CCFF00]' : 'bg-[#00F2FE]'
@@ -186,17 +143,64 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Bottom Row: Location Badge */}
-        <div
-          onClick={() => {
-            triggerHapticFeedback('light')
-            setIsLocationOpen(true)
-          }}
-          className="flex items-center self-start gap-1.5 bg-[#0D1117] border border-[#222222] rounded-full px-3 py-1 cursor-pointer hover:bg-[#161B22] transition-colors"
-        >
-          <MapPin className="w-3.5 h-3.5 text-[#00F2FE]" />
-          <span className="text-[12px] font-bold text-white tracking-wide">{locationName}</span>
-          <ChevronDown className="w-3.5 h-3.5 text-gray-400 ml-1" />
+        {/* Bottom Header Row: Location Badge (Left) & Language Selector (Right) */}
+        <div className="flex items-center justify-between w-full">
+          {/* Location Selector */}
+          <div
+            onClick={() => {
+              triggerHapticFeedback('light')
+              setIsLocationOpen(true)
+            }}
+            className="flex items-center gap-1.5 bg-[#0D1117] border border-[#222222] rounded-full px-3 py-1 cursor-pointer hover:bg-[#161B22] transition-colors"
+          >
+            <MapPin className="w-3.5 h-3.5 text-[#00F2FE]" />
+            <span className="text-[12px] font-bold text-white tracking-wide">{locationName}</span>
+            <ChevronDown className="w-3.5 h-3.5 text-gray-400 ml-1" />
+          </div>
+
+          {/* Language Switcher Pill (Positioned right at the location row level) */}
+          <div className="relative">
+            <button
+              type="button"
+              aria-label="Переключить язык"
+              onClick={() => {
+                triggerHapticFeedback('light')
+                setIsLangOpen(!isLangOpen)
+              }}
+              className="flex items-center gap-1.5 bg-[#0D1117] border border-[#222222] rounded-full px-3 py-1 hover:bg-[#161B22] transition-colors text-xs font-bold text-white cursor-pointer"
+            >
+              <span>{activeLangOption.flag}</span>
+              <span className="uppercase">{activeLangOption.code}</span>
+              <ChevronDown className="w-3 h-3 text-gray-400" />
+            </button>
+
+            {/* Language Dropdown Menu */}
+            {isLangOpen && (
+              <div className="absolute top-full right-0 mt-2 w-32 bg-slate-900 border border-white/15 rounded-2xl p-1.5 shadow-2xl z-50 animate-fadeIn space-y-0.5">
+                {LANGUAGES.map((lang) => (
+                  <button
+                    key={lang.code}
+                    type="button"
+                    onClick={() => {
+                      triggerHapticFeedback('medium')
+                      if (onLanguageChange) onLanguageChange(lang.code)
+                      setIsLangOpen(false)
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      currentLang === lang.code
+                        ? 'bg-gradient-to-r from-[#00F2FE]/20 to-[#CCFF00]/20 text-[#00F2FE] border border-[#00F2FE]/30'
+                        : 'text-gray-300 hover:bg-white/10'
+                    }`}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <span>{lang.flag}</span>
+                      <span>{lang.label}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </header>
 

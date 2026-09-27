@@ -12,6 +12,7 @@ interface BottomNavProps {
   mode: AppMode
   onCentralAction?: () => void
   currentLang?: Language
+  unreadChatCount?: number
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({
@@ -20,6 +21,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   mode,
   onCentralAction,
   currentLang = 'ru',
+  unreadChatCount = 2,
 }) => {
   const [isFabClicked, setIsFabClicked] = useState(false)
 
@@ -62,6 +64,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
               {index === 2 && (
                 <div className="relative flex justify-center items-center w-[60px]">
                   <button
+                    type="button"
                     onClick={handleFabClick}
                     aria-label={mode === 'services' ? 'Создать заказ' : 'Добавить лот'}
                     className={`absolute -top-6 flex items-center justify-center w-[64px] h-[64px] rounded-full border-2 transition-all duration-300 shadow-xl z-[60] ${
@@ -75,39 +78,47 @@ export const BottomNav: React.FC<BottomNavProps> = ({
                     }`}
                   >
                     <Plus 
-                      className={`w-9 h-9 transition-all duration-300 ${
-                        mode === 'services' ? 'text-[#050811]' : 'text-[#050811]'
-                      }`} 
+                      className="w-9 h-9 transition-all duration-300 text-[#050811]" 
                       strokeWidth={3} 
                     />
                   </button>
                 </div>
               )}
               <button
+                type="button"
                 onClick={() => handleTabClick(item.id)}
-                className={`flex flex-col items-center gap-1 text-center cursor-pointer w-[60px]`}
+                className="flex flex-col items-center gap-1 text-center cursor-pointer w-[60px] relative"
               >
-              <Icon 
-                className={`w-[24px] h-[24px] transition-all duration-300 nav-icon-morph ${
+                <div className="relative flex items-center justify-center">
+                  <Icon 
+                    className={`w-[24px] h-[24px] transition-all duration-300 nav-icon-morph ${
+                      isActive 
+                        ? (mode === 'services' 
+                            ? 'text-[#00F2FE] drop-shadow-[0_0_12px_rgba(0,242,254,0.7)] scale-110' 
+                            : 'text-[#CCFF00] drop-shadow-[0_0_12px_rgba(204,255,0,0.7)] scale-110')
+                        : 'text-white/90 hover:text-white'
+                    }`} 
+                    strokeWidth={isActive ? 2.5 : 2}
+                  />
+                  {/* Unread Chat Messages Badge on the Chat icon */}
+                  {item.id === 'chat' && unreadChatCount > 0 && (
+                    <span className="absolute -top-1.5 -right-2 min-w-[17px] h-[17px] px-1 rounded-full bg-[#00F2FE] text-[#050811] font-black text-[9px] flex items-center justify-center border border-black shadow-[0_0_10px_#00F2FE] animate-pulse">
+                      {unreadChatCount}
+                    </span>
+                  )}
+                </div>
+
+                <span className={`text-[9px] tracking-wider transition-colors duration-300 font-display uppercase ${
                   isActive 
-                    ? (mode === 'services' 
-                        ? 'text-[#00F2FE] drop-shadow-[0_0_12px_rgba(0,242,254,0.7)] scale-110' 
-                        : 'text-[#CCFF00] drop-shadow-[0_0_12px_rgba(204,255,0,0.7)] scale-110')
-                    : 'text-white/90 hover:text-white'
-                }`} 
-                strokeWidth={isActive ? 2.5 : 2}
-              />
-              <span className={`text-[9px] tracking-wider transition-colors duration-300 font-display uppercase ${
-                isActive 
-                  ? (mode === 'services'
-                      ? 'font-black text-[#00F2FE] drop-shadow-[0_0_8px_rgba(0,242,254,0.6)]'
-                      : 'font-black text-[#CCFF00] drop-shadow-[0_0_8px_rgba(204,255,0,0.6)]')
-                  : 'font-semibold text-white/90'
-              }`}>
-                {t(currentLang, item.labelKey)}
-              </span>
-            </button>
-          </React.Fragment>
+                    ? (mode === 'services'
+                        ? 'font-black text-[#00F2FE] drop-shadow-[0_0_8px_rgba(0,242,254,0.6)]'
+                        : 'font-black text-[#CCFF00] drop-shadow-[0_0_8px_rgba(204,255,0,0.6)]')
+                    : 'font-semibold text-white/90'
+                }`}>
+                  {t(currentLang, item.labelKey)}
+                </span>
+              </button>
+            </React.Fragment>
           )
         })}
       </div>
