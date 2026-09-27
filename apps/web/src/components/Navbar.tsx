@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Coins, ChevronDown, MapPin, Globe } from 'lucide-react'
 import { getTelegramUser, triggerHapticFeedback } from '../lib/telegram'
 import { TokenWalletModal } from './TokenWalletModal'
@@ -45,6 +45,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [currentHubId, setCurrentHubId] = useState<string>('phuket')
   const [locationName, setLocationName] = useState<string>('Определение...')
 
+  const langMenuRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     // Автоматическое определение локации 1 и 2 уровня
     const fetchLoc = async () => {
@@ -61,6 +63,21 @@ export const Navbar: React.FC<NavbarProps> = ({
     fetchLoc()
   }, [])
 
+  // Close language menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
+        setIsLangOpen(false)
+      }
+    }
+    if (isLangOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isLangOpen])
+
   const handleOpenWallet = () => {
     triggerHapticFeedback('light')
     setIsWalletOpen(true)
@@ -76,7 +93,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      <header className="w-full pt-[max(env(safe-area-inset-top),60px)] pb-2 px-4 flex flex-col gap-3 relative z-10">
+      <header className="w-full pt-[max(env(safe-area-inset-top),60px)] pb-2 px-4 flex flex-col gap-3 relative z-30">
         {/* Top Row: Title, Slogan, Wallet & User Avatar (with Unread Notification Badge) */}
         <div className="flex items-center justify-between w-full">
           <div className="flex flex-col pt-1">
@@ -151,7 +168,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Language Switcher Pill (Positioned right at the location row level) */}
-          <div className="relative">
+          <div className="relative" ref={langMenuRef}>
             <button
               type="button"
               aria-label="Переключить язык"
@@ -168,7 +185,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Language Dropdown Menu */}
             {isLangOpen && (
-              <div className="absolute top-full right-0 mt-2 w-32 bg-slate-900 border border-white/15 rounded-2xl p-1.5 shadow-2xl z-50 animate-fadeIn space-y-0.5">
+              <div className="absolute top-full right-0 mt-2 w-36 bg-[#0D1117]/95 backdrop-blur-2xl border border-white/20 rounded-2xl p-1.5 shadow-[0_15px_35px_rgba(0,0,0,0.9)] z-[120] animate-fadeIn space-y-0.5">
                 {LANGUAGES.map((lang) => (
                   <button
                     key={lang.code}
@@ -178,13 +195,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                       if (onLanguageChange) onLanguageChange(lang.code)
                       setIsLangOpen(false)
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${
                       currentLang === lang.code
-                        ? 'bg-gradient-to-r from-[#00F2FE]/20 to-[#CCFF00]/20 text-[#00F2FE] border border-[#00F2FE]/30'
-                        : 'text-gray-300 hover:bg-white/10'
+                        ? 'bg-gradient-to-r from-[#00F2FE]/20 to-[#CCFF00]/20 text-[#00F2FE] border border-[#00F2FE]/40 shadow-[0_0_10px_rgba(0,242,254,0.3)]'
+                        : 'text-gray-300 hover:bg-white/10 hover:text-white'
                     }`}
                   >
-                    <span className="flex items-center gap-1.5">
+                    <span className="flex items-center gap-2">
                       <span>{lang.flag}</span>
                       <span>{lang.label}</span>
                     </span>
