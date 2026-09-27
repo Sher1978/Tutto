@@ -54,7 +54,6 @@ test.describe('P2P Deal Chat Flow (Binance P2P Gamified Model)', () => {
     // 10. Публикуем отзыв
     const submitReviewBtn = page.getByRole('button', { name: /Опубликовать отзыв/i });
     await expect(submitReviewBtn).toBeVisible({ timeout: 5000 });
-    await submitReviewBtn.scrollIntoViewIfNeeded();
     await submitReviewBtn.click({ force: true });
 
     // 11. Сделка успешно закрыта

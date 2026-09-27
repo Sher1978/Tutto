@@ -21,11 +21,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     try {
       triggerHapticFeedback('light')
       setLoading(true)
+      const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://tutto.vercel.app'
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin
-        }
+          redirectTo: currentOrigin,
+        },
       })
       if (error) throw error
     } catch (err: any) {
