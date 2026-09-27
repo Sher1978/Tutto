@@ -105,31 +105,30 @@ body {
   50%      { opacity: 0.7; text-shadow: 0 0 30px rgba(217, 70, 239, 0.9); }
 }
 
-/* Unified Matte Frosted Ice Glass Cards (Mockup, Template, Profile) */
+/* Unified Matte Frosted Dark Glass Cards (Mockup, Template, Profile) */
 .mockup-card-main,
 .mockup-card,
 .glass-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.10) 100%);
-  backdrop-filter: blur(50px) saturate(200%) brightness(115%);
-  -webkit-backdrop-filter: blur(50px) saturate(200%) brightness(115%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, rgba(13, 17, 23, 0.88) 0%, rgba(7, 11, 18, 0.92) 100%);
+  backdrop-filter: blur(40px) saturate(160%) brightness(90%);
+  -webkit-backdrop-filter: blur(40px) saturate(160%) brightness(90%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 26px;
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.4),
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.6),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.15);
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.4);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .mockup-card-main:hover,
 .mockup-card:hover,
 .glass-card:hover {
-  border-color: rgba(0, 242, 254, 0.7);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.14) 100%);
+  border-color: rgba(0, 242, 254, 0.6);
+  background: linear-gradient(135deg, rgba(13, 17, 23, 0.95) 0%, rgba(7, 11, 18, 0.96) 100%);
   box-shadow:
-    0 15px 40px rgba(0, 242, 254, 0.3),
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.7),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.25);
+    0 15px 40px rgba(0, 242, 254, 0.25),
+    inset 0 1px 1px rgba(0, 242, 254, 0.4);
 }
 
 /* Safe Areas */
