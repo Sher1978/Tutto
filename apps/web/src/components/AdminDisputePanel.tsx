@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { X, Scale, AlertTriangle, MessageSquare, CheckCircle, Ban, ShieldAlert, DollarSign, BarChart3, TrendingUp, Activity, Users } from 'lucide-react'
-import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
+import { triggerHapticFeedback, triggerNotificationFeedback, sendAPIKeyStatusReport, sendSuperadminErrorAlert, SUPERADMIN_CHAT_ID } from '../lib/telegram'
 import { Language, detectDefaultLanguage, t } from '../lib/i18n'
 
 interface AdminDisputePanelProps {
@@ -47,6 +47,23 @@ export const AdminDisputePanel: React.FC<AdminDisputePanelProps> = ({
   const [disputes, setDisputes] = useState(MOCK_DISPUTES)
   const [selectedDispute, setSelectedDispute] = useState<typeof MOCK_DISPUTES[0] | null>(null)
   const [decisionText, setDecisionText] = useState('')
+  const [isSendingReport, setIsSendingReport] = useState(false)
+  const [reportResult, setReportResult] = useState<string | null>(null)
+
+  const handleSendKeyReport = async () => {
+    triggerHapticFeedback('medium')
+    setIsSendingReport(true)
+    setReportResult(null)
+    const res = await sendAPIKeyStatusReport()
+    setIsSendingReport(false)
+    if (res.ok) {
+      triggerNotificationFeedback('success')
+      setReportResult(`✅ Отчет доступности ключей успешно отправлен в Telegram бота суперадмину (ID: ${SUPERADMIN_CHAT_ID})!`)
+    } else {
+      triggerNotificationFeedback('error')
+      setReportResult(`❌ Не удалось отправить отчет: ${res.statusMsg}`)
+    }
+  }
 
   const handleResolve = (resolution: 'client' | 'provider' | 'reject') => {
     if (!selectedDispute) return
@@ -173,6 +190,49 @@ export const AdminDisputePanel: React.FC<AdminDisputePanelProps> = ({
                   <span className="text-xs font-black text-[#CCFF00] font-mono">$1,900</span>
                 </div>
               </div>
+            </div>
+
+            {/* Key Availability & Monitoring Widget */}
+            <div className="glass-panel p-4 border-[#00F2FE]/30 bg-[#00F2FE]/5 rounded-2xl mt-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-white font-bold text-sm flex items-center gap-1.5">
+                    <span>🤖 Мониторинг Доступности Ключей & ИИ</span>
+                    <span className="text-[9px] bg-[#00F2FE]/20 text-[#00F2FE] px-1.5 py-0.2 rounded font-black border border-[#00F2FE]/40">LIVE</span>
+                  </h3>
+                  <p className="text-[11px] text-gray-400 mt-0.5">Пересылка системных ошибок Суперадмину в Telegram (ID: <code>{SUPERADMIN_CHAT_ID}</code>)</p>
+                </div>
+              </div>
+
+              <div className="p-3 bg-[#070B12] rounded-xl border border-white/10 text-xs space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400 font-medium">Gemini 2.0 Flash API Key:</span>
+                  <span className="font-bold text-[#00F2FE]">{import.meta.env.VITE_GEMINI_API_KEY ? '🟢 АКТИВЕН' : '🟡 УМНЫЙ ИИ-ФОЛЛБЭК'}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400 font-medium">Telegram Bot API Token:</span>
+                  <span className="font-bold text-[#CCFF00]">🟢 АКТИВЕН (@tuttominutto_bot)</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400 font-medium">Superadmin Alert Chat ID:</span>
+                  <span className="font-mono text-purple-300 font-bold">{SUPERADMIN_CHAT_ID}</span>
+                </div>
+              </div>
+
+              {reportResult && (
+                <div className="p-2.5 rounded-xl bg-white/10 border border-white/10 text-[11px] text-white font-medium leading-relaxed animate-fadeIn">
+                  {reportResult}
+                </div>
+              )}
+
+              <button
+                type="button"
+                disabled={isSendingReport}
+                onClick={handleSendKeyReport}
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#00F2FE] to-cyan-500 text-black font-extrabold text-xs flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(0,242,254,0.3)] hover:brightness-110 active:scale-98 transition-all cursor-pointer"
+              >
+                <span>{isSendingReport ? 'Отправка отчета...' : '📊 Отправить отчет о доступности ключей в Telegram'}</span>
+              </button>
             </div>
           </div>
         ) : selectedDispute ? (

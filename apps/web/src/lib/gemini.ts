@@ -1,7 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import { sendSuperadminErrorAlert } from './telegram'
 
-// В продакшене это должно быть в Edge Function, чтобы не светить ключ!
-// Для прототипирования используем прямо из фронтенда.
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY || ''
 const genAI = new GoogleGenerativeAI(apiKey)
 
@@ -33,36 +32,44 @@ export async function analyzeRequestFlowWithAI(
   const conversationText = conversation.map(c => `${c.role === 'user' ? 'Пользователь' : 'ИИ'}: ${c.text}`).join('\n')
 
   const prompt = `
-Ты - ИИ-ассистент платформы обратных аукционов (маркетплейс услуг TuttoMinutto). 
-Твоя задача - помочь пользователю составить заявку (карточку) на услугу.
-Чтобы карточка получилась качественной, тебе нужны основные параметры (что именно, когда, бюджет, локация).
+Ты - главный ИИ-ассистент сервиса TuttoMinutto (обратный аукцион услуг и маркетплейс в курортных хабах).
+Твоя задача - точно проанализировать диалог и составить качественную карточку запроса с ЧЕТКИМ ИНТЕНТОМ КЛИЕНТА.
+
+ОБЯЗАТЕЛЬНЫЕ ИНТЕНТЫ (используй строго один из префиксов для title):
+1. Аренда транспорта (байки, скутеры, авто, NMAX, PCX) -> "СНИМУ В АРЕНДУ:" (например: "СНИМУ В АРЕНДУ: байк NMAX 155cc")
+2. Аренда жилья (дома, виллы, кондо, апартаменты) -> "СНИМУ:" (например: "СНИМУ: виллу с бассейном на Раваи")
+3. Обмен валют (USDT, рубли, баты, наличные) -> "ОБМЕНЯЮ:" (например: "ОБМЕНЯЮ: 500 USDT на баты")
+4. Покупка товаров/вещей -> "КУПЛЮ:" (например: "КУПЛЮ: шлем Shoei Neotec")
+5. Заказ услуг (няня, клининг, визы, юристы, ремонт, ивенты) -> "ИЩУ:" или "ЗАКАЖУ:" (например: "ИЩУ: няню для ребенка")
 
 История общения:
 ${conversationText}
 
-Текущая локация по GPS: Хаб ${currentHub}, Район ${currentDistrict}.
+Текущие параметры GPS: Хаб ${currentHub}, Район ${currentDistrict}.
 
-Правила:
-1. Проанализируй весь диалог.
-2. Если информации недостаточно (например, пользователь просто сказал "нужен байк", но не сказал на какой срок или бюджет), ты должен ВЕЖЛИВО задать ОДИН уточняющий вопрос. Верни status: "clarify" и твой question.
-3. Если информации достаточно (понятно что, когда, и есть примерный бюджет или понятно, что бюджет "по договоренности"), верни status: "complete" и заполни requestParams.
+КРИТИЧЕСКИЕ ПРАВИЛА:
+1. Если пользователь пишет "хочу байк на неделю ббюджет 1500 бат", это АРЕНДА БАЙКА ("СНИМУ В АРЕНДУ: байк на 7 дней"), а НЕ ОБМЕН ВАЛЮТЫ!
+2. Бюджет должен быть ЧИСЛОМ (например, 1500, а не 15!). Не разрезай числа на половине.
+3. Если информации недостаточно (нет понимания типа услуги или локации), задай один короткий уточняющий вопрос (status: "clarify").
+4. Если суть понятна, верни status: "complete" и заполни requestParams.
 
 Верни СТРОГО только JSON следующего формата:
 Для уточнения:
 {
   "status": "clarify",
-  "question": "На какие даты вам нужен байк и какой примерно бюджет?"
+  "question": "На какой срок вам нужен байк и в каком районе?"
 }
 
 Для завершения:
 {
   "status": "complete",
   "requestParams": {
-    "title": "Краткое название с интентом (например: ИЩУ няню для девочки 5 лет)",
-    "categoryName": "ОДНА_ИЗ_КАТЕГОРИЙ: ПРОКАТ, ЖИЛЬЁ, ДЕНЬГИ, УСЛУГИ, ЕДА, КЛИНИНГ, КРАСОТА, ДЕТИ, ТУРЫ, ВРАЧИ, КУРЬЕР, ИВЕНТЫ, ПРАКТИКИ, ДРУГОЕ",
-    "budget": 300,
-    "description": "Полное красивое описание на основе диалога, с эмодзи",
-    "district": "район (из диалога или текущий)"
+    "title": "СНИМУ В АРЕНДУ: байк на 7 дней (1500 бат/сут)",
+    "categoryName": "ПРОКАТ",
+    "budget": 1500,
+    "description": "Нужен скутер NMAX или аналогичный на 7 дней в районе Patong. Бюджет 1500 THB/сут.",
+    "district": "${currentDistrict}",
+    "hub": "${currentHub}"
   }
 }
 `
@@ -70,7 +77,7 @@ ${conversationText}
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       if (!apiKey) {
-        throw new Error('No API key provided, using intelligent fallback')
+        throw new Error('VITE_GEMINI_API_KEY_MISSING: ключ Gemini не передан в .env (VITE_GEMINI_API_KEY)')
       }
       const result = await model.generateContent(prompt)
       const text = result.response.text()
@@ -80,32 +87,77 @@ ${conversationText}
       return parsed as SmartAIResponse
     } catch (error: any) {
       console.warn(`Gemini API Warning (Attempt ${attempt}):`, error)
+      
+      // Automatically send error alert to Telegram Superadmin (ID: 260669598)
+      if (attempt === 1) {
+        sendSuperadminErrorAlert(
+          error?.message || 'Gemini API Error',
+          error?.stack,
+          `AI Analysis (Attempt ${attempt})`
+        )
+      }
+
       const isRateLimit = error?.status === 429 || error?.message?.includes('429') || error?.message?.includes('Quota')
       if (attempt < maxRetries && (isRateLimit || error?.message?.includes('503') || error?.message?.includes('fetch failed'))) {
         await delay(1000)
         continue
       }
-      if (attempt === maxRetries || !apiKey) {
-        // Intelligent client-side fallback parsing user messages
-        const userMsgs = conversation.filter(c => c.role === 'user').map(c => c.text).join(' ')
-        const userText = userMsgs.trim() || 'Запрос на услугу'
-        
-        let titleIntent = 'ИЩУ ' + (userText.length > 35 ? userText.slice(0, 35) + '...' : userText)
-        if (userText.toLowerCase().includes('нян')) titleIntent = `ИЩУ няню: ${userText.slice(0, 30)}`
-        else if (userText.toLowerCase().includes('дом') || userText.toLowerCase().includes('вилл') || userText.toLowerCase().includes('жиль')) titleIntent = `СНИМУ жильё: ${userText.slice(0, 30)}`
-        else if (userText.toLowerCase().includes('usdt') || userText.toLowerCase().includes('бат') || userText.toLowerCase().includes('обмен')) titleIntent = `ОБМЕНЯЮ валюту: ${userText.slice(0, 30)}`
-        else if (userText.toLowerCase().includes('байк') || userText.toLowerCase().includes('скутер') || userText.toLowerCase().includes('авто')) titleIntent = `СНИМУ В АРЕНДУ: ${userText.slice(0, 30)}`
 
-        return {
-          status: 'complete',
-          requestParams: {
-            title: titleIntent,
-            categoryName: 'УСЛУГИ',
-            budget: 0,
-            description: userText,
-            district: currentDistrict,
-            hub: currentHub
-          }
+      // Intelligent deterministic fallback parser
+      const userMsgs = conversation.filter(c => c.role === 'user').map(c => c.text).join(' ')
+      const userText = userMsgs.trim() || 'Запрос на услугу'
+      const lowerText = userText.toLowerCase()
+
+      // Extract budget safely
+      let extractedBudget = 0
+      const budgetMatch = lowerText.match(/(?:бюджет|цена|за)?\s*(\d+[\d\s]*)(?:\s*(?:бат|thb|\$|usd|руб|rub))?/i) || lowerText.match(/(\d{2,6})\s*(?:бат|thb|\$|usd|руб)/i)
+      if (budgetMatch && budgetMatch[1]) {
+        const parsedNum = parseInt(budgetMatch[1].replace(/\s+/g, ''), 10)
+        if (!isNaN(parsedNum) && parsedNum > 0) {
+          extractedBudget = parsedNum
+        }
+      }
+
+      let titleIntent = ''
+      let categoryName = 'УСЛУГИ'
+
+      // Check Transport FIRST
+      if (/байк|скутер|мото|nmax|pcx|авто|машин|прокат|аренд/i.test(lowerText)) {
+        titleIntent = `СНИМУ В АРЕНДУ: ${userText}`
+        categoryName = 'ПРОКАТ'
+      } else if (/дом|вилл|кондо|апарт|отел|жиль|сним/i.test(lowerText)) {
+        titleIntent = `СНИМУ: ${userText}`
+        categoryName = 'ЖИЛЬЁ'
+      } else if (/нян|сидел|беби|ребен/i.test(lowerText)) {
+        titleIntent = `ИЩУ няню: ${userText}`
+        categoryName = 'ДЕТИ'
+      } else if (/usdt|обмен|крипт|налич|менять|рубли/i.test(lowerText) && !/байк|скутер|авто|дом|вилл/i.test(lowerText)) {
+        titleIntent = `ОБМЕНЯЮ валюту: ${userText}`
+        categoryName = 'ДЕНЬГИ'
+      } else if (/купл|купит|покупк/i.test(lowerText)) {
+        titleIntent = `КУПЛЮ: ${userText}`
+        categoryName = 'ТОВАРЫ'
+      } else if (/клининг|уборк|виз|юрист|масс|мастер|ремонт/i.test(lowerText)) {
+        titleIntent = `ЗАКАЖУ: ${userText}`
+        categoryName = 'УСЛУГИ'
+      } else {
+        titleIntent = `ИЩУ: ${userText}`
+      }
+
+      // Safe clean title length truncate
+      if (titleIntent.length > 55) {
+        titleIntent = titleIntent.slice(0, 52) + '...'
+      }
+
+      return {
+        status: 'complete',
+        requestParams: {
+          title: titleIntent,
+          categoryName,
+          budget: extractedBudget,
+          description: userText,
+          district: currentDistrict,
+          hub: currentHub
         }
       }
     }

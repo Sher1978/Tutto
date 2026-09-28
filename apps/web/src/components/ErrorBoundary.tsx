@@ -1,5 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { sendSuperadminErrorAlert } from '../lib/telegram'
 
 interface Props {
   children?: ReactNode
@@ -22,6 +23,11 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught Error in TuttoMinutto App:', error, errorInfo)
+    sendSuperadminErrorAlert(
+      error?.message || 'Uncaught ErrorBoundary Exception',
+      errorInfo?.componentStack || error?.stack,
+      'React ErrorBoundary'
+    )
   }
 
   private handleReset = () => {

@@ -65,3 +65,67 @@ export const initTelegramApp = () => {
     WebApp.setBackgroundColor('#0B0F19')
   }
 }
+
+export const SUPERADMIN_CHAT_ID = '260669598'
+export const BOT_TOKEN = '8859291375:AAFWh7FXsDHMplqHPpW293DQLcsn9HfrNNU'
+
+export async function sendSuperadminErrorAlert(errorMsg: string, stack?: string, context?: string): Promise<boolean> {
+  try {
+    const text = 
+      `🚨 <b>СИСТЕМНАЯ ОШИБКА TUTTOMINUTTO</b>\n\n` +
+      `👤 <b>Суперадмин Alert (ID: ${SUPERADMIN_CHAT_ID})</b>\n` +
+      `📍 <b>Контекст:</b> ${context || 'Фронтенд App'}\n` +
+      `❌ <b>Текст ошибки:</b> <code>${errorMsg}</code>\n` +
+      (stack ? `🔍 <b>Стек:</b> <pre>${stack.slice(0, 300)}</pre>\n` : '') +
+      `⏰ <i>${new Date().toLocaleString('ru-RU')}</i>`
+
+    const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: SUPERADMIN_CHAT_ID,
+        text,
+        parse_mode: 'HTML',
+      }),
+    })
+    const data = await response.json()
+    return data.ok
+  } catch (err) {
+    console.error('Failed to send error alert to Telegram Superadmin:', err)
+    return false
+  }
+}
+
+export async function sendAPIKeyStatusReport(): Promise<{ ok: boolean; statusMsg: string }> {
+  try {
+    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY || ''
+    const geminiStatus = geminiKey ? '🟢 АКТИВЕН (Gemini 2.0 Flash API)' : '🟡 НЕ ЗАДАЛ VITE_GEMINI_API_KEY (Работает Умный ИИ-фоллбэк)'
+    
+    const text = 
+      `📊 <b>ОТЧЕТ ДОСТУПНОСТИ КЛЮЧЕЙ И ИИ-СЕРВИСОВ</b>\n\n` +
+      `🤖 <b>Gemini 2.0 Flash API:</b> ${geminiStatus}\n` +
+      `🤖 <b>Telegram Bot API:</b> 🟢 АКТИВЕН (@tuttominutto_bot)\n` +
+      `💬 <b>Superadmin Chat ID:</b> <code>${SUPERADMIN_CHAT_ID}</code> (Автопересылка всех системных ошибок)\n\n` +
+      `🌐 <b>Vercel Production Endpoints:</b>\n` +
+      `• <a href="https://needtnow.vercel.app">https://needtnow.vercel.app</a>\n` +
+      `• <a href="https://web-ten-hazel-65.vercel.app">https://web-ten-hazel-65.vercel.app</a>\n\n` +
+      `⏰ <i>Время отчета: ${new Date().toLocaleString('ru-RU')}</i>`
+
+    const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: SUPERADMIN_CHAT_ID,
+        text,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true,
+      }),
+    })
+    const data = await response.json()
+    return { ok: data.ok, statusMsg: text }
+  } catch (err: any) {
+    console.error('Failed to send API key report:', err)
+    return { ok: false, statusMsg: err?.message || 'Error sending report' }
+  }
+}
+

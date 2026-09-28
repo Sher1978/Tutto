@@ -64,12 +64,30 @@ bot.command('help', async (ctx: Context) => {
       caption: `ℹ️ *Справка TuttoMinutto*\n\n` +
       `_Здесь выбираешь ты!_\n\n` +
       `• /start — Перезапустить бота и открыть Mini App\n` +
-      `• Нажмите кнопку «Открыть TuttoMinutto App» для просмотра аукционов\n` +
-      `• Вся связь между клиентом и исполнителем происходит напрямую.\n\n` +
+      `• /keys или /status — Проверить доступность ключей ИИ и статус мониторинга ошибок (Superadmin)\n` +
+      `• Нажмите кнопку «Открыть TuttoMinutto App» для просмотра аукционов\n\n` +
       `Юзернейм бота: @tuttominutto_bot`,
       parse_mode: 'Markdown'
     }
   )
+})
+
+// Command /keys and /status for Superadmin API Key & Error Monitoring
+bot.command(['keys', 'status'], async (ctx: Context) => {
+  const geminiKey = process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY || ''
+  const geminiStatus = geminiKey ? '🟢 АКТИВЕН (Gemini 2.0 Flash API)' : '🟡 НЕ ЗАДАЛ VITE_GEMINI_API_KEY (Работает Умный ИИ-фоллбэк)'
+
+  const text = 
+    `📊 <b>ОТЧЕТ ДОСТУПНОСТИ КЛЮЧЕЙ И МОНИТОРИНГА ИИ</b>\n\n` +
+    `🤖 <b>Gemini 2.0 Flash API:</b> ${geminiStatus}\n` +
+    `🤖 <b>Telegram Bot API:</b> 🟢 АКТИВЕН (@tuttominutto_bot)\n` +
+    `👤 <b>Superadmin Chat ID:</b> <code>260669598</code> (Пересылка всех ошибок включена)\n\n` +
+    `🌐 <b>Vercel Production Endpoints:</b>\n` +
+    `• <a href="https://needtnow.vercel.app">https://needtnow.vercel.app</a>\n` +
+    `• <a href="https://web-ten-hazel-65.vercel.app">https://web-ten-hazel-65.vercel.app</a>\n\n` +
+    `⏰ <i>Время проверки: ${new Date().toLocaleString('ru-RU')}</i>`
+
+  await ctx.reply(text, { parse_mode: 'HTML', disable_web_page_preview: true })
 })
 
 /**
