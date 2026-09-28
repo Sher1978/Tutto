@@ -190,6 +190,10 @@ export function App() {
 
     // Deep Linking: Check Telegram startapp parameter (e.g. ?startapp=req_req-bike)
     const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('admin') === 'true') {
+      setIsAdminDisputeOpen(true)
+    }
+
     const startAppParam = urlParams.get('startapp') || urlParams.get('tgWebAppStartParam') || (window as any).Telegram?.WebApp?.initDataUnsafe?.start_param
     const parsedLink = parseDeepLinkParam(startAppParam)
     if (parsedLink) {
