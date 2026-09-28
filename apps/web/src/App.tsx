@@ -277,7 +277,7 @@ export function App() {
   const handleCreateMarketListing = (newItem: MarketItem) => {
     setMarketProducts((prev) => [newItem, ...prev])
     setActiveCategory(null)
-    setNotificationMsg('🔥 Лот успешно опубликован во Flash Market!')
+    setNotificationMsg('🔥 Лот успешно опубликован в Барахолке!')
     setTimeout(() => setNotificationMsg(null), 4000)
   }
 
@@ -486,7 +486,7 @@ export function App() {
               onOpenMarketItem={(item) => setSelectedMarketProduct(item)}
               onDeleteMarketItem={(itemId) => {
                 setMarketProducts((prev) => prev.filter((i) => i.id !== itemId))
-                setNotificationMsg('🗑️ Лот удален из Flash Market')
+                setNotificationMsg('🗑️ Лот удален из Барахолки')
                 setTimeout(() => setNotificationMsg(null), 3000)
               }}
               onDeleteRequest={(reqId) => {

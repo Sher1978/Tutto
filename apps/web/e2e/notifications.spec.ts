@@ -27,7 +27,7 @@ test.describe('Notification Center & Sound Chime Engine', () => {
     await marketFilter.dispatchEvent('click');
     await page.waitForTimeout(300);
 
-    await expect(page.getByText(/Hot Deal во Flash Market/i).first()).toBeVisible();
+    await expect(page.getByText(/Hot Deal во Flash Market|Горящее предложение в Барахолке/i).first()).toBeVisible();
 
     // 4. Click Mark All Read
     const markReadBtn = page.getByText('Прочитать всё').first();

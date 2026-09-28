@@ -32,7 +32,7 @@ test.describe('Deep Linking & Virality Engine (t.me/NeedTnow_bot/app?startapp=..
     await page.waitForLoadState('domcontentloaded');
 
     // Verify MarketBuyModal automatically opened
-    await expect(page.getByText(/Детали лота Flash Market/i).first()).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText(/Детали лота Flash Market|Детали лота Барахолки/i).first()).toBeVisible({ timeout: 5000 });
     
     // Verify Share to Telegram button
     const shareMarketBtn = page.getByText(/Поделиться лотом в Telegram/i).first();

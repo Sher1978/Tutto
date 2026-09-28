@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 test.describe('Explore & Search Interface', () => {
   test('Должен открывать раздел ПОИСК, фильтровать по хабам, районам и поисковому запросу', async ({ page }) => {
     // 1. Переключиться в режим Flash Market для отображения навигации Поиска
-    const marketPill = page.getByRole('button', { name: /FLASH MARKET/i }).first();
+    const marketPill = page.getByRole('button', { name: /FLASH MARKET|БАРАХОЛКА/i }).first();
     await expect(marketPill).toBeVisible();
     await marketPill.click({ force: true });
     await page.waitForTimeout(300);

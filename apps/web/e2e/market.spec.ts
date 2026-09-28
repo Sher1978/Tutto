@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 test.describe('TMA Dual-Mode & Market Interface', () => {
   test('Должен отображать шапку и переключаться между Услуги и Маркетом', async ({ page }) => {
     // 1. Клик по переключателю Flash Market в PillSwitcher
-    const marketPill = page.getByRole('button', { name: /FLASH MARKET/i }).first();
+    const marketPill = page.getByRole('button', { name: /FLASH MARKET|БАРАХОЛКА/i }).first();
     await expect(marketPill).toBeVisible();
     await marketPill.click({ force: true });
     await page.waitForTimeout(500);
