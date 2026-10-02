@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { X, Star, Sparkles, Coins, CheckCircle, Award } from 'lucide-react'
+import React, { useState, useRef } from 'react'
+import { X, Star, Sparkles, Coins, CheckCircle, Award, Image as ImageIcon, Video, Trash2, Info } from 'lucide-react'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
 import { ReviewItem } from '../types'
 
@@ -36,7 +36,25 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
     '💬 Вежливый сервис',
   ])
   const [comment, setComment] = useState<string>('')
+  const [mediaFiles, setMediaFiles] = useState<{ url: string; type: 'image' | 'video' }[]>([])
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      triggerHapticFeedback('light')
+      const newFiles = Array.from(e.target.files).map(file => ({
+        url: URL.createObjectURL(file),
+        type: file.type.startsWith('video/') ? 'video' as const : 'image' as const
+      }))
+      setMediaFiles(prev => [...prev, ...newFiles])
+    }
+  }
+
+  const removeMedia = (index: number) => {
+    triggerHapticFeedback('light')
+    setMediaFiles(prev => prev.filter((_, i) => i !== index))
+  }
 
   const toggleTag = (tag: string) => {
     triggerHapticFeedback('light')
@@ -179,6 +197,58 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                 placeholder="Всё супер! Байк доставили вовремя в отель..."
                 className="w-full bg-slate-900 border border-white/10 rounded-2xl p-3 text-xs text-white placeholder-gray-500 focus:border-amber-400 outline-none resize-none"
               />
+            </div>
+
+            {/* Media Upload */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold text-gray-300">
+                  Медиа (Фото/Видео)
+                </label>
+                <div className="flex items-center gap-1 text-[9px] text-gray-400 bg-black/30 px-2 py-0.5 rounded border border-white/5">
+                  <Info className="w-3 h-3 text-[#00F2FE]" />
+                  <span>Автоудаление через 8 часов</span>
+                </div>
+              </div>
+              
+              <div className="flex flex-wrap gap-2">
+                {mediaFiles.map((media, idx) => (
+                  <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-white/10 group">
+                    {media.type === 'image' ? (
+                      <img src={media.url} alt="preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-black/50 flex flex-col items-center justify-center text-[8px] text-gray-400 gap-1">
+                        <Video className="w-5 h-5 text-white/50" />
+                        <span>Видео</span>
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeMedia(idx)}
+                      className="absolute top-1 right-1 p-1 bg-red-500/80 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+                
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-16 h-16 rounded-xl bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center gap-1 hover:bg-white/10 hover:border-[#00F2FE]/50 transition-all text-gray-400 hover:text-[#00F2FE] cursor-pointer"
+                >
+                  <ImageIcon className="w-5 h-5" />
+                  <span className="text-[8px] font-bold uppercase tracking-wider">Файл</span>
+                </button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/*,video/*"
+                  multiple
+                  className="hidden"
+                />
+              </div>
             </div>
 
             {/* Reward Card */}
