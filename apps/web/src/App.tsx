@@ -425,6 +425,7 @@ export function App() {
           userRole="client"
           mode={mode}
           session={session}
+          shouldFetchLocation={!showTutorial && hasSeenTutorial}
         />
 
         {(activeTab === 'home' || activeTab === 'market') && (

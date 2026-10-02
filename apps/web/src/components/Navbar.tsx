@@ -20,7 +20,7 @@ interface NavbarProps {
   savedAmount?: number
   userRole?: 'client' | 'business'
   mode: AppMode
-  session?: Session | null
+  shouldFetchLocation?: boolean
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -36,6 +36,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   userRole = 'client',
   mode,
   session,
+  shouldFetchLocation = true,
 }) => {
   const telegramUser = getTelegramUser()
   const [isWalletOpen, setIsWalletOpen] = useState(false)
@@ -43,11 +44,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isLangOpen, setIsLangOpen] = useState(false)
   const [tokenBalance, setTokenBalance] = useState(150)
   const [currentHubId, setCurrentHubId] = useState<string>('phuket')
-  const [locationName, setLocationName] = useState<string>('Определение...')
+  const [locationName, setLocationName] = useState<string>('Укажите локацию')
 
   const langMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (!shouldFetchLocation) return
+    
     // Автоматическое определение локации 1 и 2 уровня
     const fetchLoc = async () => {
       try {
@@ -61,7 +64,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       }
     }
     fetchLoc()
-  }, [])
+  }, [shouldFetchLocation])
 
   // Close language menu when clicking outside
   useEffect(() => {

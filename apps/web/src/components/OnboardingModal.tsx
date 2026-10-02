@@ -43,6 +43,13 @@ const ONBOARDING_STEPS = [
     pointerPos: 'center-finish',
     targetLabel: 'Всё готово!',
   },
+  {
+    step: 6,
+    title: '6. Включите Локацию 📍',
+    description: `Чтобы показывать вам актуальные заявки и горячие товары в вашем городе (Пхукет, Бали, Дубай и др.), нам нужен доступ к вашей геопозиции.\n\nПожалуйста, разрешите доступ к локации в следующем окне.`,
+    pointerPos: 'center-location',
+    targetLabel: 'Геопозиция',
+  },
 ]
 
 export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) => {
@@ -149,6 +156,18 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
         </div>
       )}
 
+      {/* Step 6 Spotlight: Location */}
+      {stepData.pointerPos === 'center-location' && (
+        <div className="flex flex-col items-center justify-center pt-6 relative z-20 pointer-events-none">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#FF2A85] to-[#FF5E99] flex items-center justify-center shadow-[0_0_40px_rgba(255,42,133,0.6)] animate-pulse">
+            <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+        </div>
+      )}
+
       {/* DESCRIPTIVE TEXT: Frameless, directly on blurred background without frames, borders, or cards */}
       <div className="my-auto mx-auto w-full max-w-lg px-3 py-4 space-y-4 relative z-20 text-center sm:text-left">
         <h2 className="font-display font-black text-2xl sm:text-3xl text-white tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] leading-tight">
@@ -212,7 +231,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
             onClick={handleNext}
             className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_35px_rgba(0,242,254,0.6)] hover:brightness-110 active:scale-95 transition-all uppercase tracking-wider cursor-pointer"
           >
-            <span>Начать пользование</span>
+            <span>{stepData.step === 6 ? 'Разрешить локацию' : 'Далее'}</span>
             <Check className="w-4 h-4 stroke-[3]" />
           </button>
         </div>
