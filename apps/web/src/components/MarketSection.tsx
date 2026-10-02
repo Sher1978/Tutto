@@ -3,6 +3,7 @@ import { Mic, Flame, MapPin, Clock, Plus } from 'lucide-react'
 import { triggerHapticFeedback } from '../lib/telegram'
 import { MarketItem } from '../types'
 import { MarketFilterBar, MarketSortOption } from './MarketFilterBar'
+import { FeedHeader, SortOption } from './FeedHeader'
 
 interface MarketSectionProps {
   activeCategory: string | null
@@ -14,14 +15,20 @@ interface MarketSectionProps {
 }
 
 const MARKET_CATEGORY_TILES = [
-  { id: 'mcat-moto', label: 'БАЙКИ', icon: '🏍️' },
-  { id: 'mcat-tech', label: 'ТЕХНИКА', icon: '💻' },
-  { id: 'mcat-tickets', label: 'БИЛЕТЫ', icon: '🎫' },
-  { id: 'mcat-furniture', label: 'МЕБЕЛЬ', icon: '🛋️' },
-  { id: 'mcat-clothes', label: 'ОДЕЖДА', icon: '👕' },
-  { id: 'mcat-sport', label: 'СПОРТ', icon: '🏄‍♂️' },
-  { id: 'mcat-pets', label: 'ЖИВОТНЫЕ', icon: '🐶' },
-  { id: 'mcat-other', label: 'ДРУГОЕ', icon: '📦' },
+  { id: 'mcat-moto', label: 'БАЙКИ', icon: '🏍️', slug: 'moto' },
+  { id: 'mcat-tech', label: 'ТЕХНИКА', icon: '💻', slug: 'tech' },
+  { id: 'mcat-tickets', label: 'БИЛЕТЫ', icon: '🎫', slug: 'tickets' },
+  { id: 'mcat-furniture', label: 'МЕБЕЛЬ', icon: '🛋️', slug: 'furniture' },
+  { id: 'mcat-clothes', label: 'ОДЕЖДА', icon: '👕', slug: 'clothes' },
+  { id: 'mcat-sport', label: 'СПОРТ', icon: '🏄‍♂️', slug: 'sport' },
+  { id: 'mcat-pets', label: 'ЖИВОТНЫЕ', icon: '🐶', slug: 'pets' },
+  { id: 'mcat-other', label: 'ДРУГОЕ', icon: '📦', slug: 'other' },
+]
+
+const MARKET_SORT_OPTIONS: SortOption[] = [
+  { id: 'discount', label: '🔥 Скидки' },
+  { id: 'urgent', label: '⏱️ Срочные' },
+  { id: 'price_asc', label: '💰 Дешевле' }
 ]
 
 export const DEFAULT_PRODUCTS: MarketItem[] = [
@@ -134,42 +141,36 @@ export const MarketSection: React.FC<MarketSectionProps> = ({
   return (
     <div className="w-full space-y-4 pb-28">
       
-      {/* 1. CHIP CATEGORIES (Horizontal Scroll - Identical style to Services) */}
-      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-2 px-2">
-        {MARKET_CATEGORY_TILES.map((cat) => {
-          const isActive = activeCategory === cat.id
-          return (
-            <button
-              key={cat.id}
-              type="button"
-              onClick={() => {
-                triggerHapticFeedback('light')
-                onSelectCategory(isActive ? null : cat.id)
-              }}
-              className={`shrink-0 rounded-full flex items-center gap-1.5 px-3.5 py-2 cursor-pointer transition-all duration-200 border ${
-                isActive
-                  ? 'bg-[#CCFF00]/20 backdrop-blur-xl border-[#CCFF00]/60 text-[#CCFF00] shadow-[0_0_15px_rgba(204,255,0,0.3)]'
-                  : 'bg-white/[0.08] backdrop-blur-xl border-white/15 text-gray-200 hover:bg-white/[0.12] hover:border-white/25'
-              }`}
-            >
-              <span className="text-[16px] leading-none">{cat.icon}</span>
-              <span className="text-[13px] font-bold tracking-wide uppercase">
-                {cat.label}
-              </span>
-            </button>
-          )
-        })}
-      </div>
-
-      {/* 2. INTERACTIVE FILTER & SEARCH BAR (Positioned directly UNDER category chips) */}
-      <MarketFilterBar
+      <FeedHeader 
+        categories={MARKET_CATEGORY_TILES}
+        activeCategory={activeCategory}
+        onSelectCategory={onSelectCategory}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         sortBy={sortBy}
         onSortChange={setSortBy}
-        conditionFilter={conditionFilter}
-        onConditionChange={setConditionFilter}
-      />
+        sortOptions={MARKET_SORT_OPTIONS}
+      >
+        {/* Condition Filter */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-1">
+          {['Новое', 'Б/У', 'Аренда'].map((cond) => (
+            <button
+              key={cond}
+              onClick={() => {
+                triggerHapticFeedback('light')
+                setConditionFilter(conditionFilter === cond ? null : cond)
+              }}
+              className={`shrink-0 px-3 py-1.5 rounded-xl text-[11px] font-bold border transition-all ${
+                conditionFilter === cond
+                  ? 'bg-amber-400/20 text-amber-400 border-amber-400/50 shadow-[0_0_10px_rgba(251,191,36,0.3)]'
+                  : 'bg-white/[0.03] text-gray-400 border-white/10 hover:bg-white/[0.08]'
+              }`}
+            >
+              {cond}
+            </button>
+          ))}
+        </div>
+      </FeedHeader>
 
       {/* 3. FLASH MARKET GRID (Pinterest Style 2-Columns) */}
       <div className="space-y-4 pt-2">

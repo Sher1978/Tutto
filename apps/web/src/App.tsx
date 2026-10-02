@@ -458,6 +458,7 @@ export function App() {
             <div className="relative h-full w-full">
               <div className={`${mode === 'services' ? 'opacity-30 blur-sm pointer-events-none' : ''}`}>
                 <MockupAuctionSection
+                  mode={mode as 'rent' | 'services'}
                   activeHub={activeHub}
                   onSelectHub={handleSelectHub}
                   activeCategory={activeCategory}

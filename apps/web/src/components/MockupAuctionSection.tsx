@@ -4,8 +4,10 @@ import { RequestItem } from '../types'
 import { SERVICE_TEMPLATES, CATEGORIES, MOCK_OFFER_INSTANCES } from '../data/mockData'
 import { triggerHapticFeedback } from '../lib/telegram'
 import { UserStorefrontScroller } from './UserStorefrontScroller'
+import { FeedHeader } from './FeedHeader'
 
 interface MockupAuctionSectionProps {
+  mode?: 'rent' | 'services'
   onSelectHub: (hub: string) => void
   activeHub: string
   activeCategory: string | null
@@ -15,21 +17,24 @@ interface MockupAuctionSectionProps {
   requests: RequestItem[]
 }
 
-// All 13 Categories matching the strictly ordered expat taxonomy
-const ALL_CATEGORY_TILES = [
-  { id: 'cat-transport', label: 'ПРОКАТ', icon: '🛵', slug: 'transport' },
-  { id: 'cat-housing', label: 'ЖИЛЬЁ', icon: '🏡', slug: 'housing' },
-  { id: 'cat-finance', label: 'ДЕНЬГИ', icon: '💵', slug: 'finance' },
-  { id: 'cat-services', label: 'УСЛУГИ', icon: '💼', slug: 'services' },
-  { id: 'cat-food', label: 'ЕДА', icon: '🍽️', slug: 'food' },
-  { id: 'cat-cleaning', label: 'КЛИНИНГ', icon: '🧹', slug: 'cleaning' },
+const RENT_CATEGORIES = [
+  { id: 'cat-bikes', label: 'БАЙКИ', icon: '🛵', slug: 'bikes' },
+  { id: 'cat-cars', label: 'АВТО', icon: '🚗', slug: 'cars' },
+  { id: 'cat-villas', label: 'ВИЛЛЫ', icon: '🏡', slug: 'villas' },
+  { id: 'cat-apartments', label: 'КВАРТИРЫ', icon: '🏢', slug: 'apartments' },
+  { id: 'cat-yachts', label: 'ЯХТЫ', icon: '🛥️', slug: 'yachts' },
+  { id: 'cat-equipment', label: 'ОБОРУДОВАНИЕ', icon: '📷', slug: 'equipment' },
+]
+
+const SERVICES_CATEGORIES = [
   { id: 'cat-beauty', label: 'КРАСОТА', icon: '💆', slug: 'beauty' },
+  { id: 'cat-cleaning', label: 'КЛИНИНГ', icon: '🧹', slug: 'cleaning' },
+  { id: 'cat-health', label: 'ВРАЧИ', icon: '🩺', slug: 'health' },
   { id: 'cat-kids', label: 'ДЕТИ', icon: '👶', slug: 'kids' },
   { id: 'cat-tours', label: 'ТУРЫ', icon: '🗺️', slug: 'tours' },
-  { id: 'cat-health', label: 'ВРАЧИ', icon: '🩺', slug: 'health' },
-  { id: 'cat-courier', label: 'КУРЬЕР', icon: '📦', slug: 'courier' },
-  {id: 'cat-events', label: 'ИВЕНТЫ', icon: '🎈', slug: 'events' },
-  { id: 'cat-spirit', label: 'ПРАКТИКИ', icon: '🔮', slug: 'spirit' },
+  { id: 'cat-events', label: 'ИВЕНТЫ', icon: '🎈', slug: 'events' },
+  { id: 'cat-repair', label: 'РЕМОНТ', icon: '🛠️', slug: 'repair' },
+  { id: 'cat-legal', label: 'ЮРИСТЫ', icon: '⚖️', slug: 'legal' },
   { id: 'cat-other', label: 'ДРУГОЕ', icon: '🌀', slug: 'other' },
 ]
 
@@ -198,6 +203,7 @@ const InteractiveMarqueeSlider: React.FC<InteractiveMarqueeSliderProps> = ({
 }
 
 export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
+  mode = 'rent',
   onSelectHub,
   activeHub,
   activeCategory,
@@ -384,121 +390,18 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
         </defs>
       </svg>
       
-      {/* 1.5 AI SMART SEARCH BAR (Airbnb Pattern) */}
-      <div className="px-2 mb-6 mt-2">
-        <button
-          type="button"
-          onClick={() => {
-            triggerHapticFeedback('heavy')
-            // Using a custom event to trigger the AI modal in App.tsx 
-            // since we don't have direct access to setIsAIAssistantOpen here.
-            // But wait, the component receives onOpenQuickRequest, we can use that with a dummy request
-            // or better, dispatch a custom event that App.tsx can listen to.
-            // For now, let's use document.dispatchEvent
-            document.dispatchEvent(new CustomEvent('open-ai-assistant'))
-          }}
-          className="w-full relative overflow-hidden group bg-white/5 backdrop-blur-xl border border-white/10 hover:border-[#00F2FE]/50 rounded-2xl p-4 flex items-center justify-between transition-all duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
-        >
-          {/* Animated Glow */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#00F2FE]/0 via-[#00F2FE]/10 to-[#00DFEA]/0 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity" />
-          
-          <div className="flex items-center gap-4 relative z-10">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00F2FE] to-[#00DFEA] flex items-center justify-center shadow-[0_0_15px_rgba(0,242,254,0.3)]">
-              <Sparkles className="w-5 h-5 text-black" />
-            </div>
-            <div className="text-left">
-              <span className="block text-white font-bold text-sm">Что вы ищете?</span>
-              <span className="block text-gray-400 text-xs mt-0.5">Напишите или скажите голосом...</span>
-            </div>
-          </div>
-          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center relative z-10 text-white group-hover:bg-white/20 transition-colors">
-            <Mic className="w-5 h-5" />
-          </div>
-        </button>
-      </div>
+      <FeedHeader 
+        categories={mode === 'rent' ? RENT_CATEGORIES : SERVICES_CATEGORIES}
+        activeCategory={activeCategory}
+        onSelectCategory={onSelectCategory}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+      />
 
       {/* 1.75 USER STOREFRONT (My Showcase) */}
       <UserStorefrontScroller instances={MOCK_OFFER_INSTANCES} />
-
-      {/* 2. CHIP CATEGORIES (Horizontal Scroll) */}
-      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-2 px-2">
-        {ALL_CATEGORY_TILES.map((cat) => {
-          const isActive = activeCategory === cat.id
-          return (
-            <button
-              key={cat.id}
-              onClick={() => onSelectCategory(isActive ? null : cat.id)}
-              className={`shrink-0 rounded-full flex items-center gap-1.5 px-3.5 py-2 cursor-pointer transition-all duration-200 border ${
-                isActive
-                  ? 'bg-[#00F2FE]/20 backdrop-blur-xl border-[#00F2FE]/60 text-[#00F2FE] shadow-[0_0_15px_rgba(0,242,254,0.3)]'
-                  : 'bg-white/[0.08] backdrop-blur-xl border-white/15 text-gray-200 hover:bg-white/[0.12] hover:border-white/25'
-              }`}
-            >
-              <span className="text-[16px] leading-none">{cat.icon}</span>
-              <span className="text-[13px] font-bold tracking-wide uppercase">
-                {cat.label}
-              </span>
-            </button>
-          )
-        })}
-      </div>
-
-      {/* 2.5 SEARCH & SORTING WIDGET (Directly under Category Chips) */}
-      <div className="w-full space-y-2.5 bg-[#121824] p-3 rounded-2xl border border-white/10 shadow-lg">
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="w-4 h-4 text-[#00F2FE] absolute left-3 top-2.5" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Поиск по названию или описанию услуги..."
-            className="w-full bg-[#070B12] border border-white/15 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-gray-500 focus:border-[#00F2FE] outline-none"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-2 text-xs text-gray-400 hover:text-white"
-            >
-              ✕
-            </button>
-          )}
-        </div>
-
-        {/* Sorting Controls */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs">
-          <span className="text-[10px] font-bold text-gray-400 uppercase mr-1 shrink-0 flex items-center gap-1">
-            <ArrowUpDown className="w-3 h-3 text-[#00F2FE]" />
-            Сорт:
-          </span>
-
-          {[
-            { id: 'urgent', label: '🔥 Срочные' },
-            { id: 'budget', label: '💰 По бюджету' },
-            { id: 'newest', label: '⏱️ Новые' },
-          ].map((sortItem) => {
-            const isSelected = sortBy === sortItem.id
-            return (
-              <button
-                key={sortItem.id}
-                type="button"
-                onClick={() => {
-                  triggerHapticFeedback('light')
-                  setSortBy(sortItem.id as any)
-                }}
-                className={`px-2.5 py-1 rounded-lg text-[10px] font-extrabold shrink-0 transition-all ${
-                  isSelected
-                    ? 'bg-[#00F2FE] text-black shadow-[0_0_10px_rgba(0,242,254,0.4)]'
-                    : 'bg-white/5 text-gray-300 hover:bg-white/10'
-                }`}
-              >
-                {sortItem.label}
-              </button>
-            )
-          })}
-        </div>
-      </div>
 
       {/* 3. LIVE FEED (Fragment.com Style Cards) */}
       <div className="space-y-4 pt-2">
