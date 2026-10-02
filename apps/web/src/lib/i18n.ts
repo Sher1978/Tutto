@@ -30,8 +30,9 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     tab_mine: 'МОЁ',
 
     // Mode Switcher
-    mode_services: '🛠 УСЛУГИ И АРЕНДА',
-    mode_market: '🔥 БАРАХОЛКА',
+    mode_rent: '🏠 АРЕНДА',
+    mode_services: '🛠 УСЛУГИ',
+    mode_market: '🔥 МАРКЕТ',
 
     // Actions & Buttons
     btn_create_request: 'СОЗДАТЬ ЗАЯВКУ',
@@ -126,8 +127,9 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     tab_mine: 'MY ITEMS',
 
     // Mode Switcher
-    mode_services: '🛠 SERVICES & RENTALS',
-    mode_market: '🔥 FLASH MARKET',
+    mode_rent: '🏠 RENT',
+    mode_services: '🛠 SERVICES',
+    mode_market: '🔥 MARKET',
 
     // Actions & Buttons
     btn_create_request: 'CREATE REQUEST',
@@ -222,8 +224,9 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     tab_mine: 'รายการของฉัน',
 
     // Mode Switcher
-    mode_services: '🛠 บริการและเช่า',
-    mode_market: '🔥 ตลาดด่วน',
+    mode_rent: '🏠 เช่า',
+    mode_services: '🛠 บริการ',
+    mode_market: '🔥 ตลาด',
 
     // Actions & Buttons
     btn_create_request: 'สร้างคำขอ',
@@ -318,8 +321,9 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     tab_mine: '我的商品',
 
     // Mode Switcher
-    mode_services: '🛠 服务与租赁',
-    mode_market: '🔥 闪购集市',
+    mode_rent: '🏠 租赁',
+    mode_services: '🛠 服务',
+    mode_market: '🔥 集市',
 
     // Actions & Buttons
     btn_create_request: '发布需求',

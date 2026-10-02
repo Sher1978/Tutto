@@ -33,7 +33,7 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 
 export function App() {
   const [currentLang, setCurrentLang] = useState<Language>(() => detectDefaultLanguage())
-  const [mode, setMode] = useState<AppMode>('services')
+  const [mode, setMode] = useState<AppMode>('rent')
   const [activeHub, setActiveHub] = useState<string>('bali')
   const [activeTab, setActiveTab] = useState<TabId>('home')
   const [activeCategory, setActiveCategory] = useState<string | null>('cat-transport')
@@ -233,7 +233,7 @@ export function App() {
       setMode('market')
       setActiveCategory(null)
     } else if (tab === 'home') {
-      setMode('services')
+      setMode('rent')
     }
 
     setActiveTab(tab)
@@ -241,7 +241,7 @@ export function App() {
 
   const handleModeChange = (newMode: AppMode) => {
     setMode(newMode)
-    setActiveTab(newMode === 'services' ? 'home' : 'market')
+    setActiveTab((newMode === 'rent' || newMode === 'services') ? 'home' : 'market')
     setActiveCategory(null)
   }
 
@@ -388,13 +388,13 @@ export function App() {
       {/* Fixed Background Glow Sprites Engine (Anchored 100% fixed on viewport during scrolling) */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className={`absolute -top-24 -left-24 w-[500px] h-[500px] rounded-full blur-[140px] transition-colors duration-1000 ${
-          mode === 'services' ? 'bg-[#00F2FE]/20' : 'bg-[#CCFF00]/15'
+          mode === 'rent' ? 'bg-[#00F2FE]/20' : mode === 'services' ? 'bg-[#FF2A85]/20' : 'bg-[#CCFF00]/15'
         }`} />
         <div className={`absolute -top-24 -right-24 w-[450px] h-[450px] rounded-full blur-[120px] transition-colors duration-1000 ${
-          mode === 'services' ? 'bg-[#CCFF00]/15' : 'bg-[#00F2FE]/25'
+          mode === 'rent' ? 'bg-[#CCFF00]/15' : mode === 'services' ? 'bg-[#00F2FE]/25' : 'bg-[#00F2FE]/25'
         }`} />
         <div className={`absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full blur-[160px] opacity-40 transition-colors duration-1000 ${
-          mode === 'services' ? 'bg-[#00F2FE]/10' : 'bg-[#CCFF00]/10'
+          mode === 'rent' ? 'bg-[#00F2FE]/10' : mode === 'services' ? 'bg-[#FF2A85]/10' : 'bg-[#CCFF00]/10'
         }`} />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050811]/90 to-[#000000]" />
       </div>
@@ -435,28 +435,56 @@ export function App() {
         )}
 
         {/* Main Content Area */}
-        <main className="w-full px-4 py-2 flex-1 space-y-4 relative z-10 pb-32">
-          {mode === 'services' && (activeTab === 'home' || activeTab === 'market') && (
-            <MockupAuctionSection
-              activeHub={activeHub}
-              onSelectHub={handleSelectHub}
-              activeCategory={activeCategory}
-              onSelectCategory={setActiveCategory}
-              onOpenBidModal={(req) => setSelectedRequestForBid(req)}
-              onOpenQuickRequest={() => setIsAIAssistantOpen(true)}
-              requests={requests}
-            />
+        <main className={`w-full px-4 py-2 flex-1 space-y-4 relative z-10 pb-32 ${
+          (mode === 'services' || mode === 'market') && (activeTab === 'home' || activeTab === 'market')
+            ? 'overflow-hidden h-[calc(100vh-140px)]'
+            : ''
+        }`}>
+          {(mode === 'rent' || mode === 'services') && (activeTab === 'home' || activeTab === 'market') && (
+            <div className="relative h-full w-full">
+              <div className={`${mode === 'services' ? 'opacity-30 blur-sm pointer-events-none' : ''}`}>
+                <MockupAuctionSection
+                  activeHub={activeHub}
+                  onSelectHub={handleSelectHub}
+                  activeCategory={activeCategory}
+                  onSelectCategory={setActiveCategory}
+                  onOpenBidModal={(req) => setSelectedRequestForBid(req)}
+                  onOpenQuickRequest={() => setIsAIAssistantOpen(true)}
+                  requests={requests}
+                />
+              </div>
+              
+              {mode === 'services' && (
+                <div className="absolute top-32 left-0 right-0 z-50 flex flex-col items-center justify-center p-8 bg-[#161B22]/60 backdrop-blur-xl rounded-[2rem] border border-[#FF2A85]/50 shadow-[0_0_50px_rgba(255,42,133,0.3)] mx-2">
+                   <h3 className="text-2xl font-black text-white text-center mb-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">Биржа Услуг</h3>
+                   <p className="text-sm text-gray-200 text-center font-medium leading-relaxed drop-shadow-md">
+                     Раздел находится на стадии закрытого тестирования. Скоро здесь появятся лучшие мастера, юристы и клининг-сервисы!
+                   </p>
+                </div>
+              )}
+            </div>
           )}
 
           {mode === 'market' && (activeTab === 'home' || activeTab === 'market') && (
-            <MarketSection
-              activeCategory={activeCategory}
-              products={marketProducts.length > 0 ? marketProducts : undefined}
-              onSelectCategory={setActiveCategory}
-              onOpenQuickRequest={() => setIsAIAssistantOpen(true)}
-              onSelectProduct={(product) => setSelectedMarketProduct(product)}
-              onOpenCreateListing={() => setIsCreateMarketListingOpen(true)}
-            />
+            <div className="relative h-full w-full">
+              <div className="opacity-30 blur-sm pointer-events-none">
+                <MarketSection
+                  activeCategory={activeCategory}
+                  products={marketProducts.length > 0 ? marketProducts : undefined}
+                  onSelectCategory={setActiveCategory}
+                  onOpenQuickRequest={() => setIsAIAssistantOpen(true)}
+                  onSelectProduct={(product) => setSelectedMarketProduct(product)}
+                  onOpenCreateListing={() => setIsCreateMarketListingOpen(true)}
+                />
+              </div>
+
+              <div className="absolute top-32 left-0 right-0 z-50 flex flex-col items-center justify-center p-8 bg-[#161B22]/60 backdrop-blur-xl rounded-[2rem] border border-[#CCFF00]/50 shadow-[0_0_50px_rgba(204,255,0,0.3)] mx-2">
+                  <h3 className="text-2xl font-black text-white text-center mb-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">Быстрая продажа</h3>
+                  <p className="text-sm text-gray-200 text-center font-medium leading-relaxed drop-shadow-md">
+                    Горячие товары, аукционы вещей и P2P-сделки будут доступны в следующем обновлении. Следите за новостями!
+                  </p>
+              </div>
+            </div>
           )}
 
 
@@ -616,7 +644,7 @@ export function App() {
           currentLang={currentLang}
           unreadChatCount={2}
           onCentralAction={() => {
-            if (mode === 'services') {
+            if (mode === 'rent' || mode === 'services') {
               triggerHapticFeedback('heavy')
               setIsAIAssistantOpen(true)
             } else {

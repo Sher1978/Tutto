@@ -4,7 +4,7 @@ import { Home, Star, MessageSquare, User, Search, Package, Flame, Plus } from 'l
 import { Language, t } from '../lib/i18n'
 
 export type TabId = 'home' | 'my-bids' | 'explore' | 'chat' | 'account' | 'market' | 'mine'
-export type AppMode = 'services' | 'market'
+export type AppMode = 'rent' | 'services' | 'market'
 
 interface BottomNavProps {
   activeTab: TabId
@@ -50,7 +50,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     { id: 'account', labelKey: 'tab_account', icon: User },
   ]
 
-  const currentItems = mode === 'services' ? servicesItems : marketItems
+  const currentItems = mode === 'market' ? marketItems : servicesItems
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white/[0.08] backdrop-blur-2xl px-4 pt-3 pb-6 sm:pb-3 z-50 transition-colors duration-300">
@@ -66,10 +66,12 @@ export const BottomNav: React.FC<BottomNavProps> = ({
                   <button
                     type="button"
                     onClick={handleFabClick}
-                    aria-label={mode === 'services' ? 'Создать заказ' : 'Добавить лот'}
+                    aria-label={mode === 'market' ? 'Добавить лот' : 'Создать заказ'}
                     className={`absolute -top-6 flex items-center justify-center w-[64px] h-[64px] rounded-full border-2 transition-all duration-300 shadow-xl z-[60] ${
-                      mode === 'services'
+                      mode === 'rent'
                         ? 'bg-gradient-to-br from-[#00D4E8] to-[#00F2FE] border-black shadow-[0_4px_25px_rgba(0,242,254,0.4)]'
+                        : mode === 'services'
+                        ? 'bg-gradient-to-br from-[#FF2A85] to-[#FF007F] border-black shadow-[0_4px_25px_rgba(255,42,133,0.4)]'
                         : 'bg-gradient-to-br from-[#B8E600] to-[#CCFF00] border-black shadow-[0_4px_25px_rgba(204,255,0,0.4)]'
                     } ${
                       isFabClicked
@@ -93,8 +95,10 @@ export const BottomNav: React.FC<BottomNavProps> = ({
                   <Icon 
                     className={`w-[24px] h-[24px] transition-all duration-300 nav-icon-morph ${
                       isActive 
-                        ? (mode === 'services' 
+                        ? (mode === 'rent' 
                             ? 'text-[#00F2FE] drop-shadow-[0_0_12px_rgba(0,242,254,0.7)] scale-110' 
+                            : mode === 'services'
+                            ? 'text-[#FF2A85] drop-shadow-[0_0_12px_rgba(255,42,133,0.7)] scale-110'
                             : 'text-[#CCFF00] drop-shadow-[0_0_12px_rgba(204,255,0,0.7)] scale-110')
                         : 'text-white/90 hover:text-white'
                     }`} 
@@ -110,8 +114,10 @@ export const BottomNav: React.FC<BottomNavProps> = ({
 
                 <span className={`text-[9px] tracking-wider transition-colors duration-300 font-display uppercase ${
                   isActive 
-                    ? (mode === 'services'
+                    ? (mode === 'rent'
                         ? 'font-black text-[#00F2FE] drop-shadow-[0_0_8px_rgba(0,242,254,0.6)]'
+                        : mode === 'services'
+                        ? 'font-black text-[#FF2A85] drop-shadow-[0_0_8px_rgba(255,42,133,0.6)]'
                         : 'font-black text-[#CCFF00] drop-shadow-[0_0_8px_rgba(204,255,0,0.6)]')
                     : 'font-semibold text-white/90'
                 }`}>

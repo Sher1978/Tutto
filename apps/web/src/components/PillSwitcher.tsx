@@ -21,11 +21,23 @@ export const PillSwitcher: React.FC<PillSwitcherProps> = ({ mode, onModeChange, 
     <div className="pill-switcher flex gap-2 bg-[#161B22] border border-white/10 rounded-2xl p-1.5 mx-4 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
       <button
         type="button"
-        onClick={() => handleSwitch('services')}
-        className={`flex-1 py-3 px-2 rounded-xl text-[13px] font-bold font-display tracking-wide text-center transition-all duration-300 border ${
-          mode === 'services'
+        onClick={() => handleSwitch('rent')}
+        className={`flex-1 py-2 px-1 rounded-xl text-[12px] font-bold font-display tracking-wide text-center transition-all duration-300 border ${
+          mode === 'rent'
             ? 'bg-gradient-to-br from-[#00F2FE] to-[#00D4E8] text-black border-transparent shadow-[0_0_20px_rgba(0,242,254,0.4)]'
             : 'bg-transparent text-[#00F2FE]/80 border-[#00F2FE]/50 hover:border-[#00F2FE] hover:text-[#00F2FE] hover:bg-[#00F2FE]/10'
+        }`}
+      >
+        {t(currentLang, 'mode_rent')}
+      </button>
+
+      <button
+        type="button"
+        onClick={() => handleSwitch('services')}
+        className={`flex-1 py-2 px-1 rounded-xl text-[12px] font-bold font-display tracking-wide text-center transition-all duration-300 border ${
+          mode === 'services'
+            ? 'bg-gradient-to-br from-[#FF2A85] to-[#FF007F] text-black border-transparent shadow-[0_0_20px_rgba(255,42,133,0.4)]'
+            : 'bg-transparent text-[#FF2A85]/80 border-[#FF2A85]/50 hover:border-[#FF2A85] hover:text-[#FF2A85] hover:bg-[#FF2A85]/10'
         }`}
       >
         {t(currentLang, 'mode_services')}
@@ -34,7 +46,7 @@ export const PillSwitcher: React.FC<PillSwitcherProps> = ({ mode, onModeChange, 
       <button
         type="button"
         onClick={() => handleSwitch('market')}
-        className={`flex-1 py-3 px-2 rounded-xl text-[13px] font-bold font-display tracking-wide text-center transition-all duration-300 border ${
+        className={`flex-1 py-2 px-1 rounded-xl text-[12px] font-bold font-display tracking-wide text-center transition-all duration-300 border ${
           mode === 'market'
             ? 'bg-gradient-to-br from-[#CCFF00] to-[#B8E600] text-black border-transparent shadow-[0_0_20px_rgba(204,255,0,0.4)]'
             : 'bg-transparent text-[#CCFF00]/80 border-[#CCFF00]/50 hover:border-[#CCFF00] hover:text-[#CCFF00] hover:bg-[#CCFF00]/10'
