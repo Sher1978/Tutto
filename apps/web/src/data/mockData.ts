@@ -1,4 +1,4 @@
-import { HubLocation, Category, RequestItem, BusinessCard, ServiceTemplate } from '../types'
+import { HubLocation, Category, RequestItem, BusinessCard, ServiceTemplate, OfferInstance } from '../types'
 
 export const HUBS: HubLocation[] = [
   {
@@ -786,4 +786,43 @@ export const MOCK_BUSINESS_CARDS: BusinessCard[] = [
     workingHours: '8:00 – 22:00 ежедневно',
     socialLinks: ['https://t.me/phuketridedemo', 'https://instagram.com/phuketridedemo'],
   },
+]
+
+export const MOCK_OFFER_INSTANCES: OfferInstance[] = [
+  {
+    id: 'inst-1',
+    userId: 'usr-provider',
+    type: 'rent',
+    category: 'Транспорт',
+    title: 'Yamaha NMAX 2024 White',
+    description: 'Новый байк в идеальном состоянии. 2 шлема, держатель для телефона, полный бак. Доставим в любую точку Пхукета бесплатно при аренде от 3 дней.',
+    price: 350,
+    currency: 'THB/день',
+    imageUrl: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&auto=format&fit=crop&q=80',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'inst-2',
+    userId: 'usr-provider',
+    type: 'service',
+    category: 'Красота',
+    title: 'Тайский массаж на вилле',
+    description: 'Профессиональный мастер со своим столом. 90 минут релакса и проработки мышц после серфинга или перелета.',
+    price: 60,
+    currency: 'USD',
+    imageUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&auto=format&fit=crop&q=80',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'inst-3',
+    userId: 'usr-provider',
+    type: 'market',
+    category: 'Электроника',
+    title: 'MacBook Pro 16 M1 Max',
+    description: 'Идеальное состояние, 32GB RAM, 1TB SSD. Использовался только для монтажа видео в студии.',
+    price: 1800,
+    currency: 'USD',
+    imageUrl: '', // Test fallback gradient
+    createdAt: new Date().toISOString(),
+  }
 ]

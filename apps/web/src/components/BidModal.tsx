@@ -3,7 +3,9 @@ import { X, Zap, DollarSign, Bot, ShieldCheck, Share2 } from 'lucide-react'
 import { RequestItem } from '../types'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
 import { shareToTelegram } from '../lib/deeplink'
-
+import { OfferCard } from './OfferCard'
+import { MOCK_OFFER_INSTANCES } from '../data/mockData'
+import { OfferInstance } from '../types'
 interface BidModalProps {
   request: RequestItem | null
   isOpen: boolean
@@ -21,6 +23,7 @@ export const BidModal: React.FC<BidModalProps> = ({
   const [comment, setComment] = useState('Готовы выполнить в лучшем виде. Доставим в течение 30 минут!')
   const [isClarifying, setIsClarifying] = useState(false)
   const [clarifyText, setClarifyText] = useState('')
+  const [selectedOffer, setSelectedOffer] = useState<OfferInstance | null>(null)
 
   useEffect(() => {
     if (request) {
@@ -68,8 +71,19 @@ export const BidModal: React.FC<BidModalProps> = ({
 
     triggerHapticFeedback('medium')
     triggerNotificationFeedback('success')
-    onSubmitBid(request.id, parseFloat(price), comment)
+    // Prefix the comment with offer info if one was selected
+    let finalComment = comment
+    if (selectedOffer) {
+      finalComment = `[Offer: ${selectedOffer.title}]\n${comment}`
+    }
+    onSubmitBid(request.id, parseFloat(price), finalComment)
     onClose()
+  }
+
+  const handleSelectOffer = (offer: OfferInstance) => {
+    setSelectedOffer(offer)
+    setPrice(String(offer.price))
+    setComment(`Предлагаю: ${offer.title}\n${offer.description}`)
   }
 
   return (
@@ -119,6 +133,27 @@ export const BidModal: React.FC<BidModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4 text-sm">
           {!isClarifying ? (
             <>
+              {/* My Offer Instances Carousel */}
+              <div className="mb-4">
+                <label className="block text-gray-300 font-semibold mb-2 text-[14px]">
+                  Мои шаблоны предложений
+                </label>
+                <div className="flex gap-3 overflow-x-auto custom-scrollbar pb-2 snap-x snap-mandatory">
+                  {MOCK_OFFER_INSTANCES.map((offer) => (
+                    <div 
+                      key={offer.id} 
+                      className={`w-[240px] shrink-0 snap-start transition-transform ${selectedOffer?.id === offer.id ? 'scale-[1.02] ring-2 ring-cyan-400 rounded-2xl' : 'opacity-80 hover:opacity-100'}`}
+                    >
+                      <OfferCard 
+                        offer={offer} 
+                        mode="chat" 
+                        onAction={(offer) => handleSelectOffer(offer)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               {/* Proposed Price */}
               <div>
                 <label className="block text-gray-300 font-semibold mb-2 text-[14px]">Ваша цена ($ USD)</label>

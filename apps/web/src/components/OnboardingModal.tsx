@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Sparkles, X, Check, Compass, MapPin, Bot, Clock, ArrowRight } from 'lucide-react'
+import { Sparkles, X, Check, Compass, MapPin, Bot, Clock, ArrowRight, LayoutTemplate } from 'lucide-react'
 import { triggerHapticFeedback } from '../lib/telegram'
 
 interface OnboardingModalProps {
@@ -31,6 +31,13 @@ const ONBOARDING_STEPS = [
   },
   {
     step: 4,
+    title: 'Ваши Шаблоны Офферов',
+    description: `Создавайте красивые карточки (инстансы) ваших товаров, услуг или аренды!\n\nОдин раз оформите красивое предложение с фото и ценой, откликайтесь на заказы в 1 клик и делитесь карточками в Telegram или Instagram!`,
+    icon: <LayoutTemplate className="w-12 h-12 text-amber-400" />,
+    gradient: 'from-[#FF2A85]/20 to-[#f59e0b]/20',
+  },
+  {
+    step: 5,
     title: 'Включите Локацию 📍',
     description: `Чтобы показывать вам только актуальные предложения (на Пхукете, Бали и т.д.), нам нужно знать вашу геопозицию.\n\nПожалуйста, разрешите доступ к локации на следующем экране.`,
     icon: <MapPin className="w-12 h-12 text-[#00DFEA]" />,

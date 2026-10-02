@@ -3,7 +3,7 @@ import { RequestItem, MarketItem, BidItem } from '../types'
 import { triggerHapticFeedback } from '../lib/telegram'
 import { Clock, MessageSquare, Flame, CheckCircle2, AlertCircle, Trash2, Eye, Award, MapPin } from 'lucide-react'
 import { PlatformRulesModal } from './PlatformRulesModal'
-
+import { OfferInstancesManager } from './OfferInstancesManager'
 interface MyDealsAndListingsViewProps {
   myRequests: RequestItem[]
   myMarketItems: MarketItem[]
@@ -21,7 +21,7 @@ export const MyDealsAndListingsView: React.FC<MyDealsAndListingsViewProps> = ({
   onDeleteMarketItem,
   onDeleteRequest,
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'requests' | 'market' | 'bids'>('requests')
+  const [activeSubTab, setActiveSubTab] = useState<'requests' | 'market' | 'bids' | 'templates'>('requests')
   const [isRulesOpen, setIsRulesOpen] = useState(false)
 
   // Mock submitted bids for PRO provider view
@@ -83,7 +83,7 @@ export const MyDealsAndListingsView: React.FC<MyDealsAndListingsViewProps> = ({
         </div>
 
         {/* Sub Tabs */}
-        <div className="grid grid-cols-3 gap-1 bg-[#070B12] p-1 rounded-xl border border-white/10">
+        <div className="flex flex-wrap gap-1 bg-[#070B12] p-1 rounded-xl border border-white/10">
           <button
             type="button"
             onClick={() => {
@@ -100,6 +100,20 @@ export const MyDealsAndListingsView: React.FC<MyDealsAndListingsViewProps> = ({
             <span className="text-[9px] bg-black/20 px-1.5 py-0.2 rounded font-black">{myRequests.length}</span>
           </button>
 
+          <button
+            type="button"
+            onClick={() => {
+              triggerHapticFeedback('light')
+              setActiveSubTab('templates')
+            }}
+            className={`flex-1 py-2 text-[11px] font-bold rounded-lg transition-all flex items-center justify-center gap-1 ${
+              activeSubTab === 'templates'
+                ? 'bg-amber-500 text-black font-extrabold shadow-[0_0_12px_rgba(245,158,11,0.4)]'
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            <span>✨ Шаблоны</span>
+          </button>
           <button
             type="button"
             onClick={() => {
@@ -133,6 +147,10 @@ export const MyDealsAndListingsView: React.FC<MyDealsAndListingsViewProps> = ({
           </button>
         </div>
       </div>
+
+      {activeSubTab === 'templates' && (
+        <OfferInstancesManager />
+      )}
 
       {/* 2. SUB-TAB 1: MY REQUESTS (Услуги & Аукционы) */}
       {activeSubTab === 'requests' && (

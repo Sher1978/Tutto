@@ -135,3 +135,16 @@ export interface ReviewItem {
   rewardCoins: number
 }
 
+export interface OfferInstance {
+  id: string
+  userId: string
+  type: 'rent' | 'service' | 'market'
+  category: string
+  title: string
+  description: string
+  price: number
+  currency: string
+  imageUrl?: string // Compressed image or fallback mockup
+  createdAt: string
+}
+
