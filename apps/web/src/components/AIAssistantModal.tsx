@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { X, Mic, Send, Bot, Sparkles, Loader2, Check } from 'lucide-react'
+import { X, Mic, Send, Bot, Sparkles, Loader2, Check, Square } from 'lucide-react'
 import { analyzeRequestFlowWithAI, SmartAIResponse, ParsedRequest } from '../lib/gemini'
 import { triggerHapticFeedback } from '../lib/telegram'
 import { Language, detectDefaultLanguage, t } from '../lib/i18n'
@@ -208,9 +208,9 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
               ) : (
                 <button 
                   onClick={toggleRecording} 
-                  className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center mr-1 transition-all ${isRecording ? 'bg-red-500/20 text-red-400 animate-pulse' : 'bg-white/5 text-gray-400'}`}
+                  className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center mr-1 transition-all ${isRecording ? 'bg-red-500/20 text-red-500 animate-pulse' : 'bg-white/5 text-gray-400 hover:text-white'}`}
                 >
-                  <Mic className="w-5 h-5" />
+                  {isRecording ? <Square className="w-4 h-4 fill-current" /> : <Mic className="w-5 h-5" />}
                 </button>
               )}
             </div>
