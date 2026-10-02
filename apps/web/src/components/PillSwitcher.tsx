@@ -18,7 +18,7 @@ export const PillSwitcher: React.FC<PillSwitcherProps> = ({ mode, onModeChange, 
   }
 
   return (
-    <div className="pill-switcher flex gap-2 bg-[#161B22] border border-white/10 rounded-2xl p-1.5 mx-4 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+    <div id="tour-mode-switcher" className="pill-switcher flex gap-2 bg-[#161B22] border border-white/10 rounded-2xl p-1.5 mx-4 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
       <button
         type="button"
         onClick={() => handleSwitch('rent')}

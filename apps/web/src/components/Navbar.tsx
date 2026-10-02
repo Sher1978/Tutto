@@ -159,6 +159,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center justify-between w-full">
           {/* Location Selector */}
           <div
+            id="tour-location-picker"
             onClick={() => {
               triggerHapticFeedback('light')
               setIsLocationOpen(true)

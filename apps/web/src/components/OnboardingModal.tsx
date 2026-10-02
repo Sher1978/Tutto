@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Sparkles, ArrowDown, X, Check, Compass } from 'lucide-react'
+import { Sparkles, X, Check, Compass, MapPin, Bot, Clock, ArrowRight } from 'lucide-react'
 import { triggerHapticFeedback } from '../lib/telegram'
 
 interface OnboardingModalProps {
@@ -10,45 +10,31 @@ interface OnboardingModalProps {
 const ONBOARDING_STEPS = [
   {
     step: 1,
-    title: '1. Аукцион Услуг & Маркетплейс',
-    description: `В TuttoMinutto есть два удобных формата:\n\n• Обратный Аукцион Услуг — вы публикуете запрос, а исполнители сами предлагают наилучшую цену.\n• Барахолка — горячий маркетплейс товаров с быстрыми скидками и P2P-сделками.`,
-    pointerPos: 'top-mode',
-    targetLabel: 'Переключатель Режимов',
+    title: 'Обратный Аукцион Аренды',
+    description: `Добро пожаловать в TuttoMinutto!\n\nИщите байк, виллу или авто? Оставьте заявку, укажите бюджет, и проверенные партнеры сами предложат вам лучшие варианты. Выбирайте то, что подходит именно вам!`,
+    icon: <Sparkles className="w-12 h-12 text-[#CCFF00]" />,
+    gradient: 'from-[#00F2FE]/20 to-[#CCFF00]/20',
   },
   {
     step: 2,
-    title: '2. Выбор Локации и Рубрики',
-    description: `Указывайте ваш текущий хаб (Пхукет, Бали, Дубай) и конкретный район вверху экрана.\n\nИспользуйте интерактивные чипы рубрик для мгновенной фильтрации услуг и товаров.`,
-    pointerPos: 'top-location',
-    targetLabel: 'Локация & Рубрики',
+    title: 'Умный ИИ-Ассистент',
+    description: `Больше никаких долгих заполнений форм. Просто скажите голосом или напишите текстом, что вам нужно. Наш ИИ сам сформирует идеальную карточку заявки за пару секунд.`,
+    icon: <Bot className="w-12 h-12 text-[#00F2FE]" />,
+    gradient: 'from-[#FF2A85]/20 to-[#00F2FE]/20',
   },
   {
     step: 3,
-    title: '3. Создание Заявки на Услугу',
-    description: `Нажмите яркую центральную плюс-кнопку (+) в нижнем меню или воспользуйтесь ИИ-Ассистентом.\n\nПросто скажите голосом или напишите — ИИ сам за пару секунд оформит идеальную заявку!`,
-    pointerPos: 'bottom-plus',
-    targetLabel: 'Кнопка Создания Заявки (+)',
+    title: 'Услуги и Барахолка',
+    description: `Разделы Услуг и Быстрой продажи (Барахолка) сейчас находятся на этапе закрытого тестирования.\n\nЗапишитесь на ранний доступ прямо в приложении, чтобы первыми оценить новый функционал!`,
+    icon: <Clock className="w-12 h-12 text-[#FF2A85]" />,
+    gradient: 'from-[#CCFF00]/20 to-[#FF2A85]/20',
   },
   {
     step: 4,
-    title: '4. Объявление о Продаже',
-    description: `Хотите быстро продать байк, гаджет или билеты?\n\nПереключитесь на Барахолку и нажмите «+ Разместить лот». Добавляйте до 10 фотографий с мгновенным автоматическим сжатием!`,
-    pointerPos: 'top-market',
-    targetLabel: 'Режим Барахолки',
-  },
-  {
-    step: 5,
-    title: '5. Легких и выгодных сделок!',
-    description: `Платформа полностью готова к использованию.\n\nНаходите надёжных исполнителей, экономьте бюджет и заключайте безопасные сделки в один клик. Удачи на TuttoMinutto!`,
-    pointerPos: 'center-finish',
-    targetLabel: 'Всё готово!',
-  },
-  {
-    step: 6,
-    title: '6. Включите Локацию 📍',
-    description: `Чтобы показывать вам актуальные заявки и горячие товары в вашем городе (Пхукет, Бали, Дубай и др.), нам нужен доступ к вашей геопозиции.\n\nПожалуйста, разрешите доступ к локации в следующем окне.`,
-    pointerPos: 'center-location',
-    targetLabel: 'Геопозиция',
+    title: 'Включите Локацию 📍',
+    description: `Чтобы показывать вам только актуальные предложения (на Пхукете, Бали и т.д.), нам нужно знать вашу геопозицию.\n\nПожалуйста, разрешите доступ к локации на следующем экране.`,
+    icon: <MapPin className="w-12 h-12 text-[#00DFEA]" />,
+    gradient: 'from-[#00F2FE]/20 to-[#00DFEA]/20',
   },
 ]
 
@@ -80,164 +66,73 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
   return (
     <div
       onClick={handleNext}
-      className="fixed inset-0 z-[9999] flex flex-col justify-between p-5 bg-black/65 backdrop-blur-[6px] animate-fadeIn select-none cursor-pointer"
+      className="fixed inset-0 z-[9999] flex flex-col justify-center items-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn select-none cursor-pointer"
     >
-      {/* Header bar: Step Counter & Skip Button directly on blurred backdrop */}
-      <div className="flex items-center justify-between pt-[max(env(safe-area-inset-top),16px)] px-1 relative z-20">
-        <div className="flex items-center gap-2 bg-[#00F2FE]/20 text-[#00F2FE] border border-[#00F2FE]/40 px-3.5 py-1.5 rounded-full text-xs font-black shadow-[0_0_20px_rgba(0,242,254,0.3)]">
-          <Compass className="w-4 h-4 animate-spin-slow text-[#00F2FE]" />
-          <span>Шаг {currentStep + 1} из {ONBOARDING_STEPS.length}</span>
-        </div>
-
+      {/* Header bar: Skip Button */}
+      <div className="absolute top-[max(env(safe-area-inset-top),20px)] right-4 z-20">
         <button
           type="button"
           onClick={handleSkip}
-          className="flex items-center gap-1.5 text-xs font-extrabold text-white/90 hover:text-white bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-full transition-all cursor-pointer border border-white/20 backdrop-blur-md active:scale-95"
+          className="flex items-center gap-1.5 text-xs font-extrabold text-white/70 hover:text-white bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full transition-all cursor-pointer border border-white/10 backdrop-blur-md"
         >
           <span>Пропустить</span>
-          <X className="w-3.5 h-3.5 text-white/70" />
+          <X className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      {/* 🎯 SPOTLIGHT HIGHLIGHT RINGS & DOWNWARD POINTER ARROWS */}
+      {/* Main Centered Card */}
+      <div 
+        onClick={(e) => e.stopPropagation()} 
+        className="w-full max-w-sm bg-[#11151C] rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl relative z-20 flex flex-col items-center p-8 text-center"
+      >
+        {/* Animated Background Glow inside card */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${stepData.gradient} opacity-30 animate-pulse pointer-events-none`} />
 
-      {/* Step 1 Spotlight: Mode Switcher */}
-      {stepData.pointerPos === 'top-mode' && (
-        <div className="relative z-30 w-full max-w-lg mx-auto pointer-events-none">
-          {/* Arrow pointing DOWN directly at PillSwitcher */}
-          <div className="fixed top-[175px] left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce text-[#00F2FE] z-40">
-            <span className="text-[11px] font-black uppercase tracking-wider bg-[#00F2FE] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(0,242,254,0.8)] mb-1">
-              {stepData.targetLabel}
-            </span>
-            <ArrowDown className="w-8 h-8 stroke-[3.5] drop-shadow-[0_0_15px_#00F2FE]" />
-          </div>
-
-          {/* Glowing Neon Box encircling the PillSwitcher block */}
-          <div className="fixed top-[236px] left-4 right-4 h-[52px] rounded-2xl border-2 border-[#00F2FE] shadow-[0_0_35px_rgba(0,242,254,0.9)] pointer-events-none z-30 animate-pulse bg-[#00F2FE]/15" />
+        {/* Icon Container */}
+        <div className="relative z-10 w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-inner">
+          {stepData.icon}
         </div>
-      )}
 
-      {/* Step 2 Spotlight: Location Selector */}
-      {stepData.pointerPos === 'top-location' && (
-        <div className="relative z-30 w-full max-w-lg mx-auto pointer-events-none">
-          <div className="fixed top-[110px] left-4 flex flex-col items-start animate-bounce text-[#CCFF00] z-40">
-            <span className="text-[11px] font-black uppercase tracking-wider bg-[#CCFF00] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(204,255,0,0.8)] mb-1">
-              {stepData.targetLabel}
-            </span>
-            <ArrowDown className="w-8 h-8 stroke-[3.5] drop-shadow-[0_0_15px_#CCFF00]" />
-          </div>
-
-          {/* Glowing ring encircling the location pill */}
-          <div className="fixed top-[170px] left-4 w-[165px] h-[34px] rounded-full border-2 border-[#CCFF00] shadow-[0_0_30px_rgba(204,255,0,0.9)] pointer-events-none z-30 animate-pulse bg-[#CCFF00]/15" />
+        {/* Text Content */}
+        <div className="relative z-10 w-full mb-8">
+          <h2 className="font-display font-black text-2xl text-white tracking-wide leading-tight mb-3">
+            {stepData.title}
+          </h2>
+          <p className="text-sm text-gray-300 font-medium leading-relaxed whitespace-pre-line px-2">
+            {stepData.description}
+          </p>
         </div>
-      )}
 
-      {/* Step 4 Spotlight: Flash Market Tab */}
-      {stepData.pointerPos === 'top-market' && (
-        <div className="relative z-30 w-full max-w-lg mx-auto pointer-events-none">
-          <div className="fixed top-[175px] right-6 flex flex-col items-end animate-bounce text-[#00F2FE] z-40">
-            <span className="text-[11px] font-black uppercase tracking-wider bg-[#00F2FE] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(0,242,254,0.8)] mb-1">
-              {stepData.targetLabel}
-            </span>
-            <ArrowDown className="w-8 h-8 stroke-[3.5] drop-shadow-[0_0_15px_#00F2FE]" />
-          </div>
-
-          {/* Glowing box encircling Flash Market tab inside PillSwitcher */}
-          <div className="fixed top-[236px] right-4 w-[48%] h-[52px] rounded-2xl border-2 border-[#00F2FE] shadow-[0_0_35px_rgba(0,242,254,0.9)] pointer-events-none z-30 animate-pulse bg-[#00F2FE]/15" />
+        {/* Step Indicator Dots */}
+        <div className="relative z-10 flex items-center justify-center gap-2 mb-8 w-full">
+          {ONBOARDING_STEPS.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => {
+                triggerHapticFeedback('light')
+                setCurrentStep(idx)
+              }}
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                idx === currentStep
+                  ? 'w-8 bg-gradient-to-r from-[#00F2FE] to-[#CCFF00] shadow-[0_0_12px_rgba(0,242,254,0.6)]'
+                  : 'w-2 bg-white/20 hover:bg-white/40'
+              }`}
+              aria-label={`Шаг ${idx + 1}`}
+            />
+          ))}
         </div>
-      )}
 
-      {/* Step 5 Spotlight: Finish Celebration */}
-      {stepData.pointerPos === 'center-finish' && (
-        <div className="flex flex-col items-center justify-center pt-6 relative z-20 pointer-events-none">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#00F2FE] to-[#CCFF00] flex items-center justify-center shadow-[0_0_40px_rgba(0,242,254,0.6)] animate-pulse">
-            <Sparkles className="w-9 h-9 text-black stroke-[2.5]" />
-          </div>
-        </div>
-      )}
-
-      {/* Step 6 Spotlight: Location */}
-      {stepData.pointerPos === 'center-location' && (
-        <div className="flex flex-col items-center justify-center pt-6 relative z-20 pointer-events-none">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#FF2A85] to-[#FF5E99] flex items-center justify-center shadow-[0_0_40px_rgba(255,42,133,0.6)] animate-pulse">
-            <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </div>
-        </div>
-      )}
-
-      {/* DESCRIPTIVE TEXT: Frameless, directly on blurred background without frames, borders, or cards */}
-      <div className="my-auto mx-auto w-full max-w-lg px-3 py-4 space-y-4 relative z-20 text-center sm:text-left">
-        <h2 className="font-display font-black text-2xl sm:text-3xl text-white tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] leading-tight">
-          {stepData.title}
-        </h2>
-        
-        <p className="text-sm sm:text-base text-gray-100 font-semibold leading-relaxed whitespace-pre-line drop-shadow-[0_3px_10px_rgba(0,0,0,0.95)] max-w-lg">
-          {stepData.description}
-        </p>
-
-        {/* Step Indicator Dots & Tap hint */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-          <div className="flex items-center gap-2">
-            {ONBOARDING_STEPS.map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  triggerHapticFeedback('light')
-                  setCurrentStep(idx)
-                }}
-                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  idx === currentStep
-                    ? 'w-8 bg-gradient-to-r from-[#00F2FE] to-[#CCFF00] shadow-[0_0_12px_rgba(0,242,254,0.8)]'
-                    : 'w-2.5 bg-white/30 hover:bg-white/60'
-                }`}
-                aria-label={`Перейти к шагу ${idx + 1}`}
-              />
-            ))}
-          </div>
-
-          {!isLastStep && (
-            <span className="text-[11px] font-bold text-[#00F2FE] tracking-wide animate-pulse">
-              Коснитесь экрана для продолжения →
-            </span>
-          )}
-        </div>
+        {/* Action Button */}
+        <button
+          type="button"
+          onClick={handleNext}
+          className="relative z-10 w-full py-4 rounded-2xl bg-gradient-to-r from-[#00F2FE] to-[#CCFF00] text-black font-black text-sm flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(0,242,254,0.4)] hover:brightness-110 active:scale-95 transition-all uppercase tracking-wider cursor-pointer"
+        >
+          <span>{isLastStep ? 'Разрешить локацию' : 'Понятно, дальше'}</span>
+          {isLastStep ? <Check className="w-5 h-5 stroke-[3]" /> : <ArrowRight className="w-5 h-5 stroke-[3]" />}
+        </button>
       </div>
-
-      {/* Step 3 Spotlight: Bottom Central Creation (+) Button */}
-      {stepData.pointerPos === 'bottom-plus' && (
-        <div className="relative z-30 w-full max-w-lg mx-auto pointer-events-none">
-          <div className="fixed bottom-[100px] left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce text-[#CCFF00] z-40">
-            <span className="text-[11px] font-black uppercase tracking-wider bg-[#CCFF00] text-black px-3 py-1 rounded-full shadow-[0_0_20px_rgba(204,255,0,0.8)] mb-1.5">
-              {stepData.targetLabel}
-            </span>
-            <ArrowDown className="w-8 h-8 stroke-[3.5] drop-shadow-[0_0_15px_#CCFF00]" />
-          </div>
-
-          {/* Glowing ring encircling the central floating (+) button */}
-          <div className="fixed bottom-[20px] left-1/2 -translate-x-1/2 w-[72px] h-[72px] rounded-full border-2 border-[#CCFF00] shadow-[0_0_35px_rgba(204,255,0,1)] pointer-events-none z-30 animate-pulse bg-[#CCFF00]/20" />
-        </div>
-      )}
-
-      {/* Bottom Area: Show CTA ONLY on the final step so central (+) button is never overlapped on steps 1-4 */}
-      {isLastStep ? (
-        <div className="w-full max-w-lg mx-auto pb-4 px-1 relative z-20">
-          <button
-            type="button"
-            onClick={handleNext}
-            className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-[#00F2FE] via-[#00DFEA] to-[#CCFF00] text-black font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_0_35px_rgba(0,242,254,0.6)] hover:brightness-110 active:scale-95 transition-all uppercase tracking-wider cursor-pointer"
-          >
-            <span>{stepData.step === 6 ? 'Разрешить локацию' : 'Далее'}</span>
-            <Check className="w-4 h-4 stroke-[3]" />
-          </button>
-        </div>
-      ) : (
-        <div className="pb-6" />
-      )}
     </div>
   )
 }
