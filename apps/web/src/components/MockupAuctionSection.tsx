@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Sparkles, Zap, ArrowRight, ShieldCheck, Heart, MapPin, Mic, Clock, Car, Home, Wallet, Wrench, Package, Search, ArrowUpDown } from 'lucide-react'
 import { RequestItem } from '../types'
-import { SERVICE_TEMPLATES, CATEGORIES } from '../data/mockData'
+import { SERVICE_TEMPLATES, CATEGORIES, MOCK_OFFER_INSTANCES } from '../data/mockData'
 import { triggerHapticFeedback } from '../lib/telegram'
+import { UserStorefrontScroller } from './UserStorefrontScroller'
 
 interface MockupAuctionSectionProps {
   onSelectHub: (hub: string) => void
@@ -415,6 +416,9 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
           </div>
         </button>
       </div>
+
+      {/* 1.75 USER STOREFRONT (My Showcase) */}
+      <UserStorefrontScroller instances={MOCK_OFFER_INSTANCES} />
 
       {/* 2. CHIP CATEGORIES (Horizontal Scroll) */}
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-2 px-2">
