@@ -39,23 +39,31 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     }
   }
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleEmailLogin = async (e?: React.FormEvent | React.KeyboardEvent | React.MouseEvent) => {
+    if (e) e.preventDefault()
+    if (!email) return
     try {
       triggerHapticFeedback('medium')
       setLoading(true)
       setError('')
       setMessage('')
+      
+      const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://needtnow.vercel.app'
+      
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: window.location.origin
+          emailRedirectTo: currentOrigin
         }
       })
       if (error) throw error
       setMessage('Ссылка для входа отправлена на ' + email)
     } catch (err: any) {
-      setError(err.message)
+      if (err.message === 'Load failed' || err.message === 'Failed to fetch') {
+        setError('Сетевая ошибка (Возможно блокировщик рекламы). Попробуйте Google-вход.')
+      } else {
+        setError(err.message)
+      }
     } finally {
       setLoading(false)
     }
@@ -137,7 +145,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           </div>
 
           {/* Email Form */}
-          <form onSubmit={handleEmailLogin} className="space-y-4">
+          <div className="space-y-4">
             <div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -148,6 +156,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleEmailLogin(e) }}
                   placeholder="Ваш Email адрес"
                   className="w-full bg-slate-800/50 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-white font-medium focus:outline-none focus:border-[#00F2FE] transition-colors"
                 />
@@ -158,14 +167,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             {message && <p className="text-[#00F2FE] text-sm font-medium">{message}</p>}
 
             <button
-              type="submit"
-              disabled={loading}
+              onClick={(e) => handleEmailLogin(e)}
+              disabled={loading || !email}
               className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00D4E8] to-[#00F2FE] text-[#03100A] font-black text-[14px] uppercase tracking-wider flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50"
             >
               <Zap className="w-4 h-4 fill-[#03100A]" />
               {loading ? 'Отправка...' : 'Отправить Magic Link'}
             </button>
-          </form>
+          </div>
         </div>
       </div>
     </div>
