@@ -20,6 +20,7 @@ interface NavbarProps {
   savedAmount?: number
   userRole?: 'client' | 'business'
   mode: AppMode
+  session?: Session | null
   shouldFetchLocation?: boolean
 }
 
