@@ -40,6 +40,7 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
   const [isNoticeExpanded, setIsNoticeExpanded] = useState(true)
   const [simulatedRole, setSimulatedRole] = useState<'client' | 'provider'>('client')
   const [showDisputeConfirm, setShowDisputeConfirm] = useState(false)
+  const [hideScamWarning, setHideScamWarning] = useState(() => localStorage.getItem('hide_scam_warning') === 'true')
 
   useEffect(() => {
     if (isOpen && request && bid) {
@@ -339,6 +340,8 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
               }
 
               const isMe = (simulatedRole === 'client' && msg.senderRole === 'client') || (simulatedRole === 'provider' && msg.senderRole === 'provider')
+              const hasExternalLink = /(https?:\/\/[^\s]+|@[a-zA-Z0-9_]+)/.test(msg.content)
+              const showScamWarning = hasExternalLink && simulatedRole === 'client' && !isMe && !hideScamWarning
 
               return (
                 <div
@@ -355,6 +358,24 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
                   >
                     {msg.content}
                   </div>
+                  {showScamWarning && (
+                    <div className="mt-1.5 ml-1 max-w-[85%] p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[10px] text-amber-200/90 shadow-[0_0_10px_rgba(245,158,11,0.1)]">
+                      ⚠️ Платформа не сможет обеспечить арбитраж, если вы продолжите общение вне чата. Рекомендуем оставаться здесь для безопасной сделки.
+                      <label className="flex items-center gap-1.5 mt-2 cursor-pointer text-amber-400/70 hover:text-amber-400 transition-colors">
+                        <input 
+                          type="checkbox" 
+                          className="w-3 h-3 accent-amber-500 cursor-pointer"
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                               setHideScamWarning(true);
+                               localStorage.setItem('hide_scam_warning', 'true');
+                            }
+                          }}
+                        />
+                        <span className="font-medium">Понятно, больше не показывать</span>
+                      </label>
+                    </div>
+                  )}
                   <span className="text-[9px] text-gray-500 mt-1 px-1">{msg.timestamp}</span>
                 </div>
               );

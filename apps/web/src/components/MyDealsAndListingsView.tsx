@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { RequestItem, MarketItem, BidItem } from '../types'
 import { triggerHapticFeedback } from '../lib/telegram'
 import { Clock, MessageSquare, Flame, CheckCircle2, AlertCircle, Trash2, Eye, Award, MapPin } from 'lucide-react'
+import { PlatformRulesModal } from './PlatformRulesModal'
 
 interface MyDealsAndListingsViewProps {
   myRequests: RequestItem[]
@@ -21,6 +22,7 @@ export const MyDealsAndListingsView: React.FC<MyDealsAndListingsViewProps> = ({
   onDeleteRequest,
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'requests' | 'market' | 'bids'>('requests')
+  const [isRulesOpen, setIsRulesOpen] = useState(false)
 
   // Mock submitted bids for PRO provider view
   const myBids: { bid: BidItem; requestTitle: string; district: string }[] = [
@@ -335,6 +337,23 @@ export const MyDealsAndListingsView: React.FC<MyDealsAndListingsViewProps> = ({
           ))}
         </div>
       )}
+
+      {/* Platform Rules Link */}
+      <div className="pt-4 text-center">
+        <button
+          type="button"
+          onClick={() => setIsRulesOpen(true)}
+          className="text-[11px] text-gray-500 hover:text-cyan-400 underline transition-colors"
+        >
+          Правила пользования платформой
+        </button>
+      </div>
+
+      <PlatformRulesModal 
+        isOpen={isRulesOpen} 
+        onClose={() => setIsRulesOpen(false)} 
+        type="user" 
+      />
     </div>
   )
 }

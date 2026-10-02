@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Shield, Sparkles, Bot, Check, ExternalLink, Copy, Star, Edit3, Zap, X, ChevronDown, ChevronUp, Image as ImageIcon } from 'lucide-react'
 import { MOCK_BUSINESS_CARDS } from '../data/mockData'
 import { getTelegramUser, triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
+import { PlatformRulesModal } from './PlatformRulesModal'
 
 interface BusinessProfileViewProps {
   onOpenAdmin?: () => void
@@ -33,6 +34,8 @@ export const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({ onOpen
   )
   const [minBudget, setMinBudget] = useState(25)
   const [isSaved, setIsSaved] = useState(false)
+  
+  const [isRulesOpen, setIsRulesOpen] = useState(false)
 
   const handleToggleAi = () => {
     setAiEnabled(!aiEnabled)
@@ -509,6 +512,23 @@ export const BusinessProfileView: React.FC<BusinessProfileViewProps> = ({ onOpen
           </div>
         </div>
       )}
+
+      {/* Platform Rules Link */}
+      <div className="pt-2 text-center pb-8">
+        <button
+          type="button"
+          onClick={() => setIsRulesOpen(true)}
+          className="text-[11px] text-gray-500 hover:text-cyan-400 underline transition-colors"
+        >
+          Правила ведения бизнеса (PRO)
+        </button>
+      </div>
+
+      <PlatformRulesModal 
+        isOpen={isRulesOpen} 
+        onClose={() => setIsRulesOpen(false)} 
+        type="business" 
+      />
     </div>
   )
 }
