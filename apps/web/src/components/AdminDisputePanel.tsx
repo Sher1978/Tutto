@@ -6,6 +6,7 @@ import { Language, detectDefaultLanguage, t } from '../lib/i18n'
 interface AdminDisputePanelProps {
   isOpen: boolean
   onClose: () => void
+  onOpenDisputeChat?: (dealId: string) => void
   currentLang?: Language
 }
 
@@ -37,6 +38,7 @@ const MOCK_DISPUTES = [
 export const AdminDisputePanel: React.FC<AdminDisputePanelProps> = ({
   isOpen,
   onClose,
+  onOpenDisputeChat,
   currentLang,
 }) => {
   const lang = currentLang || detectDefaultLanguage()
@@ -192,6 +194,58 @@ export const AdminDisputePanel: React.FC<AdminDisputePanelProps> = ({
               </div>
             </div>
 
+            {/* Daily Report Widget */}
+            <div className="glass-panel p-4 border-white/10 rounded-2xl mt-4">
+              <h3 className="text-white font-bold text-sm mb-1 flex items-center gap-1.5">
+                <Activity className="w-4 h-4 text-[#00F2FE]" />
+                Отчет по заявкам за сегодня
+              </h3>
+              <p className="text-[10px] text-gray-400 mb-3">
+                Активные / Закрытые за сегодня (Всего за все время)
+              </p>
+              
+              <div className="space-y-2">
+                {/* Rent */}
+                <div className="bg-[#070B12] p-3 rounded-xl border border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-300 font-bold uppercase tracking-wider">🏠 Аренда</span>
+                  </div>
+                  <div className="text-xs font-mono flex items-center gap-1.5">
+                    <span className="text-[#00F2FE] font-black" title="Активные">42</span>
+                    <span className="text-gray-600">/</span>
+                    <span className="text-[#CCFF00] font-black" title="Закрытые сегодня">18</span>
+                    <span className="text-gray-500 text-[10px]" title="Всего">(3,104)</span>
+                  </div>
+                </div>
+                
+                {/* Services */}
+                <div className="bg-[#070B12] p-3 rounded-xl border border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-300 font-bold uppercase tracking-wider">🛠 Услуги</span>
+                  </div>
+                  <div className="text-xs font-mono flex items-center gap-1.5">
+                    <span className="text-[#00F2FE] font-black" title="Активные">25</span>
+                    <span className="text-gray-600">/</span>
+                    <span className="text-[#CCFF00] font-black" title="Закрытые сегодня">9</span>
+                    <span className="text-gray-500 text-[10px]" title="Всего">(1,422)</span>
+                  </div>
+                </div>
+
+                {/* Market */}
+                <div className="bg-[#070B12] p-3 rounded-xl border border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-300 font-bold uppercase tracking-wider">🔥 Барахолка</span>
+                  </div>
+                  <div className="text-xs font-mono flex items-center gap-1.5">
+                    <span className="text-[#00F2FE] font-black" title="Активные">88</span>
+                    <span className="text-gray-600">/</span>
+                    <span className="text-[#CCFF00] font-black" title="Закрытые сегодня">45</span>
+                    <span className="text-gray-500 text-[10px]" title="Всего">(8,931)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Key Availability & Monitoring Widget */}
             <div className="glass-panel p-4 border-[#00F2FE]/30 bg-[#00F2FE]/5 rounded-2xl mt-4 space-y-3">
               <div className="flex items-center justify-between">
@@ -286,7 +340,12 @@ export const AdminDisputePanel: React.FC<AdminDisputePanelProps> = ({
               </div>
 
               <div className="flex gap-2 mb-6">
-                <button className="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 flex items-center justify-center gap-2 text-sm font-bold text-white transition-colors">
+                <button 
+                  onClick={() => {
+                    if (onOpenDisputeChat) onOpenDisputeChat(selectedDispute.dealId)
+                  }}
+                  className="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 flex items-center justify-center gap-2 text-sm font-bold text-white transition-colors cursor-pointer"
+                >
                   <MessageSquare className="w-4 h-4 text-cyan-400" /> Чат сделки
                 </button>
               </div>

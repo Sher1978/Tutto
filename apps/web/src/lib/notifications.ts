@@ -48,6 +48,39 @@ export const INITIAL_NOTIFICATIONS: NotificationItem[] = [
 ]
 
 /**
+ * Web Push Notification Helpers (Browser Native Notification API)
+ */
+export async function requestNotificationPermission(): Promise<NotificationPermission> {
+  if (typeof window === 'undefined' || !('Notification' in window)) {
+    return 'denied'
+  }
+  try {
+    const permission = await Notification.requestPermission()
+    return permission
+  } catch {
+    return 'denied'
+  }
+}
+
+export function sendBrowserPushNotification(title: string, options?: NotificationOptions) {
+  if (typeof window === 'undefined' || !('Notification' in window)) return
+  if (Notification.permission === 'granted') {
+    try {
+      const notif = new Notification(title, {
+        icon: '/favicon.ico',
+        badge: '/favicon.ico',
+        ...options,
+      })
+      notif.onclick = () => {
+        window.focus()
+      }
+    } catch {
+      // Ignore push notification errors in sandbox environments
+    }
+  }
+}
+
+/**
  * Web Audio Synthesizer chime sound helper for notification alerts
  */
 export function playNotificationChime() {
@@ -78,3 +111,4 @@ export function playNotificationChime() {
     // Audio context fallback if muted by browser autoplay policy
   }
 }
+

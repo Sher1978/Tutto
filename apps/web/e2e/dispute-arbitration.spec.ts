@@ -41,6 +41,23 @@ test.describe('Dispute Arbitration & Moderator Admin Panel', () => {
     await expect(page.getByText(/Детали апелляции/i).first()).toBeVisible();
     await expect(page.getByText(/Причина апелляции/i).first()).toBeVisible();
 
+    // 6a. Click "Чат сделки" to see the history
+    const chatDealBtn = page.locator('button').filter({ hasText: 'Чат сделки' }).first();
+    await expect(chatDealBtn).toBeVisible();
+    await chatDealBtn.click({ force: true });
+    
+    // Verify Deal Chat Modal opens for admin
+    await expect(page.getByText(/В процессе/i).first()).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText(/Спор по сделке DEAL-441/i).first()).toBeVisible();
+
+    // Close Deal Chat Modal
+    const closeDealBtn = page.locator('.glass-panel button').filter({ has: page.locator('svg.lucide-x') }).first();
+    await closeDealBtn.click({ force: true });
+    
+    // Admin panel is closed when chat is opened. Open it again for the next steps
+    await adminBtn.click({ force: true });
+    await disputeItem.dispatchEvent('click');
+
     // 7. Enter resolution reason
     const textarea = page.locator('textarea[placeholder*="основание"]').first();
     await expect(textarea).toBeVisible();
@@ -56,7 +73,7 @@ test.describe('Dispute Arbitration & Moderator Admin Panel', () => {
     await expect(page.getByText('APL-012')).not.toBeVisible();
 
     // 10. Switch to Market Analytics tab
-    const analyticsTab = page.getByRole('button', { name: /Аналитика Маркета/i }).first();
+    const analyticsTab = page.getByRole('button', { name: /Аналитика Барахолки/i }).first();
     await expect(analyticsTab).toBeVisible();
     await analyticsTab.dispatchEvent('click');
 

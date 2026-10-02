@@ -4,6 +4,7 @@ import { RequestItem, BidItem } from '../types'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
 import { supabase } from '../lib/supabase'
 import { ReviewModal } from './ReviewModal'
+import { sendBrowserPushNotification, playNotificationChime } from '../lib/notifications'
 
 interface DealChatModalProps {
   isOpen: boolean
@@ -11,6 +12,7 @@ interface DealChatModalProps {
   bid: BidItem | null
   onClose: () => void
   onCompleteDeal: () => void
+  onNewMessage?: (msg: ChatMessage) => void
 }
 
 interface ChatMessage {
@@ -29,6 +31,7 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
   bid,
   onClose,
   onCompleteDeal,
+  onNewMessage,
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [newMessage, setNewMessage] = useState('')
@@ -36,6 +39,7 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
   const [showReviewModal, setShowReviewModal] = useState(false)
   const [isNoticeExpanded, setIsNoticeExpanded] = useState(true)
   const [simulatedRole, setSimulatedRole] = useState<'client' | 'provider'>('client')
+  const [showDisputeConfirm, setShowDisputeConfirm] = useState(false)
 
   useEffect(() => {
     if (isOpen && request && bid) {
@@ -78,17 +82,20 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
         (payload) => {
           const newMsg = payload.new
           if (newMsg) {
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: newMsg.id || `msg-${Date.now()}`,
-                senderRole: newMsg.sender_role || 'provider',
-                senderName: newMsg.sender_name || bid.providerName,
-                content: newMsg.content,
-                timestamp: 'Только что',
-              },
-            ])
+            const chatMsg: ChatMessage = {
+              id: newMsg.id || `msg-${Date.now()}`,
+              senderRole: newMsg.sender_role || 'provider',
+              senderName: newMsg.sender_name || bid.providerName,
+              content: newMsg.content,
+              timestamp: 'Только что',
+            }
+            setMessages((prev) => [...prev, chatMsg])
             triggerNotificationFeedback('success')
+            if (chatMsg.senderRole !== simulatedRole) {
+              playNotificationChime()
+              sendBrowserPushNotification(`Новое сообщение от ${chatMsg.senderName}`, { body: chatMsg.content })
+              onNewMessage?.(chatMsg)
+            }
           }
         }
       )
@@ -133,20 +140,25 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
       // Ignore if offline
     }
 
-    // Auto-reply simulation if role is client
-    if (isClient && dealStatus === 'in_progress') {
+    // Auto-reply simulation based on role
+    const autoReplyRole = isClient ? 'provider' : 'client'
+    const autoReplyName = isClient ? bid.providerName : 'Александр (Заказчик)'
+    const autoReplyContent = isClient ? 'Принято! Все условия согласованы.' : 'Отлично, жду выполнения.'
+
+    if (dealStatus === 'in_progress') {
       setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `msg-reply-${Date.now()}`,
-            senderRole: 'provider',
-            senderName: bid.providerName,
-            content: 'Принято! Все условия согласованы.',
-            timestamp: 'Только что',
-          },
-        ])
+        const replyMsg: ChatMessage = {
+          id: `msg-reply-${Date.now()}`,
+          senderRole: autoReplyRole,
+          senderName: autoReplyName,
+          content: autoReplyContent,
+          timestamp: 'Только что',
+        }
+        setMessages((prev) => [...prev, replyMsg])
         triggerNotificationFeedback('success')
+        playNotificationChime()
+        sendBrowserPushNotification(`Новое сообщение от ${autoReplyName}`, { body: autoReplyContent })
+        onNewMessage?.(replyMsg)
       }, 1800)
     }
   }
@@ -175,7 +187,6 @@ export const DealChatModal: React.FC<DealChatModalProps> = ({
     setShowReviewModal(true)
   }
 
-  const [showDisputeConfirm, setShowDisputeConfirm] = useState(false)
 
   // Client Action: Confirm Dispute/Appeals after modal approval
   const handleDispute = () => {

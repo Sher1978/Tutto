@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { X, Bell, CheckCheck, Sparkles, Volume2, VolumeX, MessageSquare, Zap, Coins, Flame, ArrowRight } from 'lucide-react'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
-import { NotificationItem, playNotificationChime } from '../lib/notifications'
+import { NotificationItem, playNotificationChime, requestNotificationPermission, sendBrowserPushNotification } from '../lib/notifications'
 
 interface NotificationCenterModalProps {
   isOpen: boolean
@@ -77,6 +77,25 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
           </div>
 
           <div className="flex items-center gap-1.5">
+            {/* Browser Push Notification Permission Request */}
+            <button
+              type="button"
+              onClick={async () => {
+                triggerHapticFeedback('medium')
+                const perm = await requestNotificationPermission()
+                if (perm === 'granted') {
+                  playNotificationChime()
+                  sendBrowserPushNotification('🔔 Пуш-уведомления включены!', {
+                    body: 'Вы будете получать мгновенные сигналы о новых сообщениях и откликах.',
+                  })
+                }
+              }}
+              title="Разрешить Браузерные Push-уведомления"
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer border border-[#00F2FE]/20"
+            >
+              <Sparkles className="w-4 h-4 text-[#00F2FE]" />
+            </button>
+
             {/* Sound Toggle */}
             <button
               type="button"

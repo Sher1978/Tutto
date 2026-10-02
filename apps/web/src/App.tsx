@@ -170,6 +170,7 @@ export function App() {
   // Notifications Center State
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS)
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+  const [unreadChatCount, setUnreadChatCount] = useState<number>(0)
 
   const [isAuthOpen, setIsAuthOpen] = useState(false)
   const [session, setSession] = useState<Session | null>(null)
@@ -234,6 +235,10 @@ export function App() {
       setActiveCategory(null)
     } else if (tab === 'home') {
       setMode('rent')
+    }
+
+    if (tab === 'chat' || tab === 'mine') {
+      setUnreadChatCount(0)
     }
 
     setActiveTab(tab)
@@ -455,11 +460,21 @@ export function App() {
               </div>
               
               {mode === 'services' && (
-                <div className="absolute top-32 left-0 right-0 z-50 flex flex-col items-center justify-center p-8 bg-[#161B22]/60 backdrop-blur-xl rounded-[2rem] border border-[#FF2A85]/50 shadow-[0_0_50px_rgba(255,42,133,0.3)] mx-2">
+                <div className="absolute top-32 left-0 right-0 z-50 flex flex-col items-center justify-center p-8 bg-[#161B22]/80 backdrop-blur-xl rounded-[2rem] border border-[#FF2A85]/50 shadow-[0_0_50px_rgba(255,42,133,0.3)] mx-2">
                    <h3 className="text-2xl font-black text-white text-center mb-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">Биржа Услуг</h3>
-                   <p className="text-sm text-gray-200 text-center font-medium leading-relaxed drop-shadow-md">
+                   <p className="text-sm text-gray-200 text-center font-medium leading-relaxed drop-shadow-md mb-6">
                      Раздел находится на стадии закрытого тестирования. Скоро здесь появятся лучшие мастера, юристы и клининг-сервисы!
                    </p>
+                   <button
+                     onClick={() => {
+                       triggerHapticFeedback('heavy')
+                       setNotificationMsg('✅ Вы добавлены в список раннего доступа! Ждите уведомлений.')
+                       setTimeout(() => setNotificationMsg(null), 4000)
+                     }}
+                     className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#FF2A85] to-[#FF5E99] text-white font-extrabold text-sm shadow-[0_0_20px_rgba(255,42,133,0.5)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                   >
+                     🚀 Ранний доступ
+                   </button>
                 </div>
               )}
             </div>
@@ -478,11 +493,21 @@ export function App() {
                 />
               </div>
 
-              <div className="absolute top-32 left-0 right-0 z-50 flex flex-col items-center justify-center p-8 bg-[#161B22]/60 backdrop-blur-xl rounded-[2rem] border border-[#CCFF00]/50 shadow-[0_0_50px_rgba(204,255,0,0.3)] mx-2">
+              <div className="absolute top-32 left-0 right-0 z-50 flex flex-col items-center justify-center p-8 bg-[#161B22]/80 backdrop-blur-xl rounded-[2rem] border border-[#CCFF00]/50 shadow-[0_0_50px_rgba(204,255,0,0.3)] mx-2">
                   <h3 className="text-2xl font-black text-white text-center mb-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">Быстрая продажа</h3>
-                  <p className="text-sm text-gray-200 text-center font-medium leading-relaxed drop-shadow-md">
+                  <p className="text-sm text-gray-200 text-center font-medium leading-relaxed drop-shadow-md mb-6">
                     Горячие товары, аукционы вещей и P2P-сделки будут доступны в следующем обновлении. Следите за новостями!
                   </p>
+                  <button
+                    onClick={() => {
+                      triggerHapticFeedback('heavy')
+                      setNotificationMsg('✅ Вы добавлены в список раннего доступа! Мы пришлем уведомление в бота.')
+                      setTimeout(() => setNotificationMsg(null), 4000)
+                    }}
+                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#CCFF00] to-[#E5FF00] text-black font-extrabold text-sm shadow-[0_0_20px_rgba(204,255,0,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                  >
+                    🚀 Ранний доступ
+                  </button>
               </div>
             </div>
           )}
@@ -579,12 +604,61 @@ export function App() {
             setNotificationMsg('🎉 Сделка завершена! Открыто окно отзыва.')
             setTimeout(() => setNotificationMsg(null), 4000)
           }}
+          onNewMessage={(msg) => {
+            // Increment unread count if we are not actively viewing the chat tab
+            // For testing: we can just increment it to verify the badge works
+            setUnreadChatCount((prev) => prev + 1)
+          }}
         />
 
         <AdminDisputePanel 
           isOpen={isAdminDisputeOpen} 
           onClose={() => setIsAdminDisputeOpen(false)} 
           currentLang={currentLang}
+          onOpenDisputeChat={(dealId) => {
+            // Mock a request and bid to show the chat
+            const mockReq: RequestItem = {
+              id: dealId,
+              clientId: 'client-1',
+              clientName: 'Александр',
+              clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+              clientRating: 4.9,
+              hub: 'phuket',
+              district: 'Chalong',
+              categoryL1Id: 'cat-transport',
+              categoryL1Name: 'Транспорт',
+              title: `Спор по сделке ${dealId}`,
+              description: 'Спорный заказ',
+              budget: 100,
+              currency: 'USD',
+              mediaUrls: [],
+              isFeatured: false,
+              status: 'in_progress',
+              createdAt: new Date().toISOString(),
+              expiresAt: new Date().toISOString(),
+              auctionEndsAt: new Date().toISOString(),
+              bidsCount: 1,
+            }
+            const mockBid: BidItem = {
+              id: `bid-${dealId}`,
+              requestId: dealId,
+              providerId: 'prov-1',
+              providerName: 'Phuket Drive',
+              providerAvatar: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=100',
+              providerRating: 4.8,
+              isPro: true,
+              isAiAgent: false,
+              proposedPrice: 100,
+              currency: 'USD',
+              comment: 'Готов выполнить',
+              status: 'accepted',
+              createdAt: new Date().toISOString(),
+            }
+            setActiveDealRequest(mockReq)
+            setActiveDealBid(mockBid)
+            // Close admin panel or keep it open in background
+            setIsAdminDisputeOpen(false)
+          }}
         />
 
         <AuthModal
@@ -642,7 +716,7 @@ export function App() {
           onSelectTab={handleSelectTab}
           mode={mode}
           currentLang={currentLang}
-          unreadChatCount={2}
+          unreadChatCount={unreadChatCount}
           onCentralAction={() => {
             if (mode === 'rent' || mode === 'services') {
               triggerHapticFeedback('heavy')
