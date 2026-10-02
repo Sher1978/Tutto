@@ -278,6 +278,51 @@ export async function notifyProviderNewRequest(
   }
 }
 
+/**
+ * Push notification sent to Subscribers when a new offer is added to a storefront
+ */
+export async function notifySubscriberNewOffer(
+  subscriberTelegramId: number,
+  offerTitle: string,
+  offerPrice: number,
+  offerCurrency: string,
+  categoryName: string,
+  offerId: string,
+  imageUrl?: string
+): Promise<void> {
+  const deepLink = `${appUrl}?startapp=offer_${offerId}`
+
+  const messageText = 
+    `🔔 <b>Новое предложение по вашей подписке!</b>\n\n` +
+    `📂 Категория: <b>${categoryName}</b>\n` +
+    `📋 <b>${offerTitle}</b>\n` +
+    `💰 Цена: <b>${offerPrice} ${offerCurrency}</b>\n\n` +
+    `Нажмите ниже, чтобы посмотреть товар в приложении 👇`
+
+  const keyboard = {
+    inline_keyboard: [[
+      { text: '🛍️ Открыть карточку товара (TMA)', web_app: { url: deepLink } }
+    ]]
+  }
+
+  try {
+    if (imageUrl) {
+      await bot.api.sendPhoto(subscriberTelegramId, imageUrl, {
+        caption: messageText,
+        parse_mode: 'HTML',
+        reply_markup: keyboard
+      })
+    } else {
+      await bot.api.sendMessage(subscriberTelegramId, messageText, {
+        parse_mode: 'HTML',
+        reply_markup: keyboard
+      })
+    }
+  } catch (err) {
+    console.error(`[Telegram Bot] Failed to notify subscriber ${subscriberTelegramId}:`, err)
+  }
+}
+
 bot.start({
   onStart: (botInfo) => {
     console.log(`🤖 Telegram Bot @${botInfo.username} (TuttoMinutto) успешно запущен!`)

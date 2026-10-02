@@ -1,6 +1,6 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { OfferInstance } from '../types'
-import { Share2, ArrowRight } from 'lucide-react'
+import { Share2, ArrowRight, Bell } from 'lucide-react'
 import { triggerHapticFeedback, triggerNotificationFeedback } from '../lib/telegram'
 import { toJpeg } from 'html-to-image'
 
@@ -13,6 +13,28 @@ interface OfferCardProps {
 
 export const OfferCard: React.FC<OfferCardProps> = ({ offer, mode = 'feed', onAction, onShare }) => {
   const cardRef = useRef<HTMLDivElement>(null)
+  const [isSubscribed, setIsSubscribed] = useState(false)
+
+  const handleSubscribe = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    triggerHapticFeedback('light')
+    setIsSubscribed(!isSubscribed)
+    
+    if (!isSubscribed) {
+      triggerNotificationFeedback('success')
+      // Optional: Show toast or telegram alert
+      const tg = (window as any).Telegram?.WebApp
+      if (tg?.showPopup) {
+        tg.showPopup({
+          title: 'Подписка оформлена! 🎉',
+          message: `Новые предложения из категории "${offer.category}" будут приходить вам в бота.`,
+          buttons: [{ type: 'ok' }]
+        })
+      } else {
+        alert(`Подписка оформлена! Новые предложения из категории "${offer.category}" будут приходить вам в бота.`)
+      }
+    }
+  }
 
   const handleShare = async () => {
     triggerHapticFeedback('light')
@@ -115,6 +137,21 @@ export const OfferCard: React.FC<OfferCardProps> = ({ offer, mode = 'feed', onAc
         isStory ? 'w-[1080px] h-[1920px] rounded-[60px]' : 'w-full h-64'
       }`}
     >
+      {/* Subscribe Button (Top Right) */}
+      {!isStory && (
+        <button
+          onClick={handleSubscribe}
+          className={`absolute top-3 right-3 z-20 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-300 ${
+            isSubscribed
+              ? 'bg-[#00F2FE] text-black shadow-[0_0_15px_rgba(0,242,254,0.4)]'
+              : 'bg-black/30 text-white hover:bg-black/50 border border-white/10'
+          }`}
+          aria-label="Subscribe"
+        >
+          <Bell className={`w-4 h-4 ${isSubscribed ? 'fill-black' : ''}`} />
+        </button>
+      )}
+
       {/* Background Image / Gradient */}
       <div className={`absolute inset-0 bg-gradient-to-br ${getFallbackGradient(offer.type)}`}>
         {offer.imageUrl && (
