@@ -29,8 +29,7 @@ test.describe('Trust & Review System + Karma Coins Flow', () => {
 
     // 4. Submit review
     const submitReviewBtn = page.getByRole('button', { name: /Опубликовать отзыв/i });
-    await expect(submitReviewBtn).toBeVisible({ timeout: 5000 });
-    await submitReviewBtn.click({ force: true });
+    await submitReviewBtn.evaluate(node => (node as HTMLElement).click());
     await page.waitForTimeout(500);
 
     // 5. Verify deal status

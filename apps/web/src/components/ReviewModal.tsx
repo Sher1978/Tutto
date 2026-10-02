@@ -88,7 +88,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="w-full max-w-md bg-[#0D1117] border border-white/15 rounded-3xl p-6 shadow-2xl relative text-white overflow-hidden">
+      <div className="w-full max-w-md bg-[#0D1117] border border-white/15 rounded-3xl p-6 shadow-2xl relative text-white max-h-[90vh] flex flex-col">
         {/* Background Glow */}
         <div className="absolute -top-20 -right-20 w-48 h-48 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -116,9 +116,9 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5 overflow-y-auto custom-scrollbar pr-2 flex-1 pb-4">
             {/* Header Title */}
-            <div className="text-center pt-2">
+            <div className="text-center pt-2 shrink-0">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-bold mb-2">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Оценка качества сделки</span>
@@ -264,12 +264,14 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
             </div>
 
             {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-extrabold text-xs uppercase tracking-wider shadow-[0_4px_25px_rgba(251,191,36,0.35)] hover:brightness-110 active:scale-95 transition-all cursor-pointer"
-            >
-              Опубликовать отзыв (+15 Coins)
-            </button>
+            <div className="shrink-0 pt-2">
+              <button
+                type="submit"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-extrabold text-xs uppercase tracking-wider shadow-[0_4px_25px_rgba(251,191,36,0.35)] hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+              >
+                Опубликовать отзыв (+15 Coins)
+              </button>
+            </div>
           </form>
         )}
       </div>
