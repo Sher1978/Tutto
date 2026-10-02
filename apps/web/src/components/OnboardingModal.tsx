@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Sparkles, X, Check, Compass, MapPin, Bot, Clock, ArrowRight, LayoutTemplate } from 'lucide-react'
 import { triggerHapticFeedback } from '../lib/telegram'
+import { OfferCard } from './OfferCard'
+import { MOCK_OFFER_INSTANCES } from '../data/mockData'
 
 interface OnboardingModalProps {
   isOpen: boolean
@@ -31,10 +33,11 @@ const ONBOARDING_STEPS = [
   },
   {
     step: 4,
-    title: 'Ваши Шаблоны Офферов',
-    description: `Создавайте красивые карточки (инстансы) ваших товаров, услуг или аренды!\n\nОдин раз оформите красивое предложение с фото и ценой, откликайтесь на заказы в 1 клик и делитесь карточками в Telegram или Instagram!`,
+    title: 'Карточки товаров и услуг',
+    description: `Создайте свой магазин на платформе!\n\nОдин раз оформите красивое предложение с фото и ценой, откликайтесь на заказы в 1 клик и продвигайте витрину в умной ленте.`,
     icon: <LayoutTemplate className="w-12 h-12 text-amber-400" />,
-    gradient: 'from-[#FF2A85]/20 to-[#f59e0b]/20',
+    gradient: 'from-[#FF2A85]/40 to-[#f59e0b]/40',
+    isOfferCardBg: true,
   },
   {
     step: 5,
@@ -92,8 +95,20 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClos
         onClick={(e) => e.stopPropagation()} 
         className="w-full max-w-sm bg-[#11151C] rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl relative z-20 flex flex-col items-center p-8 text-center"
       >
+        {/* Fullscreen OfferCard Background for Step 4 */}
+        {(stepData as any).isOfferCardBg && (
+          <div className="absolute inset-0 z-0 pointer-events-none opacity-40 blur-sm scale-110">
+            <OfferCard offer={MOCK_OFFER_INSTANCES[0]} mode="story" />
+          </div>
+        )}
+
         {/* Animated Background Glow inside card */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${stepData.gradient} opacity-30 animate-pulse pointer-events-none`} />
+        <div className={`absolute inset-0 bg-gradient-to-br ${stepData.gradient} opacity-50 animate-pulse pointer-events-none z-0`} />
+        
+        {/* Dark overlay for readability if bg image is present */}
+        {(stepData as any).isOfferCardBg && (
+          <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
+        )}
 
         {/* Icon Container */}
         <div className="relative z-10 w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-inner">

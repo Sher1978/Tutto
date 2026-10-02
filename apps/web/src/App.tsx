@@ -15,6 +15,7 @@ import { PillSwitcher } from './components/PillSwitcher'
 import { MarketSection, DEFAULT_PRODUCTS } from './components/MarketSection'
 import { CreateMarketListingModal } from './components/CreateMarketListingModal'
 import { MarketBuyModal } from './components/MarketBuyModal'
+import { CreateActionSheetModal } from './components/CreateActionSheetModal'
 import { MyDealsAndListingsView } from './components/MyDealsAndListingsView'
 import { ExploreView } from './components/ExploreView'
 import { MOCK_REQUESTS, SERVICE_TEMPLATES } from './data/mockData'
@@ -158,6 +159,7 @@ export function App() {
 
   // Flash Market State
   const [isCreateMarketListingOpen, setIsCreateMarketListingOpen] = useState(false)
+  const [isCreateActionSheetOpen, setIsCreateActionSheetOpen] = useState(false)
   const [selectedMarketProduct, setSelectedMarketProduct] = useState<MarketItem | null>(null)
   const [marketProducts, setMarketProducts] = useState<MarketItem[]>(DEFAULT_PRODUCTS)
 
@@ -178,6 +180,9 @@ export function App() {
   useEffect(() => {
     initTelegramApp()
     
+    const handleOpenAiAssistant = () => setIsAIAssistantOpen(true)
+    document.addEventListener('open-ai-assistant', handleOpenAiAssistant)
+
     // Auth Session Check
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
@@ -214,7 +219,10 @@ export function App() {
       setIsOnboardingOpen(true)
     }
 
-    return () => subscription.unsubscribe()
+    return () => {
+      subscription.unsubscribe()
+      document.removeEventListener('open-ai-assistant', handleOpenAiAssistant)
+    }
   }, [])
 
   const handleSelectHub = (hub: string) => {
@@ -711,6 +719,20 @@ export function App() {
           onClose={() => setIsOnboardingOpen(false)}
         />
 
+        <CreateActionSheetModal
+          isOpen={isCreateActionSheetOpen}
+          onClose={() => setIsCreateActionSheetOpen(false)}
+          onSelectAction={(action) => {
+            if (action === 'request') {
+              setIsAIAssistantOpen(true)
+            } else if (action === 'template') {
+              handleSelectTab('account') // Go to profile templates
+            } else if (action === 'market') {
+              setIsCreateMarketListingOpen(true)
+            }
+          }}
+        />
+
         {/* Bottom Tab Bar */}
         <BottomNav
           activeTab={activeTab}
@@ -719,13 +741,8 @@ export function App() {
           currentLang={currentLang}
           unreadChatCount={unreadChatCount}
           onCentralAction={() => {
-            if (mode === 'rent' || mode === 'services') {
-              triggerHapticFeedback('heavy')
-              setIsAIAssistantOpen(true)
-            } else {
-              triggerHapticFeedback('heavy')
-              setIsCreateMarketListingOpen(true)
-            }
+            triggerHapticFeedback('heavy')
+            setIsCreateActionSheetOpen(true)
           }}
         />
 

@@ -63,6 +63,15 @@ export const BottomNav: React.FC<BottomNavProps> = ({
             <React.Fragment key={item.id}>
               {index === 2 && (
                 <div className="relative flex justify-center items-center w-[60px]">
+                  {/* Pulsing Glow Background */}
+                  <div className={`absolute -top-6 w-[64px] h-[64px] rounded-full animate-pulse blur-md opacity-60 ${
+                    mode === 'rent'
+                      ? 'bg-[#00F2FE]'
+                      : mode === 'services'
+                      ? 'bg-[#FF2A85]'
+                      : 'bg-[#CCFF00]'
+                  }`} />
+                  
                   <button
                     type="button"
                     onClick={handleFabClick}

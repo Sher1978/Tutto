@@ -383,6 +383,39 @@ export const MockupAuctionSection: React.FC<MockupAuctionSectionProps> = ({
         </defs>
       </svg>
       
+      {/* 1.5 AI SMART SEARCH BAR (Airbnb Pattern) */}
+      <div className="px-2 mb-6 mt-2">
+        <button
+          type="button"
+          onClick={() => {
+            triggerHapticFeedback('heavy')
+            // Using a custom event to trigger the AI modal in App.tsx 
+            // since we don't have direct access to setIsAIAssistantOpen here.
+            // But wait, the component receives onOpenQuickRequest, we can use that with a dummy request
+            // or better, dispatch a custom event that App.tsx can listen to.
+            // For now, let's use document.dispatchEvent
+            document.dispatchEvent(new CustomEvent('open-ai-assistant'))
+          }}
+          className="w-full relative overflow-hidden group bg-white/5 backdrop-blur-xl border border-white/10 hover:border-[#00F2FE]/50 rounded-2xl p-4 flex items-center justify-between transition-all duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
+        >
+          {/* Animated Glow */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#00F2FE]/0 via-[#00F2FE]/10 to-[#00DFEA]/0 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity" />
+          
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00F2FE] to-[#00DFEA] flex items-center justify-center shadow-[0_0_15px_rgba(0,242,254,0.3)]">
+              <Sparkles className="w-5 h-5 text-black" />
+            </div>
+            <div className="text-left">
+              <span className="block text-white font-bold text-sm">Что вы ищете?</span>
+              <span className="block text-gray-400 text-xs mt-0.5">Напишите или скажите голосом...</span>
+            </div>
+          </div>
+          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center relative z-10 text-white group-hover:bg-white/20 transition-colors">
+            <Mic className="w-5 h-5" />
+          </div>
+        </button>
+      </div>
+
       {/* 2. CHIP CATEGORIES (Horizontal Scroll) */}
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-2 px-2">
         {ALL_CATEGORY_TILES.map((cat) => {
